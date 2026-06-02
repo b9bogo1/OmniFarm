@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+{% from 'macros.html' import breadcrumb, delete_btn %}
+{% block title %}{{ _('Utilisateurs — Admin') }}{% endblock %}
+{% block page_title %}{{ _('Utilisateurs') }}{% endblock %}
+
+{% block content %}
+{{ breadcrumb([('#', _('Utilisateurs'))]) }}
+
+<div class="flex items-center justify-between mb-7">
+  <div class="flex items-center gap-4">
+    <div class="w-12 h-12 rounded-2xl icon-bg-violet flex items-center justify-center text-2xl stat-icon-box">👥</div>
+    <div>
+      <h1 class="text-xl font-extrabold text-slate-900">{{ _('Gestion des utilisateurs') }}</h1>
+      <p class="text-sm text-slate-500 mt-0.5 font-medium">{{ _('Administration — OmniFarm Hub') }}</p>
+    </div>
+  </div>
+  <a href="{{ url_for('auth.admin_create_user') }}"
+     class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-white text-sm font-bold btn-premium-primary"
+     style="background: linear-gradient(135deg, #7c3aed 0%, #9333ea 100%) !important; box-shadow: 0 2px 8px rgba(124,58,237,0.3) !important;">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
+    </svg>
+    {{ _('Nouvel utilisateur') }}
+  </a>
+</div>
+
+{# Stats strip #}
+<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
+  <div class="bg-white rounded-2xl shadow-card border border-slate-100 card-inset p-4 text-center hover:-translate-y-0.5 hover:shadow-card-md transition-all">
+    <p class="text-2xl font-extrabold text-slate-800">{{ counts.total }}</p>
+    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wide mt-0.5">{{ _('Total') }}</p>
+  </div>
+  <div class="bg-white rounded-2xl shadow-card border border-slate-100 card-inset p-4 text-center hover:-translate-y-0.5 hover:shadow-card-md transition-all">
+    <p class="text-2xl font-extrabold text-violet-600">{{ counts.admin }}</p>
+    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wide mt-0.5">{{ _('Admins') }}</p>
+  </div>
+  <div class="bg-white rounded-2xl shadow-card border border-slate-100 card-inset p-4 text-center hover:-translate-y-0.5 hover:shadow-card-md transition-all">
+    <p class="text-2xl font-extrabold text-indigo-600">{{ counts.technician }}</p>
+    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wide mt-0.5">{{ _('Techniciens') }}</p>
+  </div>
+  <div class="bg-white rounded-2xl shadow-card border border-slate-100 card-inset p-4 text-center hover:-translate-y-0.5 hover:shadow-card-md transition-all">
+    <p class="text-2xl font-extrabold text-brand-700">{{ counts.client }}</p>
+    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wide mt-0.5">{{ _('Clients') }}</p>
+  </div>
+  <div class="bg-white rounded-2xl shadow-card border border-slate-100 card-inset p-4 text-center hover:-translate-y-0.5 hover:shadow-card-md transition-all">
+    <p class="text-2xl font-extrabold text-emerald-600">{{ counts.active }}</p>
+    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wide mt-0.5">{{ _('Actifs') }}</p>
+  </div>
+  <div class="bg-white rounded-2xl shadow-card border border-slate-100 card-inset p-4 text-center hover:-translate-y-0.5 hover:shadow-card-md transition-all">
+    <p class="text-2xl font-extrabold text-red-500">{{ counts.inactive }}</p>
+    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wide mt-0.5">{{ _('Inactifs') }}</p>
+  </div>
+</div>
+
+{% if users %}
+<div class="bg-white rounded-2xl shadow-card border border-slate-100 card-inset overflow-hidden">
+  <table class="min-w-full tbl-premium">
+    <thead>
+      <tr>
+        <th class="text-left">{{ _('Utilisateur') }}</th>
+        <th class="text-left hidden md:table-cell">{{ _('E-mail') }}</th>
+        <th class="text-center">{{ _('Rôle') }}</th>
+        <th class="text-center">{{ _('Statut') }}</th>
+        <th class="text-left hidden lg:table-cell">{{ _('Créé le') }}</th>
+        <th class="text-left hidden lg:table-cell">{{ _('Dernière connexion') }}</th>
+        <th class="text-right">{{ _('Actions') }}</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-slate-50">
+      {% for user in users %}
+      <tr class="{{ 'opacity-60' if not user.is_active }}">
+        <td class="px-5 py-4">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full flex items-center justify-center font-extrabold text-sm flex-shrink-0
+                        {% if user.role == UserRole.ADMIN %}bg-gradient-to-br from-violet-400 to-violet-600 text-white
+                        {% elif user.role == UserRole.TECHNICIAN %}bg-gradient-to-br from-indigo-400 to-indigo-600 text-white
+                        {% else %}bg-gradient-to-br from-brand-400 to-brand-600 text-white{% endif %}">
+              {{ user.username[0]|upper }}
+            </div>
+            <div>
+              <p class="font-bold text-slate-800 text-sm leading-tight">{{ user.username }}</p>
+              {% if user.id == current_user.id %}
+              <p class="text-[10px] text-brand-600 font-bold">{{ _('(vous)') }}</p>
+              {% endif %}
+            </div>
+          </div>
+        </td>
+        <td class="px-5 py-4 hidden md:table-cell">
+          <p class="text-sm text-slate-600 font-medium">{{ user.email }}</p>
+        </td>
+        <td class="px-5 py-4 text-center">
+          {% if user.role == UserRole.ADMIN %}
+          <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-300">
+            👑 {{ _('Admin') }}
+          </span>
+          {% elif user.role == UserRole.TECHNICIAN %}
+          <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300">
+            🔧 {{ _('Technicien') }}
+          </span>
+          {% else %}
+          <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300">
+            👤 {{ _('Client') }}
+          </span>
+          {% endif %}
+        </td>
+        <td class="px-5 py-4 text-center">
+          {% if user.is_active %}
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>{{ _('Actif') }}
+          </span>
+          {% else %}
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-100 text-red-600 text-xs font-bold">
+            <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>{{ _('Inactif') }}
+          </span>
+          {% endif %}
+        </td>
+        <td class="px-5 py-4 hidden lg:table-cell">
+          <p class="text-xs text-slate-500 font-medium">{{ user.created_at.strftime('%d/%m/%Y') }}</p>
+        </td>
+        <td class="px-5 py-4 hidden lg:table-cell">
+          <p class="text-xs text-slate-500 font-medium">
+            {{ user.last_login.strftime('%d/%m/%Y %H:%M') if user.last_login else '—' }}
+          </p>
+        </td>
+        <td class="px-5 py-4 whitespace-nowrap text-right">
+          <div class="flex items-center justify-end gap-3">
+            <a href="{{ url_for('auth.admin_edit_user', user_id=user.id) }}"
+               class="text-xs text-violet-700 hover:text-violet-900 font-bold transition-colors">{{ _('Modifier') }}</a>
+            {% if user.id != current_user.id %}
+            {{ delete_btn(url_for('auth.admin_delete_user', user_id=user.id), _('Supprimer'),
+               _('Supprimer l\'utilisateur %(u)s ? Cette action est irréversible.', u=user.username)) }}
+            {% endif %}
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<p class="text-xs text-slate-400 mt-3 text-right font-medium">{{ users|length }} {{ _('utilisateur(s) au total') }}</p>
+
+{% else %}
+<div class="bg-white rounded-2xl shadow-card border border-slate-100 card-inset py-16 text-center">
+  <div class="empty-icon-p w-20 h-20 mx-auto mb-5">👥</div>
+  <h2 class="text-lg font-bold text-slate-700 mb-5">{{ _('Aucun utilisateur') }}</h2>
+  <a href="{{ url_for('auth.admin_create_user') }}"
+     class="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl text-white text-sm font-bold btn-premium-primary">
+    + {{ _('Créer le premier utilisateur') }}
+  </a>
+</div>
+{% endif %}
+{% endblock %}

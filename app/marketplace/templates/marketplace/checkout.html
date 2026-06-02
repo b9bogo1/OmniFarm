@@ -1,0 +1,249 @@
+{% extends 'base.html' if current_user.is_authenticated else 'base_shop.html' %}
+{% from 'macros.html' import render_field, breadcrumb %}
+{% block title %}{{ _('Commander') }}{% endblock %}
+
+{% block content %}
+{{ breadcrumb([
+  (url_for('marketplace.index'), _('Marché')),
+  (url_for('marketplace.cart_view'), _('Panier')),
+  ('#', _('Commande')),
+]) }}
+
+{# ── Step indicator ──────────────────────────────────────────────────────── #}
+<div class="flex items-center justify-center gap-0 mb-8 max-w-sm mx-auto">
+  {% for num, label in [('1', _('Infos')), ('2', _('Paiement')), ('3', _('Confirmation'))] %}
+  <div class="flex items-center {{ 'flex-1' if not loop.last }}">
+    <div class="flex flex-col items-center flex-shrink-0">
+      <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-black
+                  {{ 'text-white shadow-md' if num == '1' else 'text-slate-400' }}"
+           style="{{ 'background:linear-gradient(135deg,#15803d,#22c55e);box-shadow:0 2px 8px rgba(21,128,61,.35)' if num == '1' else 'background:rgba(203,213,225,0.5);' }}">
+        {{ num }}
+      </div>
+      <span class="text-[10px] font-bold mt-1 {{ 'text-brand-700' if num == '1' else 'text-slate-400' }}">{{ label }}</span>
+    </div>
+    {% if not loop.last %}
+    <div class="flex-1 h-0.5 mx-2 mb-4 {{ 'bg-brand-200' if num == '1' else 'bg-slate-200' }}"></div>
+    {% endif %}
+  </div>
+  {% endfor %}
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+  {# ── Checkout form ──────────────────────────────────────────────────────── #}
+  <div class="lg:col-span-2">
+    <div class="flex items-center gap-4 mb-6">
+      <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl stat-icon-box"
+           style="background:linear-gradient(135deg,#15803d 0%,#16a34a 100%);box-shadow:0 4px 14px rgba(21,128,61,.32),0 1px 0 rgba(255,255,255,.2) inset;">🛒</div>
+      <div>
+        <h1 class="text-xl font-extrabold text-slate-900">{{ _('Finaliser la commande') }}</h1>
+        <p class="text-sm text-slate-500 mt-0.5 font-medium">{{ _('Marché — OmniFarm') }}</p>
+      </div>
+    </div>
+
+    <form method="POST" novalidate id="checkout-form" class="space-y-5">
+      {{ form.hidden_tag() }}
+
+      {# ── Step 1: Contact info ─────────────────────────────────────────── #}
+      <div class="form-section">
+        <p class="form-section-title">
+          <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-brand-600 text-white text-[10px] font-bold mr-1.5">1</span>
+          {{ _('Vos coordonnées') }}
+        </p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          {{ render_field(form.customer_name, placeholder=_('Jean Dupont')) }}
+          {{ render_field(form.customer_phone, placeholder='+237 6XX XXX XXX') }}
+        </div>
+        {{ render_field(form.customer_address, placeholder=_('Quartier, ville, point de repère...')) }}
+      </div>
+
+      {# ── Step 2: Payment method ───────────────────────────────────────── #}
+      <div class="form-section">
+        <p class="form-section-title">
+          <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-brand-600 text-white text-[10px] font-bold mr-1.5">2</span>
+          {{ _('Mode de paiement') }}
+        </p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-5" role="radiogroup">
+
+          {# Orange Money #}
+          <label id="label_orange_money"
+                 class="payment-card relative flex flex-col items-center gap-2.5 p-5 rounded-2xl border-2 border-slate-200 cursor-pointer transition-all duration-200 hover:border-orange-300 hover:shadow-md select-none">
+            <input type="radio" name="{{ form.payment_method.name }}" value="orange_money"
+                   class="sr-only" onchange="selectPayment(this)">
+            <div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl shadow-sm"
+                 style="background:linear-gradient(135deg,#ff6600 0%,#ff8533 100%);">🟠</div>
+            <div class="text-center">
+              <p class="text-sm font-bold text-slate-800">Orange Money</p>
+              <p class="text-[11px] text-slate-400 font-medium mt-0.5">{{ _('Paiement sécurisé') }}</p>
+            </div>
+            <div class="payment-check absolute top-2.5 right-2.5 w-5 h-5 rounded-full border-2 border-slate-200 flex items-center justify-center transition-all">
+              <div class="w-2.5 h-2.5 rounded-full bg-orange-500 opacity-0 scale-0 transition-all check-dot"></div>
+            </div>
+          </label>
+
+          {# MTN MoMo #}
+          <label id="label_mtn_mobile_money"
+                 class="payment-card relative flex flex-col items-center gap-2.5 p-5 rounded-2xl border-2 border-slate-200 cursor-pointer transition-all duration-200 hover:border-yellow-400 hover:shadow-md select-none">
+            <input type="radio" name="{{ form.payment_method.name }}" value="mtn_mobile_money"
+                   class="sr-only" onchange="selectPayment(this)">
+            <div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl shadow-sm"
+                 style="background:linear-gradient(135deg,#fbbf24 0%,#f59e0b 100%);">🟡</div>
+            <div class="text-center">
+              <p class="text-sm font-bold text-slate-800">MTN MoMo</p>
+              <p class="text-[11px] text-slate-400 font-medium mt-0.5">{{ _('Confirmez sur votre téléphone') }}</p>
+            </div>
+            <div class="payment-check absolute top-2.5 right-2.5 w-5 h-5 rounded-full border-2 border-slate-200 flex items-center justify-center transition-all">
+              <div class="w-2.5 h-2.5 rounded-full bg-yellow-400 opacity-0 scale-0 transition-all check-dot"></div>
+            </div>
+          </label>
+
+          {# Cash on delivery (default) #}
+          <label id="label_cash_on_delivery"
+                 class="payment-card relative flex flex-col items-center gap-2.5 p-5 rounded-2xl border-2 border-brand-500 bg-brand-50/40 cursor-pointer transition-all duration-200 hover:border-brand-600 hover:shadow-md select-none payment-selected">
+            <input type="radio" name="{{ form.payment_method.name }}" value="cash_on_delivery"
+                   class="sr-only" onchange="selectPayment(this)" checked>
+            <div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl shadow-sm"
+                 style="background:linear-gradient(135deg,#15803d 0%,#22c55e 100%);">💵</div>
+            <div class="text-center">
+              <p class="text-sm font-bold text-slate-800">{{ _('À la livraison') }}</p>
+              <p class="text-[11px] text-slate-400 font-medium mt-0.5">{{ _('Payez à la réception') }}</p>
+            </div>
+            <div class="payment-check absolute top-2.5 right-2.5 w-5 h-5 rounded-full border-2 border-brand-500 flex items-center justify-center transition-all">
+              <div class="w-2.5 h-2.5 rounded-full bg-brand-500 opacity-100 scale-100 transition-all check-dot"></div>
+            </div>
+          </label>
+
+        </div>
+
+        {# Mobile money phone #}
+        <div id="mobile-phone-section" class="hidden">
+          <div class="rounded-xl border border-amber-200 bg-amber-50/60 p-4 mb-4 flex items-start gap-3">
+            <span class="text-lg mt-0.5">📱</span>
+            <p class="text-sm text-amber-800 font-medium" id="mobile-phone-hint">
+              {{ _('Entrez le numéro Mobile Money à débiter. Laissez vide pour utiliser votre numéro de contact.') }}
+            </p>
+          </div>
+          {{ render_field(form.mobile_money_phone, placeholder='+237 6XX XXX XXX') }}
+        </div>
+      </div>
+
+      {# ── Step 3: Notes ───────────────────────────────────────────────── #}
+      <div class="form-section">
+        <p class="form-section-title">
+          <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-brand-600 text-white text-[10px] font-bold mr-1.5">3</span>
+          {{ _('Instructions') }}
+        </p>
+        {{ render_field(form.notes, placeholder=_('Instructions particulières pour la livraison...')) }}
+      </div>
+
+      <button type="submit"
+              class="w-full py-3.5 px-4 rounded-xl text-white font-bold text-sm cursor-pointer btn-premium-primary flex items-center justify-center gap-2">
+        <span id="submit-icon">✅</span>
+        <span id="submit-label">{{ _('Confirmer la commande') }}</span>
+      </button>
+    </form>
+  </div>
+
+  {# ── Order summary ──────────────────────────────────────────────────────── #}
+  <div class="lg:col-span-1">
+    <div class="bg-white rounded-2xl shadow-card border border-slate-100 card-inset p-6 sticky top-24">
+      <div class="flex items-center gap-2 mb-5">
+        <div class="w-7 h-7 rounded-lg icon-bg-brand flex items-center justify-center text-base">🛍️</div>
+        <h2 class="text-sm font-bold text-slate-700 uppercase tracking-wide">{{ _('Votre commande') }}</h2>
+      </div>
+
+      <div class="space-y-2.5 mb-5">
+        {% for product, qty in cart_items %}
+        <div class="flex justify-between items-center text-sm gap-3">
+          <span class="text-slate-500 truncate font-medium">
+            {{ product.category_icon() }} {{ product.name }} × {{ qty }} {{ product.unit }}
+          </span>
+          <span class="text-slate-700 font-bold whitespace-nowrap">{{ '{:,.0f}'.format(product.price_float * qty) }}</span>
+        </div>
+        {% endfor %}
+      </div>
+
+      <div class="border-t border-slate-100 pt-4">
+        <div class="flex justify-between items-baseline mb-4">
+          <span class="text-sm font-bold text-slate-800">{{ _('Total à payer') }}</span>
+          <div class="text-right">
+            <span class="text-2xl font-extrabold text-brand-700">{{ '{:,.0f}'.format(total) }}</span>
+            <span class="text-xs text-slate-400 ml-1 font-medium">FCFA</span>
+          </div>
+        </div>
+
+        {# Payment method badge #}
+        <div id="payment-summary-badge"
+             class="rounded-xl px-3 py-2.5 text-xs font-semibold flex items-center gap-2 mb-3"
+             style="background:rgba(21,128,61,.08);color:#15803d;">
+          <span id="payment-summary-icon">💵</span>
+          <span id="payment-summary-text">{{ _('À la livraison') }}</span>
+        </div>
+
+        <div class="rounded-xl px-3 py-2.5 bg-slate-50 text-[11px] text-slate-400 font-medium flex items-center gap-2">
+          <svg class="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+          </svg>
+          {{ _('Paiement 100% sécurisé') }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const PAYMENT_CONFIG = {
+  orange_money: {
+    border:'border-orange-500', bg:'bg-orange-50/40', checkBorder:'border-orange-500', dotColor:'bg-orange-500',
+    badgeBg:'rgba(234,88,12,.08)', badgeColor:'#ea580c', badgeIcon:'🟠', badgeText:'Orange Money',
+    submitIcon:'🟠', hint:'{{ _("Entrez votre numéro Orange Money.") }}', showPhone:true,
+  },
+  mtn_mobile_money: {
+    border:'border-yellow-400', bg:'bg-yellow-50/40', checkBorder:'border-yellow-400', dotColor:'bg-yellow-400',
+    badgeBg:'rgba(245,158,11,.08)', badgeColor:'#d97706', badgeIcon:'🟡', badgeText:'MTN MoMo',
+    submitIcon:'🟡', hint:'{{ _("Entrez votre numéro MTN MoMo. Vous recevrez une invite de paiement sur votre téléphone.") }}', showPhone:true,
+  },
+  cash_on_delivery: {
+    border:'border-brand-500', bg:'bg-brand-50/40', checkBorder:'border-brand-500', dotColor:'bg-brand-500',
+    badgeBg:'rgba(21,128,61,.08)', badgeColor:'#15803d', badgeIcon:'💵', badgeText:'{{ _("À la livraison") }}',
+    submitIcon:'✅', hint:'', showPhone:false,
+  },
+};
+
+function selectPayment(radio) {
+  const cfg = PAYMENT_CONFIG[radio.value] || PAYMENT_CONFIG.cash_on_delivery;
+  document.querySelectorAll('.payment-card').forEach(card => {
+    card.classList.remove('payment-selected','border-orange-500','bg-orange-50/40','border-yellow-400','bg-yellow-50/40','border-brand-500','bg-brand-50/40');
+    card.classList.add('border-slate-200');
+    const dot = card.querySelector('.check-dot');
+    if (dot) { dot.style.opacity='0'; dot.style.transform='scale(0)'; }
+  });
+  const lbl = document.getElementById('label_' + radio.value);
+  if (lbl) {
+    lbl.classList.remove('border-slate-200');
+    lbl.classList.add('payment-selected', cfg.border, cfg.bg);
+    const dot = lbl.querySelector('.check-dot');
+    if (dot) { dot.style.opacity='1'; dot.style.transform='scale(1)'; }
+  }
+  document.getElementById('mobile-phone-section').classList.toggle('hidden', !cfg.showPhone);
+  if (cfg.hint) document.getElementById('mobile-phone-hint').textContent = cfg.hint;
+  const badge = document.getElementById('payment-summary-badge');
+  badge.style.background = cfg.badgeBg;
+  badge.style.color = cfg.badgeColor;
+  document.getElementById('payment-summary-icon').textContent = cfg.badgeIcon;
+  document.getElementById('payment-summary-text').textContent = cfg.badgeText;
+  document.getElementById('submit-icon').textContent = cfg.submitIcon;
+}
+
+document.getElementById('checkout-form').addEventListener('submit', function() {
+  const btn = this.querySelector('button[type=submit]');
+  btn.disabled = true;
+  document.getElementById('submit-label').textContent = '{{ _("Traitement en cours...") }}';
+  document.getElementById('submit-icon').textContent = '⏳';
+});
+</script>
+{% endblock %}

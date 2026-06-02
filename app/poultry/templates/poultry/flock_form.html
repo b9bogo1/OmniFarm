@@ -1,0 +1,57 @@
+﻿{% extends 'base.html' %}
+{% from 'macros.html' import render_field, breadcrumb %}
+{% block title %}{{ title }}{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
+
+{% block content %}
+{{ breadcrumb([
+  (url_for('poultry.index'), _('Aviculture')),
+  (url_for('poultry.flock_detail', flock_id=flock.id) if is_edit and flock else '#', flock.name if is_edit and flock else _('Nouveau')),
+  ('#', _('Modifier') if is_edit else _('CrÃ©er')),
+]) }}
+
+<div class="max-w-2xl">
+  <div class="flex items-center gap-4 mb-7">
+    <div class="w-12 h-12 rounded-2xl icon-bg-amber flex items-center justify-center text-2xl stat-icon-box">ðŸ”</div>
+    <div>
+      <h1 class="text-xl font-extrabold text-slate-900">{{ title }}</h1>
+      <p class="text-sm text-slate-500 mt-0.5 font-medium">{{ _('Aviculture â€” Gestion des lots') }}</p>
+    </div>
+  </div>
+
+  <form method="POST" novalidate class="space-y-5">
+    {{ form.hidden_tag() }}
+
+    <div class="form-section">
+      <p class="form-section-title">{{ _('Informations du lot') }}</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        {{ render_field(form.name, placeholder=_('Ex: Lot Poulet Mars-2026')) }}
+        {{ render_field(form.species, placeholder=_('Ex: Poulet de chair')) }}
+        {{ render_field(form.breed, placeholder=_('Ex: Cobb 500')) }}
+        {{ render_field(form.house_number, placeholder=_('Ex: BÃ¢timent A')) }}
+        {{ render_field(form.placement_date) }}
+        {{ render_field(form.initial_count, placeholder='1000') }}
+        {{ render_field(form.status) }}
+      </div>
+    </div>
+
+    <div class="form-section">
+      <p class="form-section-title">{{ _('Notes') }}</p>
+      {{ render_field(form.notes, placeholder=_('Observations, source, programme vaccinal...')) }}
+    </div>
+
+    <div class="flex items-center gap-3">
+      {{ form.submit(class='px-6 py-2.5 rounded-xl text-white font-bold text-sm cursor-pointer btn-premium-primary') }}
+      <a href="{{ url_for('poultry.index') }}"
+         class="px-6 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300 text-sm font-semibold transition-all">{{ _('Annuler') }}</a>
+      {% if is_edit and flock %}
+      <form method="POST" action="{{ url_for('poultry.delete_flock', flock_id=flock.id) }}" class="ml-auto"
+            onsubmit="return confirm('{{ _('Supprimer ce lot et toutes ses donnÃ©es ?') }}')">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <button type="submit" class="px-4 py-2.5 rounded-xl border border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 text-sm font-semibold transition-all">{{ _('Supprimer') }}</button>
+      </form>
+      {% endif %}
+    </div>
+  </form>
+</div>
+{% endblock %}

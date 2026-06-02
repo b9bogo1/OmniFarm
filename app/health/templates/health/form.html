@@ -1,0 +1,154 @@
+﻿{% extends 'base.html' %}
+{% block title %}{{ title }}{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto space-y-6">
+
+  <a href="{{ url_for('health.index') }}"
+     class="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-brand-600 transition-colors">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+    </svg>
+    {{ _('Retour Ã  la santÃ© animale') }}
+  </a>
+
+  <div class="bg-white rounded-2xl shadow-card p-6">
+    <h1 class="text-xl font-bold text-slate-900 mb-6">{{ title }}</h1>
+
+    <form method="post" id="health-form" class="space-y-5">
+      {{ form.hidden_tag() }}
+
+      {# Species + Batch row #}
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          {{ form.production_unit.label(class='block text-sm font-semibold text-slate-700 mb-1.5') }}
+          {{ form.production_unit(id='production_unit',
+             class='w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-brand-400',
+             onchange='loadUnitChoices(this.value)') }}
+          {% if form.production_unit.errors %}
+            <p class="mt-1 text-xs text-red-500">{{ form.production_unit.errors[0] }}</p>
+          {% endif %}
+        </div>
+        <div>
+          {{ form.unit_ref_id.label(class='block text-sm font-semibold text-slate-700 mb-1.5') }}
+          {{ form.unit_ref_id(id='unit_ref_id',
+             class='w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-brand-400') }}
+          {% if form.unit_ref_id.errors %}
+            <p class="mt-1 text-xs text-red-500">{{ form.unit_ref_id.errors[0] }}</p>
+          {% endif %}
+        </div>
+      </div>
+
+      {# Event type + Date #}
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          {{ form.event_type.label(class='block text-sm font-semibold text-slate-700 mb-1.5') }}
+          {{ form.event_type(class='w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-brand-400') }}
+          {% if form.event_type.errors %}
+            <p class="mt-1 text-xs text-red-500">{{ form.event_type.errors[0] }}</p>
+          {% endif %}
+        </div>
+        <div>
+          {{ form.event_date.label(class='block text-sm font-semibold text-slate-700 mb-1.5') }}
+          {{ form.event_date(class='w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-brand-400') }}
+          {% if form.event_date.errors %}
+            <p class="mt-1 text-xs text-red-500">{{ form.event_date.errors[0] }}</p>
+          {% endif %}
+        </div>
+      </div>
+
+      {# Product + Dose row #}
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          {{ form.product_used.label(class='block text-sm font-semibold text-slate-700 mb-1.5') }}
+          {{ form.product_used(class='w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-brand-400',
+             placeholder=_('Ex. : Gumboro, Ivermectineâ€¦')) }}
+        </div>
+        <div>
+          {{ form.dose.label(class='block text-sm font-semibold text-slate-700 mb-1.5') }}
+          {{ form.dose(class='w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-brand-400',
+             placeholder=_('Ex. : 1ml/kg, 2 comprimÃ©sâ€¦')) }}
+        </div>
+      </div>
+
+      {# Administered by + Next due #}
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          {{ form.administered_by.label(class='block text-sm font-semibold text-slate-700 mb-1.5') }}
+          {{ form.administered_by(class='w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-brand-400',
+             placeholder=_('Nom du technicien / vÃ©tÃ©rinaire')) }}
+        </div>
+        <div>
+          {{ form.next_due_date.label(class='block text-sm font-semibold text-slate-700 mb-1.5') }}
+          {{ form.next_due_date(class='w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-brand-400') }}
+        </div>
+      </div>
+
+      {# Cost #}
+      <div class="w-full sm:w-1/2">
+        {{ form.cost_xaf.label(class='block text-sm font-semibold text-slate-700 mb-1.5') }}
+        {{ form.cost_xaf(class='w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-brand-400',
+           placeholder='0') }}
+      </div>
+
+      {# Notes #}
+      <div>
+        {{ form.notes.label(class='block text-sm font-semibold text-slate-700 mb-1.5') }}
+        {{ form.notes(rows=3, class='w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-brand-400 resize-none') }}
+      </div>
+
+      {# Actions #}
+      <div class="flex items-center gap-3 pt-2">
+        <button type="submit"
+                class="px-6 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold shadow-sm transition-colors">
+          {{ _('Enregistrer') }}
+        </button>
+        <a href="{{ url_for('health.index') }}"
+           class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-sm font-medium transition-colors">
+          {{ _('Annuler') }}
+        </a>
+        {% if is_edit and event %}
+        <form method="post" action="{{ url_for('health.delete_event', event_id=event.id) }}"
+              class="ml-auto"
+              onsubmit="return confirm('{{ _('Supprimer cet Ã©vÃ©nement ?') }}')">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit"
+                  class="px-5 py-2.5 rounded-xl border border-red-200 text-red-600 hover:bg-red-50 text-sm font-medium transition-colors">
+            {{ _('Supprimer') }}
+          </button>
+        </form>
+        {% endif %}
+      </div>
+
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+async function loadUnitChoices(unitValue) {
+  const sel = document.getElementById('unit_ref_id');
+  sel.innerHTML = '<option value="">{{ _("Chargementâ€¦") }}</option>';
+  try {
+    const resp = await fetch('{{ url_for("health.api_unit_choices") }}?unit=' + encodeURIComponent(unitValue));
+    const data = await resp.json();
+    sel.innerHTML = data.length
+      ? data.map(c => `<option value="${c.id}">${c.name}</option>`).join('')
+      : '<option value="">{{ _("Aucun lot disponible") }}</option>';
+  } catch {
+    sel.innerHTML = '<option value="">{{ _("Erreur de chargement") }}</option>';
+  }
+}
+// Pre-populate on load if editing
+{% if is_edit %}
+document.addEventListener('DOMContentLoaded', () => {
+  loadUnitChoices('{{ selected_unit }}').then(() => {
+    const sel = document.getElementById('unit_ref_id');
+    sel.value = '{{ event.unit_ref_id if event else "" }}';
+  });
+});
+{% endif %}
+</script>
+{% endblock %}

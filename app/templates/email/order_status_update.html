@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="{{ get_locale() }}">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{ _('Mise à jour commande %(number)s', number=order.order_number) }}</title>
+<style>
+  body{margin:0;padding:0;background:#f1f5f9;font-family:'Helvetica Neue',Arial,sans-serif;color:#1e293b}
+  .wrap{max-width:600px;margin:32px auto;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.08)}
+  .header{background:linear-gradient(135deg,#0369a1 0%,#0284c7 100%);padding:32px 40px;text-align:center}
+  .header h1{margin:0;color:#fff;font-size:22px;font-weight:800}
+  .header p{margin:8px 0 0;color:rgba(255,255,255,.85);font-size:14px}
+  .body{padding:32px 40px}
+  .status-box{border-radius:12px;padding:20px 24px;margin-bottom:28px;text-align:center}
+  .status-box .emoji{font-size:40px;margin-bottom:8px}
+  .status-box .label{font-size:18px;font-weight:800;margin-bottom:4px}
+  .status-box .sub{font-size:13px;color:#64748b}
+  .info-box{background:#f8fafc;border-radius:12px;padding:18px 20px;margin-bottom:24px;font-size:13px;line-height:1.8}
+  .info-box strong{color:#0f172a}
+  .btn{display:inline-block;background:linear-gradient(135deg,#0369a1,#0284c7);color:#fff;text-decoration:none;padding:12px 28px;border-radius:10px;font-weight:700;font-size:14px}
+  .footer{background:#f8fafc;padding:20px 40px;text-align:center;font-size:12px;color:#94a3b8}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="header">
+    <div style="font-size:36px;margin-bottom:12px">📦</div>
+    <h1>{{ _('Mise à jour de votre commande') }}</h1>
+    <p>N° {{ order.order_number }}</p>
+  </div>
+
+  <div class="body">
+    <p style="font-size:15px;margin-bottom:24px">{{ _('Bonjour %(name)s,', name='<strong>' ~ order.customer_name ~ '</strong>') | safe }}<br>
+    {{ _('Le statut de votre commande vient d\'être mis à jour.') }}</p>
+
+    {% set s = order.status.value %}
+    {% if s == 'paid' %}
+    <div class="status-box" style="background:#f0fdf4;border:1px solid #bbf7d0">
+      <div class="emoji">✅</div>
+      <div class="label" style="color:#16a34a">{{ _('Paiement confirmé') }}</div>
+      <div class="sub">{{ _('Votre paiement a bien été reçu. Votre commande est en cours de traitement.') }}</div>
+    </div>
+    {% elif s == 'processing' %}
+    <div class="status-box" style="background:#eff6ff;border:1px solid #bfdbfe">
+      <div class="emoji">⚙️</div>
+      <div class="label" style="color:#1d4ed8">{{ _('En traitement') }}</div>
+      <div class="sub">{{ _('Votre commande est en cours de préparation à la ferme.') }}</div>
+    </div>
+    {% elif s == 'shipped' %}
+    <div class="status-box" style="background:#fefce8;border:1px solid #fde68a">
+      <div class="emoji">🚚</div>
+      <div class="label" style="color:#92400e">{{ _('En livraison') }}</div>
+      <div class="sub">{{ _('Votre commande est en route vers vous !') }}</div>
+    </div>
+    {% elif s == 'delivered' %}
+    <div class="status-box" style="background:#f0fdf4;border:1px solid #bbf7d0">
+      <div class="emoji">🎉</div>
+      <div class="label" style="color:#15803d">{{ _('Livrée') }}</div>
+      <div class="sub">{{ _('Votre commande a été livrée. Merci pour votre confiance !') }}</div>
+    </div>
+    {% elif s == 'cancelled' %}
+    <div class="status-box" style="background:#fef2f2;border:1px solid #fecaca">
+      <div class="emoji">❌</div>
+      <div class="label" style="color:#dc2626">{{ _('Annulée') }}</div>
+      <div class="sub">{{ _('Votre commande a été annulée. Contactez-nous pour plus d\'informations.') }}</div>
+    </div>
+    {% else %}
+    <div class="status-box" style="background:#f8fafc;border:1px solid #e2e8f0">
+      <div class="emoji">🔄</div>
+      <div class="label" style="color:#475569">{{ order.status_label() }}</div>
+      <div class="sub">{{ _('Le statut de votre commande a été mis à jour.') }}</div>
+    </div>
+    {% endif %}
+
+    <div class="info-box">
+      <strong>{{ _('N° de commande :') }}</strong> {{ order.order_number }}<br>
+      <strong>{{ _('Téléphone :') }}</strong> {{ order.customer_phone }}<br>
+      <strong>{{ _('Total :') }}</strong> {{ order.total_xaf | int }} FCFA<br>
+      {% if order.customer_address %}<strong>{{ _('Adresse :') }}</strong> {{ order.customer_address }}{% endif %}
+    </div>
+
+    <p style="font-size:13px;color:#64748b;line-height:1.6">
+      {{ _('Des questions sur votre commande ? Contactez notre équipe en mentionnant votre numéro de commande %(number)s.', number='<strong>' ~ order.order_number ~ '</strong>') | safe }}
+    </p>
+
+    <div style="text-align:center;margin-top:28px">
+      <a href="{{ order_url }}" class="btn">{{ _('Voir ma commande') }}</a>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>{{ _('OmniFarm Hub — Produits frais directement de la ferme') }}</p>
+  </div>
+
+</div>
+</body>
+</html>

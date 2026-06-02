@@ -1,0 +1,262 @@
+{% extends 'base.html' %}
+{% from 'macros.html' import status_badge, stat_card, breadcrumb, delete_btn %}
+{% block title %}{{ pond.name }}{% endblock %}
+{% block page_title %}{{ pond.name }}{% endblock %}
+
+{% block head %}
+<script src="{{ url_for('static', filename='js/chart.umd.min.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+{{ breadcrumb([(url_for('aquaculture.index'), _('Aquaculture')), ('#', pond.name)]) }}
+
+{# ── Entity header card ── #}
+<div class="bg-white rounded-2xl shadow-card border border-slate-100 card-inset p-6 mb-6">
+  <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+    <div class="flex items-start gap-4">
+      <div class="w-14 h-14 rounded-2xl icon-bg-cyan flex items-center justify-center text-2xl flex-shrink-0 stat-icon-box">🐟</div>
+      <div>
+        <div class="flex items-center gap-3 flex-wrap mb-1">
+          <h1 class="text-xl font-extrabold text-slate-900">{{ pond.name }}</h1>
+          {% if pond.status.value == 'active' %}{{ status_badge('active', _('Actif')) }}
+          {% elif pond.status.value == 'inactive' %}{{ status_badge('inactive', _('Inactif')) }}
+          {% elif pond.status.value == 'maintenance' %}{{ status_badge('maintenance', _('Maintenance')) }}
+          {% else %}{{ status_badge('harvested', _('Récolté')) }}{% endif %}
+        </div>
+        <p class="text-sm text-slate-500 font-medium">{{ pond.species }}</p>
+        {% if pond.installation_date %}
+        <p class="text-xs text-slate-400 mt-0.5 font-medium">{{ _('Installé le') }} {{ pond.installation_date.strftime('%d/%m/%Y') }}</p>
+        {% endif %}
+      </div>
+    </div>
+    <div class="flex items-center gap-2 flex-wrap">
+      <a href="{{ url_for('aquaculture.add_record', pond_id=pond.id) }}"
+         class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-white text-sm font-bold btn-premium-primary">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
+        </svg>
+        {{ _('Nouvelle saisie') }}
+      </a>
+      <a href="{{ url_for('aquaculture.edit_pond', pond_id=pond.id) }}"
+         class="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300 text-sm font-semibold transition-all">
+        ✏️ {{ _('Modifier') }}
+      </a>
+    </div>
+  </div>
+
+  {# Stats #}
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6">
+    {{ stat_card(_('Saisies'), pond.record_count, '📋', 'bg-stat-slate') }}
+    {{ stat_card(_('Mortalités'), pond.total_mortality, '📉', 'bg-stat-red') }}
+    {{ stat_card(_('Capacité (m³)'), '%.1f'|format(pond.capacity_m3) if pond.capacity_m3 else '—', '💧', 'bg-stat-cyan') }}
+    {% set lr = pond.latest_record %}
+    {{ stat_card(_('Temp. eau (°C)'), '%.1f'|format(lr.water_temp_c) if lr and lr.water_temp_c else '—', '🌡️', 'bg-stat-indigo') }}
+  </div>
+
+  {% if pond.notes %}
+  <div class="mt-5 pt-4 border-t border-slate-100">
+    <p class="text-xs text-slate-500 font-bold uppercase tracking-wider mb-2">{{ _('Notes') }}</p>
+    <p class="text-sm text-slate-600 whitespace-pre-line leading-relaxed">{{ pond.notes }}</p>
+  </div>
+  {% endif %}
+</div>
+
+{# ── Trend charts ── #}
+{% if records and records|length > 1 %}
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-6">
+
+  {# Population + Mortality chart #}
+  <div class="bg-white rounded-2xl shadow-card border border-slate-100 card-inset p-5">
+    <h2 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2">
+      <span class="w-7 h-7 rounded-lg icon-bg-cyan flex items-center justify-center text-sm">📈</span>
+      {{ _('Effectif & Mortalité') }}
+    </h2>
+    <div class="chart-container" style="height:180px;">
+      <canvas id="chartPopulation"></canvas>
+    </div>
+  </div>
+
+  {# Weight + Water Temp chart #}
+  <div class="bg-white rounded-2xl shadow-card border border-slate-100 card-inset p-5">
+    <h2 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2">
+      <span class="w-7 h-7 rounded-lg bg-indigo-50 flex items-center justify-center text-sm">⚖️</span>
+      {{ _('Poids moyen & Température eau') }}
+    </h2>
+    <div class="chart-container" style="height:180px;">
+      <canvas id="chartWeight"></canvas>
+    </div>
+  </div>
+
+</div>
+{% endif %}
+
+{# ── Records table ── #}
+<div class="flex items-center justify-between mb-4">
+  <h2 class="text-base font-bold text-slate-700 flex items-center gap-2">
+    {{ _('Historique des saisies') }}
+    <span class="px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-500 text-xs font-black">{{ records|length }}</span>
+  </h2>
+</div>
+
+{% if records %}
+<div class="bg-white rounded-2xl shadow-card border border-slate-100 card-inset overflow-hidden">
+  <div class="overflow-x-auto">
+    <table class="min-w-full tbl-premium">
+      <thead>
+        <tr>
+          <th class="text-left">{{ _('Date') }}</th>
+          <th class="text-right">{{ _('Effectif') }}</th>
+          <th class="text-right">{{ _('Poids moy. (g)') }}</th>
+          <th class="text-right">{{ _('Aliment (kg)') }}</th>
+          <th class="text-right">{{ _('Mortalité') }}</th>
+          <th class="text-right">{{ _('T°C eau') }}</th>
+          <th class="text-right">pH</th>
+          <th class="text-right">O₂ mg/L</th>
+          <th class="text-left">{{ _('Saisi par') }}</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-50">
+        {% for rec in records %}
+        <tr>
+          <td class="px-4 py-3 font-bold text-slate-800 whitespace-nowrap">{{ rec.record_date.strftime('%d/%m/%Y') }}</td>
+          <td class="px-4 py-3 text-right text-slate-600 whitespace-nowrap font-medium">{{ rec.current_count if rec.current_count is not none else '—' }}</td>
+          <td class="px-4 py-3 text-right text-slate-600 whitespace-nowrap font-medium">{{ '%.1f'|format(rec.avg_weight_g) if rec.avg_weight_g else '—' }}</td>
+          <td class="px-4 py-3 text-right text-slate-600 whitespace-nowrap font-medium">{{ '%.2f'|format(rec.feed_quantity_kg) if rec.feed_quantity_kg else '—' }}</td>
+          <td class="px-4 py-3 text-right whitespace-nowrap">
+            {% if rec.mortality_count %}
+            <span class="font-black text-red-600">{{ rec.mortality_count }}</span>
+            {% else %}<span class="text-slate-400 font-medium">0</span>{% endif %}
+          </td>
+          <td class="px-4 py-3 text-right text-slate-600 whitespace-nowrap font-medium">{{ '%.1f'|format(rec.water_temp_c) if rec.water_temp_c else '—' }}</td>
+          <td class="px-4 py-3 text-right text-slate-600 whitespace-nowrap font-medium">{{ '%.1f'|format(rec.ph) if rec.ph else '—' }}</td>
+          <td class="px-4 py-3 text-right text-slate-600 whitespace-nowrap font-medium">{{ '%.1f'|format(rec.dissolved_oxygen_mgl) if rec.dissolved_oxygen_mgl else '—' }}</td>
+          <td class="px-4 py-3 text-slate-500 text-xs whitespace-nowrap font-semibold">{{ rec.recorded_by.username if rec.recorded_by else '—' }}</td>
+          <td class="px-4 py-3 whitespace-nowrap text-right">
+            <div class="flex items-center justify-end gap-3">
+              <a href="{{ url_for('aquaculture.edit_record', record_id=rec.id) }}"
+                 class="text-xs text-brand-600 hover:text-brand-800 font-bold transition-colors">{{ _('Modifier') }}</a>
+              {{ delete_btn(url_for('aquaculture.delete_record', record_id=rec.id), _('Supprimer'),
+                 _('Supprimer cette saisie ?')) }}
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% else %}
+<div class="bg-white rounded-2xl shadow-card border border-slate-100 card-inset py-14 text-center">
+  <p class="text-slate-400 text-sm mb-5 font-medium">{{ _('Aucune saisie pour ce bassin.') }}</p>
+  <a href="{{ url_for('aquaculture.add_record', pond_id=pond.id) }}"
+     class="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl text-white text-sm font-bold btn-premium-primary">
+    + {{ _('Première saisie') }}
+  </a>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+{% if records and records|length > 1 %}
+<script>
+(function() {
+  const isDark    = document.documentElement.classList.contains('dark');
+  const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)';
+  const tickColor = '#94a3b8';
+  const tooltipBg = isDark ? '#1a2535' : '#fff';
+  const labels    = {{ chart_labels|safe }};
+
+  const sharedOpts = (extra) => ({
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: { mode: 'index', intersect: false },
+    plugins: {
+      legend: { labels: { boxWidth: 10, boxHeight: 10, font: { family: 'Ubuntu', size: 10, weight: '600' }, color: tickColor } },
+      tooltip: { backgroundColor: tooltipBg, borderColor: 'rgba(0,0,0,0.07)', borderWidth: 1, titleColor: isDark ? '#e2e8f0' : '#1e293b', bodyColor: tickColor, padding: 10, titleFont: { family: 'Ubuntu', weight: '700', size: 11 }, bodyFont: { family: 'Ubuntu', size: 10 } }
+    },
+    scales: {
+      x: { grid: { color: gridColor }, ticks: { color: tickColor, font: { family: 'Ubuntu', size: 10 } }, border: { display: false } },
+      y: { grid: { color: gridColor }, ticks: { color: tickColor, font: { family: 'Ubuntu', size: 10 } }, border: { display: false } },
+      ...extra
+    }
+  });
+
+  // ── Population + Mortality ──────────────────────────────────────
+  new Chart(document.getElementById('chartPopulation').getContext('2d'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: '{{ _("Effectif") }}',
+          data: {{ chart_counts|safe }},
+          borderColor: '#22d3ee',
+          backgroundColor: 'rgba(34,211,238,0.12)',
+          borderWidth: 2,
+          pointRadius: 3,
+          pointHoverRadius: 5,
+          tension: 0.35,
+          fill: true,
+          yAxisID: 'y',
+          spanGaps: true,
+        },
+        {
+          label: '{{ _("Mortalité") }}',
+          data: {{ chart_mort|safe }},
+          borderColor: '#ef4444',
+          backgroundColor: 'transparent',
+          borderWidth: 1.5,
+          borderDash: [4, 3],
+          pointRadius: 3,
+          pointHoverRadius: 5,
+          tension: 0.35,
+          fill: false,
+          yAxisID: 'y2',
+        },
+      ]
+    },
+    options: sharedOpts({ y2: { position: 'right', grid: { display: false }, ticks: { color: '#f87171', font: { family: 'Ubuntu', size: 10 } }, border: { display: false } } })
+  });
+
+  // ── Weight + Temperature ────────────────────────────────────────
+  new Chart(document.getElementById('chartWeight').getContext('2d'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: '{{ _("Poids (g)") }}',
+          data: {{ chart_weights|safe }},
+          borderColor: '#6366f1',
+          backgroundColor: 'rgba(99,102,241,0.1)',
+          borderWidth: 2,
+          pointRadius: 3,
+          pointHoverRadius: 5,
+          tension: 0.35,
+          fill: true,
+          yAxisID: 'y',
+          spanGaps: true,
+        },
+        {
+          label: '{{ _("Temp. eau (°C)") }}',
+          data: {{ chart_temp|safe }},
+          borderColor: '#f59e0b',
+          backgroundColor: 'transparent',
+          borderWidth: 1.5,
+          borderDash: [4, 3],
+          pointRadius: 3,
+          pointHoverRadius: 5,
+          tension: 0.35,
+          fill: false,
+          yAxisID: 'y2',
+          spanGaps: true,
+        },
+      ]
+    },
+    options: sharedOpts({ y2: { position: 'right', grid: { display: false }, ticks: { color: '#f59e0b', font: { family: 'Ubuntu', size: 10 } }, border: { display: false } } })
+  });
+})();
+</script>
+{% endif %}
+{% endblock %}

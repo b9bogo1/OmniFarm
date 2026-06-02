@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="{{ get_locale() }}">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{ _('Commande %(number)s confirmée', number=order.order_number) }}</title>
+<style>
+  body{margin:0;padding:0;background:#f1f5f9;font-family:'Helvetica Neue',Arial,sans-serif;color:#1e293b}
+  .wrap{max-width:600px;margin:32px auto;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.08)}
+  .header{background:linear-gradient(135deg,#16a34a 0%,#15803d 100%);padding:32px 40px;text-align:center}
+  .header h1{margin:0;color:#fff;font-size:22px;font-weight:800;letter-spacing:-.3px}
+  .header p{margin:8px 0 0;color:rgba(255,255,255,.85);font-size:14px}
+  .body{padding:32px 40px}
+  .badge{display:inline-block;background:#f0fdf4;border:1px solid #bbf7d0;color:#15803d;padding:6px 14px;border-radius:9999px;font-size:13px;font-weight:700;margin-bottom:24px}
+  h2{margin:0 0 4px;font-size:18px;font-weight:800}
+  .meta{color:#64748b;font-size:13px;margin-bottom:24px}
+  table{width:100%;border-collapse:collapse;margin-bottom:24px}
+  th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#94a3b8;padding:0 0 8px;border-bottom:2px solid #f1f5f9}
+  td{padding:10px 0;font-size:14px;border-bottom:1px solid #f8fafc;vertical-align:top}
+  td.right{text-align:right;font-weight:700;color:#0f172a}
+  .total-row td{padding-top:14px;font-weight:800;font-size:15px;border-bottom:none}
+  .total-row td.right{color:#16a34a;font-size:17px}
+  .info-box{background:#f8fafc;border-radius:12px;padding:18px 20px;margin-bottom:24px;font-size:13px;line-height:1.7}
+  .info-box strong{color:#0f172a}
+  .btn{display:inline-block;background:linear-gradient(135deg,#16a34a,#15803d);color:#fff;text-decoration:none;padding:12px 28px;border-radius:10px;font-weight:700;font-size:14px;margin-top:8px}
+  .footer{background:#f8fafc;padding:20px 40px;text-align:center;font-size:12px;color:#94a3b8}
+  .footer a{color:#16a34a;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="header">
+    <div style="font-size:36px;margin-bottom:12px">🌿</div>
+    <h1>{{ _('Commande confirmée !') }}</h1>
+    <p>{{ _('Merci pour votre achat chez OmniFarm') }}</p>
+  </div>
+
+  <div class="body">
+    <div class="badge">N° {{ order.order_number }}</div>
+
+    <h2>{{ _('Bonjour, %(name)s !', name=order.customer_name) }}</h2>
+    <p class="meta">{{ _('Votre commande a été enregistrée le %(date)s UTC.', date=order.created_at.strftime('%d/%m/%Y à %H:%M')) }}</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>{{ _('Produit') }}</th>
+          <th style="text-align:center">{{ _('Qté') }}</th>
+          <th style="text-align:right">{{ _('Sous-total') }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in order.items %}
+        <tr>
+          <td>{{ item.product_name }}<br><span style="font-size:12px;color:#94a3b8">{{ '{:,.0f}'.format(item.unit_price_xaf | float) }} FCFA / {{ item.product_unit }}</span></td>
+          <td style="text-align:center">{{ item.quantity }}</td>
+          <td class="right">{{ '{:,.0f}'.format(item.subtotal_xaf | float) }} FCFA</td>
+        </tr>
+        {% endfor %}
+        <tr class="total-row">
+          <td colspan="2" style="font-weight:800">{{ _('Total') }}</td>
+          <td class="right">{{ '{:,.0f}'.format(order.total_xaf | float) }} FCFA</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="info-box">
+      <strong>{{ _('Téléphone :') }}</strong> {{ order.customer_phone }}<br>
+      {% if order.customer_address %}<strong>{{ _('Adresse :') }}</strong> {{ order.customer_address }}<br>{% endif %}
+      <strong>{{ _('Mode de paiement :') }}</strong>
+      {% if order.payment_method.value == 'orange_money' %}{{ _('Orange Money') }}
+      {% elif order.payment_method.value == 'mtn_mobile_money' %}{{ _('MTN Mobile Money') }}
+      {% else %}{{ _('Paiement à la livraison') }}{% endif %}
+      <br>
+      <strong>{{ _('Statut :') }}</strong> {{ order.status_label() }}
+    </div>
+
+    {% if order.notes %}
+    <div class="info-box" style="background:#fffbeb;border:1px solid #fde68a">
+      <strong>{{ _('Notes :') }}</strong> {{ order.notes }}
+    </div>
+    {% endif %}
+
+    <p style="font-size:14px;color:#475569;line-height:1.6">
+      {{ _('Notre équipe va traiter votre commande et vous contactera au %(phone)s pour confirmer la livraison.', phone='<strong>' ~ order.customer_phone ~ '</strong>') | safe }}
+    </p>
+
+    <div style="text-align:center;margin-top:28px">
+      <a href="{{ order_url }}" class="btn">{{ _('Suivre ma commande') }}</a>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>{{ _('OmniFarm Hub — Produits frais directement de la ferme') }}</p>
+    <p>{{ _('Des questions ? Contactez-nous') }} · <a href="#">{{ _('Politique de confidentialité') }}</a></p>
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,201 @@
+{% extends 'base.html' %}
+{% from 'macros.html' import breadcrumb, empty_state, paginate %}
+{% block title %}{{ _('Commandes — Admin') }}{% endblock %}
+{% block page_title %}{{ _('Commandes') }}{% endblock %}
+
+{% block content %}
+{{ breadcrumb([
+  (url_for('marketplace.index'), _('Marché')),
+  ('#', _('Gestion des commandes')),
+]) }}
+
+{# ── Admin sub-nav ──────────────────────────────────────────────────────── #}
+<div class="sticky top-14 lg:top-0 z-20 -mx-4 sm:-mx-6 px-4 sm:px-6 py-3 mb-4 bg-white/95 backdrop-blur-sm border-b border-slate-100 shadow-sm">
+<div class="flex items-center gap-1 p-1.5 bg-white rounded-2xl shadow-card border border-slate-100 card-inset w-fit">
+  <a href="{{ url_for('marketplace.admin_products') }}"
+     class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-100 hover:text-slate-800 transition-all">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+    </svg>
+    {{ _('Produits') }}
+  </a>
+  <a href="{{ url_for('marketplace.admin_orders') }}"
+     class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all text-white"
+     style="background:linear-gradient(135deg,#7c3aed 0%,#9333ea 100%);box-shadow:0 2px 8px rgba(124,58,237,.3);">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+    </svg>
+    {{ _('Commandes') }}
+  </a>
+</div>
+</div>
+
+{# ── Header ─────────────────────────────────────────────────────────────── #}
+<div class="flex items-center gap-4 mb-6">
+  <div class="w-12 h-12 rounded-2xl icon-bg-violet flex items-center justify-center text-2xl stat-icon-box">📋</div>
+  <div>
+    <h1 class="text-xl font-extrabold text-slate-900">{{ _('Gestion des commandes') }}</h1>
+    <p class="text-sm text-slate-500 mt-0.5 font-medium">{{ _('Marché — Admin') }}</p>
+  </div>
+</div>
+
+{% if total_count > 0 %}
+
+{# ── Stats cards ────────────────────────────────────────────────────────── #}
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+  <div class="bg-white rounded-2xl shadow-card border border-slate-100 card-inset p-5 text-center hover:-translate-y-0.5 hover:shadow-card-md transition-all">
+    <p class="text-2xl font-extrabold text-slate-800">{{ total_count }}</p>
+    <p class="text-xs text-slate-400 font-bold uppercase tracking-wide mt-1">{{ _('Total') }}</p>
+  </div>
+  <div class="bg-white rounded-2xl shadow-card border border-slate-100 card-inset p-5 text-center hover:-translate-y-0.5 hover:shadow-card-md transition-all">
+    <p class="text-2xl font-extrabold text-amber-600">{{ pending_count }}</p>
+    <p class="text-xs text-slate-400 font-bold uppercase tracking-wide mt-1">{{ _('En cours') }}</p>
+  </div>
+  <div class="bg-white rounded-2xl shadow-card border border-slate-100 card-inset p-5 text-center hover:-translate-y-0.5 hover:shadow-card-md transition-all">
+    <p class="text-2xl font-extrabold text-emerald-600">{{ paid_count }}</p>
+    <p class="text-xs text-slate-400 font-bold uppercase tracking-wide mt-1">{{ _('Payées') }}</p>
+  </div>
+  <div class="bg-white rounded-2xl shadow-card border border-slate-100 card-inset p-5 text-center hover:-translate-y-0.5 hover:shadow-card-md transition-all">
+    <p class="text-lg font-extrabold text-brand-700">{{ '{:,.0f}'.format(total_revenue) }}</p>
+    <p class="text-xs text-slate-400 font-bold uppercase tracking-wide mt-1">FCFA {{ _('encaissés') }}</p>
+  </div>
+</div>
+
+{# ── Status filter tabs — server-side navigation ────────────────────────── #}
+{% macro _tab(sf, label, count, badge_cls) %}
+<a href="{{ url_for('marketplace.admin_orders', status=sf) }}"
+   class="inline-flex items-center gap-1.5 px-4 py-2.5 text-sm font-bold border-b-2 transition-all -mb-px
+          {{ 'border-violet-600 text-violet-700' if status_filter == sf else 'border-transparent text-slate-500 hover:text-slate-700' }}">
+  {{ label }}
+  <span class="px-1.5 py-0.5 rounded-full text-xs font-black {{ badge_cls }}">{{ count }}</span>
+</a>
+{% endmacro %}
+
+<div class="flex items-center gap-2 flex-wrap mb-5 border-b border-slate-200 pb-0">
+  {{ _tab('all',       _('Toutes'),   total_count,     'bg-slate-100 text-slate-500') }}
+  {{ _tab('pending',   _('En cours'), pending_count,   'bg-amber-100 text-amber-700') }}
+  {{ _tab('paid',      _('Payées'),   paid_count,      'bg-emerald-100 text-emerald-700') }}
+  {{ _tab('cancelled', _('Annulées'), cancelled_count, 'bg-red-100 text-red-600') }}
+</div>
+
+{# ── Order list ─────────────────────────────────────────────────────────── #}
+<div class="space-y-4">
+  {% for order in orders %}
+  {% set sv = order.status.value %}
+  <div class="bg-white rounded-2xl shadow-card border border-slate-100 card-inset overflow-hidden">
+
+    {# Order header #}
+    <div class="px-6 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-50">
+      <div class="flex items-center gap-5">
+        <div>
+          <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wide mb-0.5">{{ _('Commande') }}</p>
+          <p class="text-base font-extrabold text-slate-800">{{ order.order_number }}</p>
+        </div>
+        <div>
+          <p class="text-sm font-bold text-slate-700">{{ order.customer_name }}</p>
+          <p class="text-xs text-slate-400 font-medium">{{ order.customer_phone }}</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3 flex-wrap">
+        <div class="text-right">
+          <p class="text-xs text-slate-400 font-medium">{{ order.created_at.strftime('%d/%m/%Y %H:%M') }}</p>
+          <p class="text-sm font-extrabold text-brand-700">{{ '{:,.0f}'.format(order.total_float) }} FCFA</p>
+        </div>
+        {% if sv in ('paid','delivered') %}
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>{{ order.status_label() }}
+        </span>
+        {% elif sv in ('pending','payment_pending','processing') %}
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-100 text-amber-700 text-xs font-bold">
+          <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>{{ order.status_label() }}
+        </span>
+        {% elif sv == 'cancelled' %}
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-100 text-red-700 text-xs font-bold">
+          <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>{{ order.status_label() }}
+        </span>
+        {% else %}
+        <span class="px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-bold">{{ order.status_label() }}</span>
+        {% endif %}
+      </div>
+    </div>
+
+    {# Items + payment method #}
+    <div class="px-6 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-50">
+      <div class="flex flex-wrap gap-x-4 gap-y-1">
+        {% for item in order.items %}
+        <span class="text-xs text-slate-500 font-medium">{{ item.product_name }} × {{ item.quantity }} {{ item.product_unit }}</span>
+        {% endfor %}
+      </div>
+      <div class="text-xs text-slate-400 font-medium whitespace-nowrap">
+        {% if order.payment_method %}
+          {% if order.payment_method.value == 'orange_money' %}🟠 Orange Money
+          {% elif order.payment_method.value == 'mtn_mobile_money' %}🟡 MTN MoMo
+          {% else %}💵 {{ _('Livraison') }}{% endif %}
+        {% endif %}
+        {% if order.mobile_money_phone %} · {{ order.mobile_money_phone }}{% endif %}
+      </div>
+    </div>
+
+    {# Status update + notes + address #}
+    <div class="px-6 py-3 bg-slate-50/50 flex flex-col sm:flex-row sm:items-center gap-3 flex-wrap">
+      <form method="POST"
+            action="{{ url_for('marketplace.admin_update_order_status', order_id=order.id) }}"
+            class="flex items-center gap-2 flex-wrap">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <label class="text-xs font-bold text-slate-500">{{ _('Statut :') }}</label>
+        <select name="status"
+                class="px-3 py-1.5 rounded-lg border border-slate-200 text-sm text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-violet-400 font-medium">
+          {% for s in OrderStatus %}
+          {% set labels = {
+            'pending':         _('En attente'),
+            'payment_pending': _('Paiement en cours'),
+            'paid':            _('Payée'),
+            'processing':      _('En traitement'),
+            'delivered':       _('Livrée'),
+            'cancelled':       _('Annulée'),
+          } %}
+          <option value="{{ s.value }}" {{ 'selected' if s == order.status }}>
+            {{- labels.get(s.value, s.value) -}}
+          </option>
+          {% endfor %}
+        </select>
+        <button type="submit"
+                class="px-3 py-1.5 rounded-lg text-white text-xs font-bold cursor-pointer transition-all"
+                style="background:linear-gradient(135deg,#7c3aed 0%,#9333ea 100%);box-shadow:0 2px 6px rgba(124,58,237,.25);">
+          {{ _('Mettre à jour') }}
+        </button>
+      </form>
+
+      {% if order.notes %}
+      <p class="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-1.5 flex-1 font-medium">
+        <span class="font-bold">{{ _('Note :') }}</span> {{ order.notes }}
+      </p>
+      {% endif %}
+      {% if order.customer_address %}
+      <p class="text-xs text-slate-500 hidden lg:block font-medium">
+        📍 {{ order.customer_address }}
+      </p>
+      {% endif %}
+    </div>
+
+  </div>
+  {% endfor %}
+</div>
+
+{% if not orders %}
+<div class="bg-white rounded-2xl shadow-card border border-slate-100 card-inset py-12 text-center mt-4">
+  <div class="text-4xl mb-3">📭</div>
+  <p class="text-slate-600 font-bold text-sm">{{ _('Aucune commande dans cette catégorie.') }}</p>
+</div>
+{% endif %}
+
+{{ paginate(pagination) }}
+
+<p class="text-xs text-slate-400 mt-4 text-right font-medium">{{ total_count }} {{ _('commande(s) au total') }}</p>
+
+{% else %}
+{{ empty_state('📋', _('Aucune commande'),
+   _('Aucune commande n\'a encore été passée.'),
+   url_for('marketplace.index'), _('Voir le catalogue')) }}
+{% endif %}
+{% endblock %}

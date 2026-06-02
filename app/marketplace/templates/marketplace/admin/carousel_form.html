@@ -1,0 +1,204 @@
+{% extends 'base.html' %}
+{% from 'macros.html' import render_field, breadcrumb %}
+{% block title %}{{ _('Carousel') }} â€” {{ _('Admin') }}{% endblock %}
+{% block page_title %}{{ _('Carousel') }}{% endblock %}
+
+{% block content %}
+{{ breadcrumb([
+  (url_for('marketplace.index'), _('Marché')),
+  (url_for('marketplace.admin_carousel'), _('Carousel')),
+  ('#', _('Modifier') if slide else _('Nouveau slide')),
+]) }}
+
+{# â”€â”€ Admin sub-nav â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ #}
+<div class="sticky top-14 lg:top-0 z-20 -mx-4 sm:-mx-6 px-4 sm:px-6 py-3 mb-4 bg-white/95 backdrop-blur-sm border-b border-slate-100 shadow-sm">
+<div class="flex items-center gap-1 p-1.5 bg-white rounded-2xl shadow-card border border-slate-100 card-inset w-fit flex-wrap">
+  <a href="{{ url_for('marketplace.admin_products') }}"
+     class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-100 hover:text-slate-800 transition-all">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+    </svg>
+    {{ _('Produits') }}
+  </a>
+  <a href="{{ url_for('marketplace.admin_orders') }}"
+     class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-100 hover:text-slate-800 transition-all">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+    </svg>
+    {{ _('Commandes') }}
+  </a>
+  <a href="{{ url_for('marketplace.admin_carousel') }}"
+     class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all text-white"
+     style="background:linear-gradient(135deg,#7c3aed 0%,#9333ea 100%);box-shadow:0 2px 8px rgba(124,58,237,.3);">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+    </svg>
+    {{ _('Carousel') }}
+  </a>
+</div>
+</div>
+
+<div class="max-w-2xl">
+  <div class="flex items-center gap-4 mb-7">
+    <div class="w-12 h-12 rounded-2xl icon-bg-violet flex items-center justify-center text-2xl stat-icon-box">
+      {{ '✏️' if slide else '🖼️' }}
+    </div>
+    <div>
+      <h1 class="text-xl font-extrabold text-slate-900">
+        {{ _('Modifier le slide') if slide else _('Nouveau slide') }}
+      </h1>
+      <p class="text-sm text-slate-500 mt-0.5 font-medium">{{ _('Carousel â€” Admin') }}</p>
+    </div>
+  </div>
+
+  <form method="POST" enctype="multipart/form-data" novalidate class="space-y-5">
+    {{ form.hidden_tag() }}
+
+    {# â”€â”€ Image de fond â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ #}
+    <div class="form-section">
+      <p class="form-section-title">{{ _('Image de fond') }}</p>
+
+      <div class="flex flex-col sm:flex-row gap-5 items-start">
+
+        {# Preview #}
+        <div class="flex-shrink-0">
+          <div id="img-preview-wrap"
+               class="w-48 h-24 rounded-xl border-2 border-slate-200 overflow-hidden bg-slate-50 flex items-center justify-center relative">
+            {% if slide and slide.image_filename %}
+            <img id="img-preview"
+                 src="{{ url_for('static', filename='uploads/carousel/' + slide.image_filename) }}"
+                 alt="{{ slide.title }}"
+                 class="w-full h-full object-cover">
+            {% else %}
+            <div id="img-placeholder"
+                 class="w-full h-full flex items-center justify-center text-2xl"
+                 style="background:linear-gradient(135deg,#021a0c,#052e16);">
+              <span>🖼️</span>
+            </div>
+            <img id="img-preview" src="" alt="" class="w-full h-full object-cover hidden absolute inset-0">
+            {% endif %}
+          </div>
+          <p class="text-[10px] text-slate-400 text-center mt-1.5 font-medium">1400 Ã— 700 px</p>
+        </div>
+
+        {# Upload controls #}
+        <div class="flex-1 space-y-3">
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1.5">
+              {{ form.image.label.text }}
+            </label>
+            <label for="{{ form.image.id }}"
+                   class="flex items-center gap-3 px-4 py-3 rounded-xl border-2 border-dashed border-slate-200 bg-slate-50
+                          hover:border-violet-400 hover:bg-violet-50 cursor-pointer transition-all group">
+              <svg class="w-5 h-5 text-slate-400 group-hover:text-violet-500 flex-shrink-0 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+              </svg>
+              <div class="min-w-0">
+                <p id="file-label" class="text-sm font-semibold text-slate-600 group-hover:text-violet-700 truncate transition-colors">
+                  {{ _('Choisir une imageâ€¦') }}
+                </p>
+                <p class="text-xs text-slate-400 mt-0.5">{{ _('JPG Â· PNG Â· WebP â€” max 8 Mo') }}</p>
+              </div>
+            </label>
+            {{ form.image(id=form.image.id, class='sr-only', accept='image/jpeg,image/png,image/webp',
+                         onchange='previewCarouselImage(this)') }}
+            {% for err in form.image.errors %}
+            <p class="mt-1 text-xs text-red-500">{{ err }}</p>
+            {% endfor %}
+          </div>
+
+          {% if slide and slide.image_filename %}
+          <div class="flex items-center gap-2 p-3 rounded-xl border border-amber-200 bg-amber-50">
+            <label class="flex items-center gap-2 cursor-pointer select-none">
+              {{ form.remove_image(class='w-4 h-4 rounded accent-amber-500') }}
+              <span class="text-sm font-semibold text-amber-700">{{ form.remove_image.label.text }}</span>
+            </label>
+            <span class="text-xs text-amber-600 ml-1">{{ _('(ignoré si une nouvelle image est choisie)') }}</span>
+          </div>
+          {% endif %}
+
+          <p class="text-xs text-slate-400 leading-relaxed">
+            {{ _("L'image sera recadrée en 1400 Ã— 700 px (format paysage, zoom centré). Elle doit couvrir toute la largeur du carousel.") }}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    {# â”€â”€ Contenu du slide â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ #}
+    <div class="form-section">
+      <p class="form-section-title">{{ _('Contenu du slide') }}</p>
+      {{ render_field(form.title, placeholder=_('Ex : Bienvenue chez OmniFarm')) }}
+      {{ render_field(form.subtitle, placeholder=_('Phrase d\'accroche courte visible sous le titreâ€¦')) }}
+    </div>
+
+    {# â”€â”€ Bouton d'action â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ #}
+    <div class="form-section">
+      <p class="form-section-title">{{ _('Bouton d\'action (optionnel)') }}</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        {{ render_field(form.cta_text, placeholder=_('Ex : Commander maintenant')) }}
+        {{ render_field(form.cta_url, placeholder='#products') }}
+      </div>
+    </div>
+
+    {# â”€â”€ Paramètres â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ #}
+    <div class="form-section">
+      <p class="form-section-title">{{ _('Paramètres') }}</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-4">
+        {{ render_field(form.sort_order, placeholder='0') }}
+      </div>
+
+      {# Active toggle #}
+      <div class="flex items-center gap-4 py-3 px-4 rounded-xl bg-slate-50 border border-slate-200">
+        <div class="flex-1">
+          <p class="text-sm font-bold text-slate-700">{{ form.is_active.label.text }}</p>
+          <p class="text-xs text-slate-400 font-medium mt-0.5">{{ _('Les slides inactifs ne s\'affichent pas dans le carousel.') }}</p>
+        </div>
+        <label class="relative inline-flex items-center cursor-pointer flex-shrink-0">
+          {{ form.is_active(class='sr-only peer') }}
+          <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
+        </label>
+      </div>
+    </div>
+
+    {# â”€â”€ Actions â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ #}
+    <div class="flex gap-3 pt-1">
+      {{ form.submit(
+          class='flex-1 py-3 px-4 rounded-xl text-white font-bold text-sm cursor-pointer',
+          style='background:linear-gradient(135deg,#7c3aed 0%,#9333ea 100%);box-shadow:0 2px 8px rgba(124,58,237,.3);'
+      ) }}
+      <a href="{{ url_for('marketplace.admin_carousel') }}"
+         class="px-6 py-3 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300 text-sm font-semibold transition-all text-center">
+        {{ _('Annuler') }}
+      </a>
+    </div>
+  </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function previewCarouselImage(input) {
+  const file = input.files[0];
+  const label = document.getElementById('file-label');
+  const preview = document.getElementById('img-preview');
+  const placeholder = document.getElementById('img-placeholder');
+  if (!file) return;
+  label.textContent = file.name;
+  if (file.size > 8 * 1024 * 1024) {
+    label.textContent = '{{ _("Fichier trop grand (max 8 Mo)") }}';
+    label.classList.add('text-red-500');
+    input.value = '';
+    return;
+  }
+  label.classList.remove('text-red-500');
+  const reader = new FileReader();
+  reader.onload = e => {
+    preview.src = e.target.result;
+    preview.classList.remove('hidden');
+    if (placeholder) placeholder.classList.add('hidden');
+  };
+  reader.readAsDataURL(file);
+}
+</script>
+{% endblock %}

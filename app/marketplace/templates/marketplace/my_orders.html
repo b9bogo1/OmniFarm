@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+{% from 'macros.html' import breadcrumb, empty_state, paginate %}
+{% block title %}{{ _('Mes commandes') }}{% endblock %}
+{% block page_title %}{{ _('Mes commandes') }}{% endblock %}
+
+{% block content %}
+{{ breadcrumb([(url_for('marketplace.index'), _('Marché')), ('#', _('Mes commandes'))]) }}
+
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-7">
+  <div class="flex items-center gap-4">
+    <div class="w-12 h-12 rounded-2xl icon-bg-brand flex items-center justify-center text-2xl stat-icon-box">📦</div>
+    <div>
+      <h1 class="text-xl font-extrabold text-slate-900">{{ _('Mes commandes') }}</h1>
+      <p class="text-sm text-slate-500 mt-0.5 font-medium">{{ _('Marché — OmniFarm') }}</p>
+    </div>
+  </div>
+  <a href="{{ url_for('marketplace.index') }}"
+     class="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-sm font-semibold transition-all self-start sm:self-auto">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+    </svg>
+    {{ _('Voir le catalogue') }}
+  </a>
+</div>
+
+{% if all_count > 0 %}
+
+{# ── Status filter tabs — server-side navigation ────────────────────────── #}
+{% macro _tab(sf, label, count, badge_cls) %}
+<a href="{{ url_for('marketplace.my_orders', status=sf) }}"
+   class="inline-flex items-center gap-1.5 px-4 py-2.5 text-sm font-bold border-b-2 transition-all -mb-px
+          {{ 'border-brand-600 text-brand-700' if status_filter == sf else 'border-transparent text-slate-500 hover:text-slate-700' }}">
+  {{ label }}
+  <span class="px-1.5 py-0.5 rounded-full text-xs font-black {{ badge_cls }}">{{ count }}</span>
+</a>
+{% endmacro %}
+
+<div class="flex items-center gap-2 flex-wrap mb-6 border-b border-slate-200 pb-0">
+  {{ _tab('all',       _('Toutes'),    all_count,       'bg-slate-100 text-slate-500') }}
+  {{ _tab('pending',   _('En cours'),  pending_count,   'bg-amber-100 text-amber-700') }}
+  {{ _tab('done',      _('Terminées'), done_count,      'bg-emerald-100 text-emerald-700') }}
+  {{ _tab('cancelled', _('Annulées'),  cancelled_count, 'bg-red-100 text-red-600') }}
+</div>
+
+{# ── Order cards ───────────────────────────────────────────────────────── #}
+<div class="space-y-3">
+  {% for order in orders %}
+  {% set sv = order.status.value %}
+  <div class="bg-white rounded-2xl shadow-card border border-slate-100 card-inset overflow-hidden hover:shadow-card-md transition-all">
+
+    {# Card header: order number + status + total + date #}
+    <div class="px-5 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+      <div class="flex items-center gap-4">
+        {# Status icon #}
+        <div class="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0 stat-icon-box
+                    {% if sv in ['paid','delivered'] %}icon-bg-brand{% elif sv in ['pending','payment_pending','processing'] %}swatch-amber{% else %}swatch-red{% endif %}">
+          {{ '✅' if sv in ['paid','delivered'] else ('⏳' if sv in ['pending','payment_pending','processing'] else '❌') }}
+        </div>
+        <div>
+          <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wide">{{ _('Commande') }}</p>
+          <p class="text-sm font-extrabold text-slate-800">{{ order.order_number }}</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-4 flex-wrap">
+        <div class="text-right">
+          <p class="text-xs text-slate-400 font-medium">{{ order.created_at.strftime('%d/%m/%Y') }}</p>
+          <p class="text-base font-extrabold text-brand-700">{{ '{:,.0f}'.format(order.total_float) }} <span class="text-xs font-medium text-slate-400">FCFA</span></p>
+        </div>
+
+        {# Status badge #}
+        {% if sv in ('paid','delivered') %}
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>{{ order.status_label() }}
+        </span>
+        {% elif sv in ('pending','payment_pending','processing') %}
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 text-amber-700 text-xs font-bold">
+          <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>{{ order.status_label() }}
+        </span>
+        {% elif sv == 'cancelled' %}
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-100 text-red-700 text-xs font-bold">
+          <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>{{ order.status_label() }}
+        </span>
+        {% else %}
+        <span class="px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-bold">{{ order.status_label() }}</span>
+        {% endif %}
+
+        {# Expand toggle #}
+        <button type="button" onclick="toggleOrder(this)"
+                class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-all flex-shrink-0"
+                aria-label="{{ _('Voir les détails') }}">
+          <svg class="w-4 h-4 expand-icon transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    {# Expandable details #}
+    <div class="order-details hidden border-t border-slate-50">
+      <div class="px-5 py-4 space-y-1">
+        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wide mb-2">{{ _('Articles') }}</p>
+        {% for item in order.items %}
+        <div class="flex justify-between text-sm">
+          <span class="text-slate-600 font-medium">{{ item.product_name }} × {{ item.quantity }} {{ item.product_unit }}</span>
+          <span class="font-bold text-slate-700">{{ '{:,.0f}'.format(item.subtotal_float) }} FCFA</span>
+        </div>
+        {% endfor %}
+      </div>
+      {% if order.customer_address or order.notes %}
+      <div class="px-5 pb-4 flex gap-4 flex-wrap text-xs text-slate-500 font-medium">
+        {% if order.customer_address %}
+        <span>📍 {{ order.customer_address }}</span>
+        {% endif %}
+        {% if order.notes %}
+        <span>💬 {{ order.notes }}</span>
+        {% endif %}
+      </div>
+      {% endif %}
+    </div>
+
+  </div>
+  {% endfor %}
+</div>
+
+{% if not orders %}
+<div class="bg-white rounded-2xl shadow-card border border-slate-100 card-inset py-12 text-center mt-4">
+  <div class="text-4xl mb-3">📭</div>
+  <p class="text-slate-600 font-bold text-sm">{{ _('Aucune commande dans cette catégorie.') }}</p>
+</div>
+{% endif %}
+
+{{ paginate(pagination) }}
+
+{% else %}
+{{ empty_state('📦', _('Aucune commande'),
+   _('Vous n\'avez pas encore passé de commande.'),
+   url_for('marketplace.index'), _('Découvrir le catalogue')) }}
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+function toggleOrder(btn) {
+  const card = btn.closest('div.overflow-hidden');
+  const details = card.querySelector('.order-details');
+  const icon = btn.querySelector('.expand-icon');
+  details.classList.toggle('hidden');
+  icon.style.transform = details.classList.contains('hidden') ? '' : 'rotate(180deg)';
+}
+</script>
+{% endblock %}

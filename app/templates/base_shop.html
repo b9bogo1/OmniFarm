@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="{{ get_locale() }}" class="h-full {{ 'dark' if user_theme == 'dark' }}">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="csrf-token" content="{{ csrf_token() }}" />
+  <title>{% block title %}{{ _('OmniFarm Boutique') }}{% endblock %} — OmniFarm</title>
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/fonts.css') }}" />
+  <script src="{{ url_for('static', filename='js/tailwind.js') }}"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50:'#f0fdf4', 100:'#dcfce7', 200:'#bbf7d0',
+              300:'#86efac', 500:'#22c55e', 600:'#16a34a',
+              700:'#15803d', 800:'#166534', 900:'#14532d', 950:'#052e16',
+            },
+            gold: { 300:'#fcd34d', 400:'#fbbf24', 500:'#f59e0b', 600:'#d97706' }
+          },
+          fontFamily: { sans: ['Ubuntu','ui-sans-serif','system-ui','sans-serif'] },
+          boxShadow: {
+            'card':    '0 1px 3px rgba(0,0,0,0.04), 0 6px 18px rgba(0,0,0,0.07), 0 0 0 1px rgba(0,0,0,0.035)',
+            'card-md': '0 4px 8px rgba(0,0,0,0.06), 0 18px 40px rgba(0,0,0,0.10), 0 0 0 1px rgba(0,0,0,0.045)',
+          }
+        }
+      }
+    }
+  </script>
+  {% block head %}{% endblock %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/premium.css') }}" />
+  <style>
+    body {
+      background: linear-gradient(160deg,#f4f7fb 0%,#eef2f8 100%);
+      min-height: 100vh;
+    }
+
+    /* ── Navbar ─────────────────────────────────────────────────────────── */
+    .shop-nav {
+      background: rgba(2,26,12,0.97);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .shop-nav-link {
+      display: flex; align-items: center; gap: 0.375rem;
+      color: rgba(255,255,255,0.6); font-size: 0.875rem; font-weight: 600;
+      padding: 0.45rem 0.875rem; border-radius: 0.625rem; transition: all 0.18s;
+    }
+    .shop-nav-link:hover { color: #fff; background: rgba(255,255,255,0.1); }
+    .shop-nav-link.active { color: #fff; background: rgba(255,255,255,0.1); }
+    .shop-nav-link.active-gold { color: #fbbf24 !important; }
+
+    /* ── Cart button ─────────────────────────────────────────────────────── */
+    .shop-cart-btn {
+      position: relative; display: flex; align-items: center; justify-content: center;
+      width: 2.375rem; height: 2.375rem; border-radius: 0.75rem;
+      background: rgba(255,255,255,0.09); border: 1px solid rgba(255,255,255,0.12);
+      color: #fff; transition: all 0.18s;
+    }
+    .shop-cart-btn:hover { background: rgba(255,255,255,0.18); border-color: rgba(255,255,255,0.22); }
+    .shop-cart-badge {
+      position: absolute; top: -6px; right: -6px; min-width: 1.2rem; height: 1.2rem;
+      border-radius: 9999px; background: linear-gradient(135deg,#fbbf24,#f59e0b);
+      color: #052e16; font-size: 10px; font-weight: 900;
+      display: flex; align-items: center; justify-content: center;
+      padding: 0 0.2rem; box-shadow: 0 1px 4px rgba(0,0,0,0.35);
+      border: 1.5px solid rgba(2,26,12,0.9);
+    }
+
+    /* lang-pill / lang-btn-item / lang-active defined in premium.css */
+
+    /* ── Mobile drawer ───────────────────────────────────────────────────── */
+    #mobile-drawer {
+      position:fixed; inset:0; z-index:300;
+      visibility:hidden; opacity:0; transition: opacity 0.22s, visibility 0.22s;
+    }
+    #mobile-drawer.open { visibility:visible; opacity:1; }
+    .drawer-backdrop {
+      position:absolute; inset:0;
+      background:rgba(0,0,0,0.55); backdrop-filter:blur(4px);
+    }
+    .drawer-panel {
+      position:absolute; top:0; right:0; bottom:0; width:min(300px,88vw);
+      background:linear-gradient(160deg,#021a0c 0%,#031f11 55%,#052e16 100%);
+      border-left:1px solid rgba(255,255,255,0.07);
+      transform:translateX(100%); transition:transform 0.28s cubic-bezier(0.4,0,0.2,1);
+      display:flex; flex-direction:column; overflow:hidden;
+    }
+    #mobile-drawer.open .drawer-panel { transform:translateX(0); }
+    .drawer-nav-link {
+      display:flex; align-items:center; gap:0.75rem;
+      padding:0.8rem 1rem; font-size:0.875rem; font-weight:600;
+      color:rgba(255,255,255,0.65); border-radius:0.75rem; transition:all 0.18s;
+    }
+    .drawer-nav-link:hover, .drawer-nav-link.active { color:#fff; background:rgba(255,255,255,0.1); }
+    .drawer-nav-link.active { color:#fbbf24; }
+    .drawer-nav-icon { width:1.125rem; height:1.125rem; opacity:0.7; flex-shrink:0; }
+
+    /* ── Footer ──────────────────────────────────────────────────────────── */
+    .shop-footer { background:linear-gradient(160deg,#021a0c 0%,#031f11 100%); }
+    .footer-link { display:flex; align-items:center; gap:0.5rem; color:rgba(255,255,255,0.38); font-size:0.75rem; font-weight:500; transition:color 0.18s; }
+    .footer-link:hover { color:#fff; }
+    .footer-link::before { content:''; width:0.3rem; height:0.3rem; border-radius:9999px; background:rgba(255,255,255,0.2); flex-shrink:0; transition:background 0.18s; }
+    .footer-link:hover::before { background:#fbbf24; }
+
+    /* Flash messages — base styles only (dark overrides in premium.css) */
+    /* These are intentionally removed here; premium.css defines all variants */
+  </style>
+</head>
+<body class="font-sans antialiased text-slate-800">
+
+{# ═══════════════════════════════════════════════════ TOPNAV ══════ #}
+<header class="shop-nav sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center gap-3">
+
+    {# Logo #}
+    <a href="{{ url_for('marketplace.index') }}" class="flex items-center gap-2.5 flex-shrink-0 mr-1">
+      <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center shadow-md flex-shrink-0">
+        <svg class="w-4 h-4 text-brand-950" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3z"/>
+        </svg>
+      </div>
+      <div class="hidden sm:block leading-tight">
+        <p class="text-white font-extrabold text-sm">OmniFarm</p>
+        <p class="text-[10px] text-white/40 font-semibold tracking-widest uppercase">{{ _('Boutique') }}</p>
+      </div>
+    </a>
+
+    {# Desktop nav ─────────────────────────────────────────────────── #}
+    {% set ep = request.endpoint or '' %}
+    <nav class="hidden md:flex items-center gap-0.5 flex-1" aria-label="{{ _('Navigation principale') }}">
+      <a href="{{ url_for('marketplace.index') }}"
+         class="shop-nav-link {{ 'active' if ep == 'marketplace.index' }}">
+        <svg class="w-3.5 h-3.5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+        </svg>
+        {{ _('Accueil') }}
+      </a>
+      <a href="{{ url_for('marketplace.cart_view') }}"
+         class="shop-nav-link {{ 'active' if ep == 'marketplace.cart_view' }}">
+        <svg class="w-3.5 h-3.5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.4 6M7 13l-1.4 6m0 0h9.8M17 19a1 1 0 100 2 1 1 0 000-2zm-9 0a1 1 0 100 2 1 1 0 000-2z"/>
+        </svg>
+        {{ _('Panier') }}
+        {% if cart_count > 0 %}
+        <span class="ml-0.5 px-1.5 py-0.5 rounded-full bg-gold-500 text-brand-950 text-[10px] font-black leading-none">{{ cart_count }}</span>
+        {% endif %}
+      </a>
+      {% if current_user.is_authenticated %}
+      <a href="{{ url_for('marketplace.my_orders') }}"
+         class="shop-nav-link {{ 'active' if ep == 'marketplace.my_orders' }}">
+        <svg class="w-3.5 h-3.5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+        </svg>
+        {{ _('Mes commandes') }}
+      </a>
+      {% if current_user.is_admin %}
+      <a href="{{ url_for('marketplace.admin_products') }}"
+         class="shop-nav-link {{ 'active-gold active' if ep.startswith('marketplace.admin') }}">
+        <svg class="w-3.5 h-3.5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+        </svg>
+        {{ _('Administration') }}
+      </a>
+      {% endif %}
+      {% endif %}
+    </nav>
+
+    {# Right actions ───────────────────────────────────────────────── #}
+    <div class="ml-auto flex items-center gap-2">
+
+      {# Language toggle #}
+      <div class="hidden sm:flex lang-pill">
+        <a href="{{ url_for('auth.set_language', lang_code='fr') }}"
+           class="lang-btn-item {{ 'lang-active' if get_locale()|string == 'fr' }}">FR</a>
+        <a href="{{ url_for('auth.set_language', lang_code='en') }}"
+           class="lang-btn-item {{ 'lang-active' if get_locale()|string == 'en' }}">EN</a>
+      </div>
+
+      {# Mobile cart badge #}
+      <a href="{{ url_for('marketplace.cart_view') }}" class="shop-cart-btn md:hidden" aria-label="{{ _('Mon panier') }}">
+        <svg style="width:1.125rem;height:1.125rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.4 6m0 0h9.8M17 19a1 1 0 100 2 1 1 0 000-2zm-9 0a1 1 0 100 2 1 1 0 000-2z"/>
+        </svg>
+        {% if cart_count > 0 %}
+        <span class="shop-cart-badge">{{ cart_count if cart_count < 10 else '9+' }}</span>
+        {% endif %}
+      </a>
+
+      {# Auth button (desktop) #}
+      {% if current_user.is_authenticated %}
+      <a href="{{ url_for('main.dashboard') }}"
+         class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-white/70 hover:text-white hover:bg-white/10 border border-white/15 transition-all">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"/>
+        </svg>
+        {{ _('Dashboard') }}
+      </a>
+      {% else %}
+      <a href="{{ url_for('auth.login') }}"
+         class="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold btn-premium-primary">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
+        </svg>
+        {{ _('Se connecter') }}
+      </a>
+      {% endif %}
+
+      {# Hamburger (mobile) #}
+      <button type="button" onclick="openDrawer()"
+              class="md:hidden flex items-center justify-center w-9 h-9 rounded-xl bg-white/09 border border-white/14 text-white hover:bg-white/16 transition-all"
+              style="background:rgba(255,255,255,0.09);border-color:rgba(255,255,255,0.14);"
+              aria-label="{{ _('Ouvrir le menu') }}">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+{# ═══════════════════════════════════════════ MOBILE DRAWER ══════ #}
+<div id="mobile-drawer" aria-hidden="true" role="dialog" aria-modal="true" aria-label="{{ _('Menu de navigation') }}">
+  <div class="drawer-backdrop" onclick="closeDrawer()"></div>
+  <div class="drawer-panel">
+
+    {# Drawer header #}
+    <div class="flex items-center justify-between px-5 py-4" style="border-bottom:1px solid rgba(255,255,255,0.07);">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center shadow-md">
+          <svg class="w-4 h-4 text-brand-950" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3z"/>
+          </svg>
+        </div>
+        <span class="text-white font-extrabold text-sm">OmniFarm</span>
+      </div>
+      <button type="button" onclick="closeDrawer()"
+              class="w-8 h-8 rounded-lg flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 transition-all"
+              aria-label="{{ _('Fermer le menu') }}">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+
+    {# Drawer nav #}
+    {% set ep = request.endpoint or '' %}
+    <nav class="flex-1 overflow-y-auto p-4 space-y-1">
+      <a href="{{ url_for('marketplace.index') }}" onclick="closeDrawer()"
+         class="drawer-nav-link {{ 'active' if ep == 'marketplace.index' }}">
+        <svg class="drawer-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+        </svg>
+        {{ _('Accueil') }}
+      </a>
+      <a href="{{ url_for('marketplace.cart_view') }}" onclick="closeDrawer()"
+         class="drawer-nav-link {{ 'active' if ep == 'marketplace.cart_view' }}">
+        <svg class="drawer-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.4 6m0 0h9.8M17 19a1 1 0 100 2 1 1 0 000-2zm-9 0a1 1 0 100 2 1 1 0 000-2z"/>
+        </svg>
+        <span class="flex-1">{{ _('Panier') }}</span>
+        {% if cart_count > 0 %}
+        <span class="px-2 py-0.5 rounded-full bg-gold-500 text-brand-950 text-xs font-black">{{ cart_count }}</span>
+        {% endif %}
+      </a>
+      {% if current_user.is_authenticated %}
+      <a href="{{ url_for('marketplace.my_orders') }}" onclick="closeDrawer()"
+         class="drawer-nav-link {{ 'active' if ep == 'marketplace.my_orders' }}">
+        <svg class="drawer-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+        </svg>
+        {{ _('Mes commandes') }}
+      </a>
+      {% if current_user.is_admin %}
+      <div style="height:1px;background:rgba(255,255,255,0.07);margin:0.5rem 0;"></div>
+      <a href="{{ url_for('marketplace.admin_products') }}" onclick="closeDrawer()"
+         class="drawer-nav-link {{ 'active' if ep.startswith('marketplace.admin') }}">
+        <svg class="drawer-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+        </svg>
+        {{ _('Administration') }}
+      </a>
+      <a href="{{ url_for('marketplace.admin_orders') }}" onclick="closeDrawer()"
+         class="drawer-nav-link {{ 'active' if ep == 'marketplace.admin_orders' }}">
+        <svg class="drawer-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+        </svg>
+        {{ _('Commandes') }}
+      </a>
+      {% endif %}
+      {% endif %}
+    </nav>
+
+    {# Drawer footer: language + auth #}
+    <div class="p-4 space-y-3 flex-shrink-0" style="border-top:1px solid rgba(255,255,255,0.07);">
+      <div class="flex items-center gap-2.5">
+        <span class="text-white/32 text-[10px] font-bold uppercase tracking-wider">{{ _('Langue') }}</span>
+        <div class="lang-pill">
+          <a href="{{ url_for('auth.set_language', lang_code='fr') }}"
+             class="lang-btn-item {{ 'lang-active' if get_locale()|string == 'fr' }}">FR</a>
+          <a href="{{ url_for('auth.set_language', lang_code='en') }}"
+             class="lang-btn-item {{ 'lang-active' if get_locale()|string == 'en' }}">EN</a>
+        </div>
+      </div>
+      {% if current_user.is_authenticated %}
+      <div class="flex gap-2">
+        <a href="{{ url_for('main.dashboard') }}"
+           class="flex-1 py-2.5 px-3 rounded-xl text-center text-white/75 hover:text-white text-sm font-semibold transition-all"
+           style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);">
+          {{ _('Dashboard') }}
+        </a>
+        <a href="{{ url_for('auth.logout') }}"
+           class="py-2.5 px-3 rounded-xl text-white/50 hover:text-red-400 text-sm font-semibold transition-all"
+           style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);">
+          {{ _('Déconnexion') }}
+        </a>
+      </div>
+      {% else %}
+      <a href="{{ url_for('auth.login') }}"
+         class="block w-full py-3 px-4 rounded-xl text-white text-center font-bold text-sm btn-premium-primary">
+        {{ _('Se connecter') }}
+      </a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{# ═══════════════════════════════════════ FLASH MESSAGES ══════ #}
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 pt-4 space-y-2">
+    {% for category, message in messages %}
+      {% if category == 'success' %}{% set fcls='flash-success-p' %}{% set icls='text-emerald-600' %}
+      {% elif category in ('danger','error') %}{% set fcls='flash-danger-p' %}{% set icls='text-red-500' %}
+      {% elif category == 'warning' %}{% set fcls='flash-warning-p' %}{% set icls='text-amber-500' %}
+      {% else %}{% set fcls='flash-info-p' %}{% set icls='text-blue-500' %}{% endif %}
+      <div class="flex items-start gap-3 px-4 py-3.5 rounded-xl border-l-4 {{ fcls }}">
+        <svg class="w-4 h-4 mt-0.5 flex-shrink-0 {{ icls }}" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+        </svg>
+        <p class="flex-1 text-sm font-medium">{{ message }}</p>
+        <button onclick="this.parentElement.remove()" class="flex-shrink-0 opacity-40 hover:opacity-100 transition-opacity" aria-label="{{ _('Fermer') }}">
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
+          </svg>
+        </button>
+      </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+{% endwith %}
+
+{# ═════════════════════════════════════════ PAGE CONTENT ══════ #}
+<main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 min-h-[60vh]">
+  {% block content %}{% endblock %}
+</main>
+
+{# ═══════════════════════════════════════════════ FOOTER ══════ #}
+<footer class="shop-footer mt-16">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 pt-12 pb-8">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-10">
+
+      {# Brand #}
+      <div>
+        <div class="flex items-center gap-2.5 mb-4">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center shadow-md">
+            <svg style="width:1.125rem;height:1.125rem;" class="text-brand-950" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3z"/>
+            </svg>
+          </div>
+          <div>
+            <p class="text-white font-extrabold text-sm leading-tight">OmniFarm</p>
+            <p class="text-white/35 text-[10px] font-semibold tracking-widest uppercase">{{ _('Boutique') }}</p>
+          </div>
+        </div>
+        <p class="text-white/38 text-xs font-medium leading-relaxed mb-4">
+          {{ _('Produits frais et de qualité, directement de notre ferme à votre table.') }}
+        </p>
+        <div class="inline-flex items-center gap-1.5 text-xs text-emerald-400/80 font-semibold">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          {{ _('Livraison disponible') }}
+        </div>
+      </div>
+
+      {# Shop links #}
+      <div>
+        <p class="text-white/50 font-bold text-xs uppercase tracking-widest mb-4">{{ _('Boutique') }}</p>
+        <div class="space-y-2.5">
+          <a href="{{ url_for('marketplace.index') }}" class="footer-link">{{ _('Catalogue') }}</a>
+          <a href="{{ url_for('marketplace.cart_view') }}" class="footer-link">{{ _('Mon panier') }}</a>
+          {% if current_user.is_authenticated %}
+          <a href="{{ url_for('marketplace.my_orders') }}" class="footer-link">{{ _('Mes commandes') }}</a>
+          {% endif %}
+        </div>
+      </div>
+
+      {# Account links #}
+      <div>
+        <p class="text-white/50 font-bold text-xs uppercase tracking-widest mb-4">{{ _('Compte') }}</p>
+        <div class="space-y-2.5">
+          {% if current_user.is_authenticated %}
+          <a href="{{ url_for('main.dashboard') }}" class="footer-link">{{ _('Tableau de bord') }}</a>
+          <a href="{{ url_for('auth.logout') }}" class="footer-link">{{ _('Déconnexion') }}</a>
+          {% else %}
+          <a href="{{ url_for('auth.login') }}" class="footer-link">{{ _('Se connecter') }}</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div style="border-top:1px solid rgba(255,255,255,0.07);" class="pt-6 flex flex-col sm:flex-row items-center justify-between gap-2">
+      <p class="text-white/22 text-xs font-medium">&copy; {{ now.year }} OmniFarm — {{ _('Tous droits réservés') }}</p>
+      <p class="text-white/18 text-xs font-medium">{{ _('Plateforme gérée par') }} OmniFarm Hub</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+function openDrawer() {
+  const d = document.getElementById('mobile-drawer');
+  d.classList.add('open');
+  d.setAttribute('aria-hidden','false');
+  document.body.style.overflow = 'hidden';
+}
+function closeDrawer() {
+  const d = document.getElementById('mobile-drawer');
+  d.classList.remove('open');
+  d.setAttribute('aria-hidden','true');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
+</script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

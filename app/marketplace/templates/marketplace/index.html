@@ -1,0 +1,768 @@
+{% extends 'base.html' if current_user.is_authenticated else 'base_shop.html' %}
+{% from 'macros.html' import empty_state, paginate %}
+{% block title %}{{ _('Marché') if current_user.is_authenticated else _('Boutique OmniFarm') }}{% endblock %}
+{% block page_title %}{{ _('Marché') }}{% endblock %}
+
+{% block content %}
+
+{% set has_db_slides = slides | length > 0 %}
+
+{% set fb = [
+  {
+    'title':    _('Bienvenue chez OmniFarm'),
+    'subtitle': _('Commandez directement depuis notre ferme : poissons frais, volailles, lapins et œufs livrés chez vous.'),
+    'cta_text': _('Découvrir le catalogue'),
+    'cta_url':  '#products',
+    'gradient': 'linear-gradient(145deg,#021a0c 0%,#052e16 50%,#073620 100%)',
+    'accent':   'rgba(34,197,94,0.12)',
+    'orb':      'rgba(245,158,11,0.09)',
+    'icon':     '🐟',
+  },
+  {
+    'title':    _('Produits frais de qualité'),
+    'subtitle': _('Élevage artisanal et contrôlé. Chaque produit est tracé de la ferme à votre table.'),
+    'cta_text': _('Commander maintenant'),
+    'cta_url':  '#products',
+    'gradient': 'linear-gradient(145deg,#0b1a2c 0%,#0f2540 50%,#0a1e35 100%)',
+    'accent':   'rgba(6,182,212,0.11)',
+    'orb':      'rgba(34,197,94,0.08)',
+    'icon':     '🐔',
+  },
+  {
+    'title':    _('Livraison directe à domicile'),
+    'subtitle': _('Créez votre compte et suivez vos commandes en temps réel. Paiement Mobile Money ou à la livraison.'),
+    'cta_text': _('Créer un compte gratuit'),
+    'cta_url':  url_for('auth.register') if not current_user.is_authenticated else '#products',
+    'gradient': 'linear-gradient(145deg,#1a0d00 0%,#2d1800 50%,#1e1200 100%)',
+    'accent':   'rgba(245,158,11,0.12)',
+    'orb':      'rgba(251,191,36,0.09)',
+    'icon':     '🌿',
+  },
+] %}
+
+{% set n_slides = slides | length if has_db_slides else fb | length %}
+
+{# ══ HERO CAROUSEL ════════════════════════════════════════════════════════ #}
+<div id="hero-carousel"
+     class="relative mb-10 rounded-3xl overflow-hidden select-none"
+     style="height:clamp(520px,62vw,680px);"
+     role="region" aria-label="{{ _('Carousel de présentation') }}">
+
+  {# Admin badge — top-left #}
+  {% if current_user.is_authenticated and current_user.is_admin %}
+  <a href="{{ url_for('marketplace.admin_carousel') }}"
+     class="absolute top-4 left-4 z-30 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-white backdrop-blur-sm transition-all hover:bg-black/50"
+     style="background:rgba(0,0,0,0.32);border:1px solid rgba(255,255,255,0.18);">
+    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+    </svg>
+    {{ _('Gérer le carousel') }}
+  </a>
+  {% endif %}
+
+  {# ── Slides ──────────────────────────────────────────────────────────── #}
+  {% if has_db_slides %}
+    {% for s in slides %}
+    <div class="c-slide absolute inset-0 {{ 'c-active' if loop.first else '' }}"
+         data-index="{{ loop.index0 }}" aria-hidden="{{ 'false' if loop.first else 'true' }}">
+
+      {% if s.image_filename %}
+      <img src="{{ url_for('static', filename='uploads/carousel/' + s.image_filename) }}"
+           alt="{{ s.title }}"
+           class="absolute inset-0 w-full h-full object-cover"
+           loading="{{ 'eager' if loop.first else 'lazy' }}" />
+      {% else %}
+      <div class="absolute inset-0" style="background:linear-gradient(145deg,#021a0c 0%,#052e16 50%,#073620 100%);"></div>
+      <div class="absolute inset-0 pointer-events-none overflow-hidden">
+        <div class="absolute" style="top:-80px;right:-60px;width:480px;height:480px;border-radius:9999px;background:rgba(34,197,94,0.10);filter:blur(80px);"></div>
+        <div class="absolute" style="bottom:-60px;left:5%;width:320px;height:320px;border-radius:9999px;background:rgba(245,158,11,0.08);filter:blur(60px);"></div>
+      </div>
+      {% endif %}
+
+      <div class="absolute inset-0" style="background:linear-gradient(105deg,rgba(2,12,6,0.92) 0%,rgba(2,12,6,0.68) 42%,rgba(2,12,6,0.22) 72%,transparent 100%);"></div>
+
+      <div class="relative h-full flex items-center">
+        <div class="c-content flex-1 flex flex-col justify-center px-8 sm:px-14 max-w-2xl">
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-5 w-fit"
+               style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.14);">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="text-white/60 text-xs font-bold uppercase tracking-widest">{{ _('Produits frais disponibles') }}</span>
+          </div>
+          <h2 class="text-3xl sm:text-4xl xl:text-5xl font-extrabold text-white mb-4 leading-tight drop-shadow-sm">{{ s.title }}</h2>
+          {% if s.subtitle %}
+          <p class="text-white/65 text-base font-medium mb-8 leading-relaxed max-w-lg">{{ s.subtitle }}</p>
+          {% endif %}
+          <div class="flex flex-wrap items-center gap-3">
+            {% if s.cta_text %}
+            <a href="{{ s.cta_url or '#products' }}"
+               class="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl text-white font-bold text-sm btn-premium-primary shadow-lg">
+              {{ s.cta_text }}
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+              </svg>
+            </a>
+            {% endif %}
+            {% if not current_user.is_authenticated %}
+            <a href="{{ url_for('auth.register') }}"
+               class="inline-flex items-center gap-2 px-5 py-3.5 rounded-xl text-white font-bold text-sm transition-all"
+               style="background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.22);">
+              {{ _('Créer un compte') }}
+            </a>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="hidden lg:flex flex-col items-center gap-4 pr-14 flex-shrink-0">
+          <div class="c-icon-anim text-8xl mb-2" style="filter:drop-shadow(0 8px 32px rgba(0,0,0,0.5));">🌾</div>
+          <div class="flex flex-col gap-2 w-52">
+            {% for icon, label, cat in [('🐟', _('Poisson'), 'fish'), ('🐔', _('Volaille'), 'poultry'), ('🐇', _('Lapin'), 'rabbit'), ('🥚', _('Œufs'), 'eggs')] %}
+            <a href="{{ url_for('marketplace.index', cat=cat) }}"
+               class="flex items-center gap-3 px-4 py-2.5 rounded-xl backdrop-blur-md transition-all hover:scale-105"
+               style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);">
+              <span class="text-xl">{{ icon }}</span>
+              <span class="text-white/80 text-sm font-bold">{{ label }}</span>
+              <svg class="w-3.5 h-3.5 text-white/40 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+              </svg>
+            </a>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+
+  {% else %}
+    {% for s in fb %}
+    <div class="c-slide absolute inset-0 {{ 'c-active' if loop.first else '' }}"
+         data-index="{{ loop.index0 }}" aria-hidden="{{ 'false' if loop.first else 'true' }}">
+      <div class="absolute inset-0" style="background:{{ s.gradient }};"></div>
+      <div class="absolute inset-0 pointer-events-none overflow-hidden">
+        <div class="absolute" style="top:-80px;right:-50px;width:480px;height:480px;border-radius:9999px;background:{{ s.accent }};filter:blur(80px);"></div>
+        <div class="absolute" style="bottom:-70px;left:3%;width:340px;height:340px;border-radius:9999px;background:{{ s.orb }};filter:blur(65px);"></div>
+        <div class="absolute inset-0" style="background:url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23ffffff' fill-opacity='0.013'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\");opacity:0.6;"></div>
+      </div>
+      <div class="absolute inset-0" style="background:linear-gradient(105deg,rgba(2,12,6,0.92) 0%,rgba(2,12,6,0.65) 45%,rgba(2,12,6,0.20) 72%,transparent 100%);"></div>
+
+      <div class="relative h-full flex items-center">
+        <div class="c-content flex-1 flex flex-col justify-center px-8 sm:px-14 max-w-2xl">
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-5 w-fit"
+               style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.14);">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="text-white/60 text-xs font-bold uppercase tracking-widest">{{ _('Produits frais disponibles') }}</span>
+          </div>
+          <h2 class="text-3xl sm:text-4xl xl:text-5xl font-extrabold text-white mb-4 leading-tight">{{ s.title }}</h2>
+          <p class="text-white/65 text-base font-medium mb-8 leading-relaxed max-w-lg">{{ s.subtitle }}</p>
+          <div class="flex flex-wrap items-center gap-3">
+            <a href="{{ s.cta_url }}"
+               class="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl text-white font-bold text-sm btn-premium-primary shadow-lg">
+              {{ s.cta_text }}
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+              </svg>
+            </a>
+            {% if not current_user.is_authenticated %}
+            <a href="{{ url_for('auth.login') }}"
+               class="inline-flex items-center gap-2 px-5 py-3.5 rounded-xl text-white/75 hover:text-white font-bold text-sm border transition-all"
+               style="border-color:rgba(255,255,255,0.20);">
+              {{ _('Se connecter') }}
+            </a>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="hidden lg:flex flex-col items-center gap-4 pr-14 flex-shrink-0">
+          <div class="c-icon-anim text-8xl mb-2" style="filter:drop-shadow(0 8px 32px rgba(0,0,0,0.5));">{{ s.icon }}</div>
+          <div class="flex flex-col gap-2 w-52">
+            {% for icon, label, cat in [('🐟', _('Poisson'), 'fish'), ('🐔', _('Volaille'), 'poultry'), ('🐇', _('Lapin'), 'rabbit'), ('🥚', _('Œufs'), 'eggs')] %}
+            <a href="{{ url_for('marketplace.index', cat=cat) }}"
+               class="flex items-center gap-3 px-4 py-2.5 rounded-xl backdrop-blur-md transition-all hover:scale-105"
+               style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);">
+              <span class="text-xl">{{ icon }}</span>
+              <span class="text-white/80 text-sm font-bold">{{ label }}</span>
+              <svg class="w-3.5 h-3.5 text-white/40 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+              </svg>
+            </a>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  {% endif %}
+
+  {# ── Trust strip ─────────────────────────────────────────────────────── #}
+  <div class="absolute bottom-12 left-0 right-0 z-10 pointer-events-none px-8 sm:px-14">
+    <div class="flex items-center gap-4 flex-wrap"
+         style="background:rgba(0,0,0,0.28);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:12px;padding:10px 20px;border:1px solid rgba(255,255,255,0.08);">
+      <span class="text-white/65 text-xs font-semibold">🌿 {{ _('Élevage artisanal') }}</span>
+      <span class="text-white/25 text-xs hidden sm:inline">·</span>
+      <span class="text-white/65 text-xs font-semibold hidden sm:inline">🚚 {{ _('Livraison rapide') }}</span>
+      <span class="text-white/25 text-xs hidden sm:inline">·</span>
+      <span class="text-white/65 text-xs font-semibold hidden sm:inline">💳 {{ _('Mobile Money') }}</span>
+      <span class="text-white/25 text-xs hidden md:inline">·</span>
+      <span class="text-white/65 text-xs font-semibold hidden md:inline">✅ {{ _('Qualité garantie') }}</span>
+    </div>
+  </div>
+
+  {% if n_slides > 1 %}
+  {# ── Slide counter ────────────────────────────────────────────────────── #}
+  <div class="absolute top-5 right-5 z-20 flex items-center gap-1 pointer-events-none">
+    <span class="c-counter-current text-white/80 text-sm font-extrabold tabular-nums leading-none">01</span>
+    <span class="text-white/30 text-sm font-medium leading-none">/</span>
+    <span class="text-white/40 text-sm font-bold tabular-nums leading-none">{{ '%02d' % n_slides }}</span>
+  </div>
+
+  {# ── Progress bar ─────────────────────────────────────────────────────── #}
+  <div class="absolute bottom-0 left-0 right-0 h-0.5 bg-white/10 z-20">
+    <div id="c-progress" class="h-full bg-white/50 transition-none" style="width:0%;"></div>
+  </div>
+
+  {# ── Prev / Next arrows ───────────────────────────────────────────────── #}
+  <button onclick="heroCarousel.prev()"
+          class="c-arrow absolute left-4 top-1/2 -translate-y-1/2 z-20
+                 w-11 h-11 rounded-full flex items-center justify-center
+                 bg-black/30 hover:bg-black/55 border border-white/15 hover:border-white/35
+                 text-white transition-all backdrop-blur-sm"
+          aria-label="{{ _('Slide précédent') }}">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/>
+    </svg>
+  </button>
+  <button onclick="heroCarousel.next()"
+          class="c-arrow absolute right-4 top-1/2 -translate-y-1/2 z-20
+                 w-11 h-11 rounded-full flex items-center justify-center
+                 bg-black/30 hover:bg-black/55 border border-white/15 hover:border-white/35
+                 text-white transition-all backdrop-blur-sm"
+          aria-label="{{ _('Slide suivant') }}">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
+    </svg>
+  </button>
+
+  {# ── Dot indicators ──────────────────────────────────────────────────── #}
+  <div class="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
+    {% for i in range(n_slides) %}
+    <button onclick="heroCarousel.go({{ i }})"
+            class="c-dot transition-all {{ 'c-dot-active' if loop.first else '' }}"
+            aria-label="{{ _('Aller au slide') }} {{ i + 1 }}"></button>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+</div>
+{# ── END CAROUSEL ───────────────────────────────────────────────────────── #}
+
+{# ══ UNIFIED TOOLBAR ══════════════════════════════════════════════════════ #}
+<div id="products" class="mb-6 sticky top-14 lg:top-0 z-20 bg-white/95 backdrop-blur-sm rounded-2xl shadow-card border border-slate-100 card-inset p-4 transition-shadow">
+
+  {# Top row: search + action buttons #}
+  <div class="flex flex-col sm:flex-row sm:items-center gap-3 mb-4">
+    <div class="relative flex-1 max-w-md">
+      <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none"
+           fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0"/>
+      </svg>
+      <input type="text" id="product-search"
+             placeholder="{{ _('Rechercher des produits...') }}"
+             oninput="filterProducts()"
+             class="w-full pl-10 pr-10 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-400 focus:border-brand-400 focus:bg-white transition shadow-sm" />
+      <button type="button" id="search-clear" onclick="clearSearch()"
+              class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-300 hover:text-slate-500 transition hidden"
+              aria-label="{{ _('Effacer la recherche') }}">
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
+        </svg>
+      </button>
+    </div>
+
+    {% if current_user.is_authenticated %}
+    <div class="flex items-center gap-2 flex-shrink-0 self-start sm:self-auto">
+      <a href="{{ url_for('marketplace.my_orders') }}"
+         class="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300 text-xs font-bold transition-all">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+        </svg>
+        {{ _('Commandes') }}
+      </a>
+      <a href="{{ url_for('marketplace.cart_view') }}"
+         class="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-white text-xs font-bold transition-all btn-premium-primary">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.4 6m0 0h9.8M17 19a1 1 0 100 2 1 1 0 000-2zm-9 0a1 1 0 100 2 1 1 0 000-2z"/>
+        </svg>
+        {{ _('Panier') }}
+        {% if cart_count > 0 %}
+        <span class="ml-0.5 px-1.5 py-0.5 rounded-full bg-white/25 text-white text-[10px] font-black">{{ cart_count }}</span>
+        {% endif %}
+      </a>
+    </div>
+    {% endif %}
+  </div>
+
+  {# Bottom row: category filter pills + product count #}
+  <div class="flex items-center justify-between gap-3 flex-wrap">
+    <div class="flex items-center gap-2 flex-wrap">
+      <a href="{{ url_for('marketplace.index') }}"
+         class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold transition-all
+                {{ 'text-white btn-premium-primary shadow-sm' if not active_cat else 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
+        {{ _('Tous') }}
+      </a>
+      {% for cat in categories %}
+      <a href="{{ url_for('marketplace.index', cat=cat.value) }}"
+         class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold transition-all
+                {{ 'text-white btn-premium-primary shadow-sm' if active_cat == cat.value else 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
+        {% if cat.value == 'fish' %}🐟{% elif cat.value == 'poultry' %}🐔{% elif cat.value == 'rabbit' %}🐇{% elif cat.value == 'eggs' %}🥚{% else %}🌿{% endif %}
+        {% if cat.value == 'fish' %}{{ _('Poisson') }}{% elif cat.value == 'poultry' %}{{ _('Volaille') }}{% elif cat.value == 'rabbit' %}{{ _('Lapin') }}{% elif cat.value == 'eggs' %}{{ _('Œufs') }}{% else %}{{ _('Autre') }}{% endif %}
+      </a>
+      {% endfor %}
+    </div>
+    {% if products %}
+    <span class="text-xs text-slate-400 font-medium whitespace-nowrap">{{ pagination.total }} {{ _('produit(s)') }}</span>
+    {% endif %}
+  </div>
+</div>
+
+{# ── Trust strip ─────────────────────────────────────────────────────────── #}
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+  <div class="flex items-center gap-3 bg-white rounded-2xl shadow-card border border-slate-100 card-inset px-4 py-3.5">
+    <span class="text-xl flex-shrink-0">🌿</span>
+    <div>
+      <p class="text-xs font-extrabold text-slate-800">{{ _('Élevage artisanal') }}</p>
+      <p class="text-[10px] text-slate-400 font-medium mt-0.5">{{ _('Sans additifs') }}</p>
+    </div>
+  </div>
+  <div class="flex items-center gap-3 bg-white rounded-2xl shadow-card border border-slate-100 card-inset px-4 py-3.5">
+    <span class="text-xl flex-shrink-0">🚚</span>
+    <div>
+      <p class="text-xs font-extrabold text-slate-800">{{ _('Livraison rapide') }}</p>
+      <p class="text-[10px] text-slate-400 font-medium mt-0.5">{{ _('Chez vous en 24 h') }}</p>
+    </div>
+  </div>
+  <div class="flex items-center gap-3 bg-white rounded-2xl shadow-card border border-slate-100 card-inset px-4 py-3.5">
+    <span class="text-xl flex-shrink-0">💳</span>
+    <div>
+      <p class="text-xs font-extrabold text-slate-800">{{ _('Mobile Money') }}</p>
+      <p class="text-[10px] text-slate-400 font-medium mt-0.5">{{ _('Orange & MTN') }}</p>
+    </div>
+  </div>
+  <div class="flex items-center gap-3 bg-white rounded-2xl shadow-card border border-slate-100 card-inset px-4 py-3.5">
+    <span class="text-xl flex-shrink-0">✅</span>
+    <div>
+      <p class="text-xs font-extrabold text-slate-800">{{ _('Qualité garantie') }}</p>
+      <p class="text-[10px] text-slate-400 font-medium mt-0.5">{{ _('Traçabilité totale') }}</p>
+    </div>
+  </div>
+</div>
+
+{# ── Product grid ────────────────────────────────────────────────────────── #}
+{% if products %}
+
+{% set _cat_accent = {'fish':'#22d3ee','poultry':'#fbbf24','rabbit':'#a78bfa','eggs':'#fb923c','other':'#34d399'} %}
+
+<div id="search-empty" class="hidden bg-white rounded-2xl shadow-card border border-slate-100 card-inset py-12 text-center mb-6">
+  <div class="text-4xl mb-3">🔍</div>
+  <p class="text-slate-600 font-bold text-sm mb-1">{{ _('Aucun produit trouvé pour cette recherche.') }}</p>
+  <button onclick="clearSearch()" class="mt-3 text-xs text-brand-600 hover:text-brand-700 font-semibold transition-colors">
+    ← {{ _('Effacer la recherche') }}
+  </button>
+</div>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5" id="product-grid">
+  {% for product in products %}
+  <div class="product-card bg-white rounded-2xl shadow-card border border-slate-100 card-inset hover:shadow-card-md hover:-translate-y-1 transition-all duration-200 flex flex-col overflow-hidden group"
+       style="border-top: 3px solid {{ _cat_accent.get(product.category.value, '#34d399') }};"
+       data-name="{{ product.name | lower }}"
+       data-desc="{{ (product.description or '') | lower }}">
+
+    <div class="h-52 relative overflow-hidden flex-shrink-0">
+      {% if product.image_filename %}
+      <img src="{{ url_for('static', filename='uploads/products/' + product.image_filename) }}"
+           alt="{{ product.name }}"
+           loading="lazy"
+           class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+      {% else %}
+      <div class="icon-bg-brand w-full h-full flex items-center justify-center text-7xl">
+        <span class="module-icon-bounce group-hover:scale-110 transition-transform duration-200">{{ product.category_icon() }}</span>
+      </div>
+      {% endif %}
+
+      {# Category badge — dark glass, top-left #}
+      <span class="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-full text-[10px] font-bold backdrop-blur-sm"
+            style="background:rgba(0,0,0,0.45);color:rgba(255,255,255,0.88);border:1px solid rgba(255,255,255,0.12);">
+        {% if product.category.value == 'fish' %}🐟{% elif product.category.value == 'poultry' %}🐔{% elif product.category.value == 'rabbit' %}🐇{% elif product.category.value == 'eggs' %}🥚{% else %}🌿{% endif %}
+        {{ product.category_label() }}
+      </span>
+
+      {# Stock badge — top-right #}
+      {% if product.stock_quantity is not none %}
+        {% if product.stock_quantity <= 0 %}
+        <span class="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-100 text-red-600 border border-red-200 shadow-sm">
+          {{ _('Épuisé') }}
+        </span>
+        {% elif product.stock_quantity <= 5 %}
+        <span class="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-700 border border-amber-200 shadow-sm">
+          {{ _('Stock limité :') }} {{ product.stock_quantity }} {{ product.unit }}
+        </span>
+        {% endif %}
+      {% endif %}
+    </div>
+
+    <div class="p-4 flex-1 flex flex-col">
+      <h3 class="text-sm font-extrabold text-slate-800 leading-snug mb-1">{{ product.name }}</h3>
+
+      {% if product.description %}
+      <p class="text-xs text-slate-400 leading-relaxed mb-3 line-clamp-2 font-medium">{{ product.description }}</p>
+      {% endif %}
+
+      <div class="mt-auto border-t border-slate-50 pt-3">
+        <div class="flex items-baseline gap-1 mb-3">
+          <span class="text-xl font-extrabold text-brand-700">{{ '{:,.0f}'.format(product.price_float) }}</span>
+          <span class="text-xs text-slate-400 font-medium">FCFA / {{ product.unit }}</span>
+        </div>
+
+        <form method="POST" action="{{ url_for('marketplace.cart_add') }}" class="flex gap-2 items-center">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+          <input type="hidden" name="product_id" value="{{ product.id }}" />
+
+          <div class="flex items-center rounded-xl border border-slate-200 overflow-hidden bg-slate-50 flex-shrink-0">
+            <button type="button" onclick="stepQty(this,-0.5)"
+                    class="w-7 h-8 flex items-center justify-center text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors font-bold text-base">−</button>
+            <input type="number" name="quantity" value="1" min="0.1" step="0.5"
+                   class="w-10 h-8 text-center text-xs font-bold text-slate-800 bg-transparent border-0 focus:outline-none focus:ring-0" />
+            <button type="button" onclick="stepQty(this,0.5)"
+                    class="w-7 h-8 flex items-center justify-center text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors font-bold text-base">+</button>
+          </div>
+
+          <button type="submit"
+                  onclick="return cartFeedback(this)"
+                  class="flex-1 py-2 px-2 rounded-xl text-white text-xs font-bold cursor-pointer btn-premium-primary flex items-center justify-center gap-1">
+            <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
+            </svg>
+            {{ _('Ajouter') }}
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{{ paginate(pagination) }}
+
+{# Admin bar #}
+{% if current_user.is_authenticated and current_user.is_admin %}
+<div class="mt-8 pt-6 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+  <p class="text-sm text-slate-500 font-medium">{{ _('Mode administrateur') }}</p>
+  <div class="flex items-center gap-2 flex-wrap">
+    <a href="{{ url_for('marketplace.admin_products') }}"
+       class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-white text-sm font-bold"
+       style="background:linear-gradient(135deg,#7c3aed 0%,#9333ea 100%);box-shadow:0 2px 8px rgba(124,58,237,.28);">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+      </svg>
+      {{ _('Produits') }}
+    </a>
+    <a href="{{ url_for('marketplace.admin_orders') }}"
+       class="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300 text-sm font-semibold transition-all">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+      </svg>
+      {{ _('Commandes') }}
+    </a>
+    <a href="{{ url_for('marketplace.admin_carousel') }}"
+       class="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-violet-200 text-violet-600 hover:bg-violet-50 hover:border-violet-300 text-sm font-semibold transition-all">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+      </svg>
+      {{ _('Carousel') }}
+    </a>
+    <a href="{{ url_for('marketplace.admin_analytics') }}"
+       class="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-blue-200 text-blue-600 hover:bg-blue-50 hover:border-blue-300 text-sm font-semibold transition-all">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+      </svg>
+      {{ _('Analytiques') }}
+    </a>
+  </div>
+</div>
+{% endif %}
+
+{% else %}
+<div class="bg-white rounded-2xl shadow-card border border-slate-100 card-inset py-16 text-center">
+  <div class="empty-icon-p w-20 h-20 mx-auto mb-5">🛒</div>
+  <h2 class="text-lg font-bold text-slate-700 mb-2">{{ _('Aucun produit disponible') }}</h2>
+  <p class="text-sm text-slate-400 mb-6 font-medium">{{ _('Le catalogue est vide pour le moment. Revenez bientôt !') }}</p>
+  {% if current_user.is_authenticated and current_user.is_admin %}
+  <a href="{{ url_for('marketplace.admin_create_product') }}"
+     class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-white text-sm font-bold"
+     style="background:linear-gradient(135deg,#7c3aed 0%,#9333ea 100%);box-shadow:0 2px 8px rgba(124,58,237,.28);">
+    + {{ _('Ajouter le premier produit') }}
+  </a>
+  {% endif %}
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block head %}
+<style>
+/* ── Carousel slide transition ──────────────────────────────────────── */
+.c-slide {
+  opacity: 0;
+  transform: scale(1.04);
+  pointer-events: none;
+  transition: opacity 0.9s cubic-bezier(0.4,0,0.2,1),
+              transform 0.9s cubic-bezier(0.4,0,0.2,1);
+}
+.c-slide.c-active {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+}
+.c-slide.c-active .c-content {
+  animation: heroContentIn 0.85s cubic-bezier(0.22,1,0.36,1) both;
+}
+@keyframes heroContentIn {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+/* ── Floating icon ──────────────────────────────────────────────────── */
+.c-icon-anim {
+  animation: iconFloat 4s ease-in-out infinite;
+}
+@keyframes iconFloat {
+  0%,100% { transform: translateY(0) rotate(-2deg); }
+  50%     { transform: translateY(-10px) rotate(2deg); }
+}
+/* ── Dot indicators ─────────────────────────────────────────────────── */
+.c-dot {
+  width: 6px; height: 6px;
+  border-radius: 9999px;
+  background: rgba(255,255,255,0.35);
+  border: none; cursor: pointer;
+  transition: width 0.35s cubic-bezier(0.4,0,0.2,1),
+              background 0.35s ease;
+}
+.c-dot.c-dot-active {
+  width: 28px;
+  background: rgba(255,255,255,0.92);
+}
+.c-dot:hover:not(.c-dot-active) { background: rgba(255,255,255,0.55); }
+/* ── Navigation arrows ──────────────────────────────────────────────── */
+.c-arrow {
+  opacity: 0.55;
+  transition: opacity 0.2s ease, background 0.18s ease;
+}
+.c-arrow:hover { opacity: 1; }
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+/* ── Carousel controller ───────────────────────────────────────────── */
+(function () {
+  const INTERVAL = 5500;
+  const DURATION = 5500;
+
+  class HeroCarousel {
+    constructor(el) {
+      this.el      = el;
+      this.slides  = [...el.querySelectorAll('.c-slide')];
+      this.dots    = [...el.querySelectorAll('.c-dot')];
+      this.prog    = el.querySelector('#c-progress');
+      this.counter = el.querySelector('.c-counter-current');
+      this.n       = this.slides.length;
+      this.cur     = 0;
+      this.paused  = false;
+      this._timer = null;
+      this._progStart = null;
+      this._progFrame = null;
+      if (this.n > 1) {
+        this._start();
+        el.addEventListener('mouseenter', () => this._pause());
+        el.addEventListener('mouseleave', () => this._resume());
+        el.addEventListener('touchstart', () => this._pause(),  {passive:true});
+        el.addEventListener('touchend',   () => this._resume(), {passive:true});
+        document.addEventListener('keydown', e => {
+          if (e.key === 'ArrowLeft')  this.prev();
+          if (e.key === 'ArrowRight') this.next();
+        });
+      }
+    }
+    go(n) {
+      if (n === this.cur) return;
+      this.slides[this.cur].classList.remove('c-active');
+      this.slides[this.cur].setAttribute('aria-hidden', 'true');
+      if (this.dots[this.cur]) this.dots[this.cur].classList.remove('c-dot-active');
+      this.cur = (n + this.n) % this.n;
+      this.slides[this.cur].classList.add('c-active');
+      this.slides[this.cur].setAttribute('aria-hidden', 'false');
+      if (this.dots[this.cur]) this.dots[this.cur].classList.add('c-dot-active');
+      if (this.counter) this.counter.textContent = String(this.cur + 1).padStart(2, '0');
+      this._resetProgress();
+    }
+    next() { this.go(this.cur + 1); }
+    prev() { this.go(this.cur - 1); }
+    _start() {
+      this._timer = setInterval(() => { if (!this.paused) this.next(); }, INTERVAL);
+      this._resetProgress();
+    }
+    _pause()  { this.paused = true; cancelAnimationFrame(this._progFrame); }
+    _resume() { this.paused = false; this._resetProgress(); }
+    _resetProgress() {
+      if (!this.prog) return;
+      cancelAnimationFrame(this._progFrame);
+      this.prog.style.transition = 'none';
+      this.prog.style.width = '0%';
+      this._progStart = performance.now();
+      const tick = (now) => {
+        if (this.paused) return;
+        const pct = Math.min(100, ((now - this._progStart) / DURATION) * 100);
+        this.prog.style.width = pct + '%';
+        if (pct < 100) this._progFrame = requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(() => requestAnimationFrame(tick));
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const el = document.getElementById('hero-carousel');
+    if (el) window.heroCarousel = new HeroCarousel(el);
+  });
+})();
+
+function cartFeedback(btn) {
+  if (btn.dataset.busy) return false;
+  btn.dataset.busy = '1';
+  const form = btn.closest('form');
+  const origHtml = btn.innerHTML;
+  btn.innerHTML = '<svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg> {{ _("Ajouté !") }}';
+  btn.style.background = 'linear-gradient(135deg,#059669 0%,#10b981 100%)';
+  setTimeout(() => { form.submit(); }, 650);
+  return false;
+}
+
+function stepQty(btn, delta) {
+  const inp = btn.parentElement.querySelector('input[type=number]');
+  const newVal = Math.max(0.5, (parseFloat(inp.value) || 1) + delta);
+  inp.value = Math.round(newVal * 2) / 2;
+}
+
+/* ── Product search ─────────────────────────────────────────────────── */
+const _SEARCH_URL  = '{{ url_for("marketplace.search") }}';
+const _CSRF_TOKEN  = document.querySelector('meta[name=csrf-token]')?.content || '';
+let   _searchTimer = null;
+
+function filterProducts() {
+  clearTimeout(_searchTimer);
+  const q = document.getElementById('product-search').value;
+  document.getElementById('search-clear').classList.toggle('hidden', q.trim() === '');
+  _searchTimer = setTimeout(_doSearch, 280);
+}
+
+function clearSearch() {
+  document.getElementById('product-search').value = '';
+  filterProducts();
+}
+
+async function _doSearch() {
+  const q    = document.getElementById('product-search').value.trim();
+  const cat  = new URLSearchParams(window.location.search).get('cat') || '';
+  const grid  = document.getElementById('product-grid');
+  const empty = document.getElementById('search-empty');
+
+  if (!q) {
+    document.querySelectorAll('.product-card').forEach(c => c.style.display = '');
+    empty.classList.add('hidden');
+    return;
+  }
+
+  try {
+    const params = new URLSearchParams({ q });
+    if (cat) params.set('cat', cat);
+    const res  = await fetch(`${_SEARCH_URL}?${params}`);
+    const data = await res.json();
+
+    if (!data.products.length) {
+      if (grid) grid.innerHTML = '';
+      empty.classList.remove('hidden');
+      return;
+    }
+    empty.classList.add('hidden');
+    if (grid) grid.innerHTML = data.products.map(_renderCard).join('');
+  } catch {
+    const ql = q.toLowerCase();
+    let vis = 0;
+    document.querySelectorAll('.product-card').forEach(c => {
+      const ok = c.dataset.name.includes(ql) || c.dataset.desc.includes(ql);
+      c.style.display = ok ? '' : 'none';
+      if (ok) vis++;
+    });
+    empty.classList.toggle('hidden', vis > 0);
+  }
+}
+
+const _CAT_COLORS = {fish:'#22d3ee', poultry:'#fbbf24', rabbit:'#a78bfa', eggs:'#fb923c', other:'#34d399'};
+const _CAT_ICONS  = {fish:'🐟', poultry:'🐔', rabbit:'🐇', eggs:'🥚', other:'🌿'};
+
+function _renderCard(p) {
+  const accentColor = _CAT_COLORS[p.category] || '#34d399';
+  const catIcon     = _CAT_ICONS[p.category]  || '🌿';
+
+  const img = p.image_url
+    ? `<img src="${p.image_url}" alt="${_h(p.name)}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">`
+    : `<div class="w-full h-full flex items-center justify-center text-7xl icon-bg-brand">${p.category_icon}</div>`;
+
+  const catBadge = `<span class="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-full text-[10px] font-bold backdrop-blur-sm"
+    style="background:rgba(0,0,0,0.45);color:rgba(255,255,255,0.88);border:1px solid rgba(255,255,255,0.12);">${catIcon} ${_h(p.category_label)}</span>`;
+
+  const stockBadge = p.stock_quantity !== null && p.stock_quantity <= 0
+    ? `<span class="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-100 text-red-600 border border-red-200 shadow-sm">{{ _('Épuisé') }}</span>`
+    : p.stock_quantity !== null && p.stock_quantity <= 5
+    ? `<span class="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-700 border border-amber-200 shadow-sm">{{ _('Stock limité :') }} ${p.stock_quantity} ${_h(p.unit)}</span>`
+    : '';
+
+  const desc = p.description
+    ? `<p class="text-xs text-slate-400 leading-relaxed mb-3 line-clamp-2 font-medium">${_h(p.description)}</p>` : '';
+
+  const action = p.stock_quantity !== null && p.stock_quantity <= 0
+    ? `<button disabled class="w-full py-2 px-4 rounded-xl text-sm font-bold bg-slate-100 text-slate-400 cursor-not-allowed">{{ _('Épuisé') }}</button>`
+    : `<form method="POST" action="${p.add_cart_url}" class="flex gap-2 items-center">
+        <input type="hidden" name="csrf_token" value="${_CSRF_TOKEN}">
+        <input type="hidden" name="product_id" value="${p.id}">
+        <div class="flex items-center rounded-xl border border-slate-200 overflow-hidden bg-slate-50 flex-shrink-0">
+          <button type="button" onclick="stepQty(this,-0.5)" class="w-7 h-8 flex items-center justify-center text-slate-500 hover:bg-slate-100 font-bold">−</button>
+          <input type="number" name="quantity" value="1" min="0.1" step="0.5" class="w-10 h-8 text-center text-xs font-bold bg-transparent border-0 focus:outline-none">
+          <button type="button" onclick="stepQty(this,0.5)" class="w-7 h-8 flex items-center justify-center text-slate-500 hover:bg-slate-100 font-bold">+</button>
+        </div>
+        <button type="submit" onclick="return cartFeedback(this)" class="flex-1 py-2 px-2 rounded-xl text-white text-xs font-bold btn-premium-primary flex items-center justify-center gap-1">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+          {{ _('Ajouter') }}
+        </button>
+      </form>`;
+
+  return `<div class="product-card bg-white rounded-2xl shadow-card border border-slate-100 card-inset hover:shadow-card-md hover:-translate-y-1 transition-all duration-200 flex flex-col overflow-hidden group"
+    style="border-top: 3px solid ${accentColor};"
+    data-name="${p.name.toLowerCase()}" data-desc="${(p.description||'').toLowerCase()}">
+    <div class="h-52 relative overflow-hidden flex-shrink-0">${img}${catBadge}${stockBadge}</div>
+    <div class="p-4 flex-1 flex flex-col">
+      <h3 class="text-sm font-extrabold text-slate-800 leading-snug mb-1">${_h(p.name)}</h3>
+      ${desc}
+      <div class="mt-auto border-t border-slate-50 pt-3">
+        <div class="flex items-baseline gap-1 mb-3">
+          <span class="text-xl font-extrabold text-brand-700">${p.price_xaf.toLocaleString('fr-FR',{maximumFractionDigits:0})}</span>
+          <span class="text-xs text-slate-400 font-medium">FCFA / ${_h(p.unit)}</span>
+        </div>
+        ${action}
+      </div>
+    </div>
+  </div>`;
+}
+
+function _h(s) {
+  return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+{% endblock %}

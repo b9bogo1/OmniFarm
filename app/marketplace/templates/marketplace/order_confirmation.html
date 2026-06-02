@@ -1,0 +1,251 @@
+{% extends 'base.html' if current_user.is_authenticated else 'base_shop.html' %}
+{% block title %}{{ _('Commande confirmée') }}{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+
+  {# ── Status banner ─────────────────────────────────────────────────────── #}
+  {% set is_mtn_pending    = (order.payment and order.payment.method.value == 'mtn_mobile_money' and order.status.value == 'payment_pending') %}
+  {% set is_orange_pending = (order.payment and order.payment.method.value == 'orange_money' and order.status.value == 'payment_pending') %}
+  {% set is_paid           = (order.status.value == 'paid') %}
+  {% set is_processing     = (order.status.value == 'processing') %}
+
+  <div class="text-center mb-8" id="status-banner">
+    {% if is_mtn_pending %}
+    <div class="w-20 h-20 rounded-2xl flex items-center justify-center text-4xl mx-auto mb-5"
+         style="background:linear-gradient(135deg,#f59e0b,#fbbf24);box-shadow:0 4px 20px rgba(245,158,11,.3);">
+      <span class="animate-pulse">🟡</span>
+    </div>
+    <h1 class="text-2xl font-extrabold text-slate-900 mb-2" id="status-title">{{ _('Paiement MTN en attente') }}</h1>
+    <p class="text-slate-500 text-sm font-medium" id="status-desc">{{ _('Vérifiez votre téléphone et approuvez le paiement Mobile Money.') }}</p>
+
+    <div class="mt-5 mx-auto max-w-sm rounded-2xl border-2 border-yellow-200 bg-yellow-50 px-6 py-5 text-left" id="mtn-pending-card">
+      <div class="flex items-start gap-3">
+        <span class="text-2xl mt-0.5">📱</span>
+        <div>
+          <p class="font-bold text-yellow-800 text-sm mb-1">{{ _('Action requise sur votre téléphone') }}</p>
+          <p class="text-yellow-700 text-sm font-medium">
+            {{ _('Une demande de paiement MTN MoMo a été envoyée au numéro') }}
+            <span class="font-bold">{{ order.payment.phone_number or order.customer_phone }}</span>.
+            {{ _('Entrez votre PIN pour confirmer.') }}
+          </p>
+          <div class="mt-3 flex items-center gap-2 text-xs text-yellow-600 font-medium">
+            <span class="w-2 h-2 rounded-full bg-yellow-400 animate-ping inline-block"></span>
+            {{ _('En attente de confirmation…') }}
+          </div>
+        </div>
+      </div>
+      <button onclick="checkPaymentNow()"
+              class="mt-4 w-full py-2.5 px-4 rounded-xl text-yellow-800 font-bold text-sm border-2 border-yellow-300 bg-white hover:bg-yellow-100 transition-colors flex items-center justify-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+        </svg>
+        {{ _('Vérifier le paiement') }}
+      </button>
+    </div>
+
+    {% elif is_orange_pending %}
+    <div class="w-20 h-20 rounded-2xl flex items-center justify-center text-4xl mx-auto mb-5"
+         style="background:linear-gradient(135deg,#ff6600,#ff8533);box-shadow:0 4px 20px rgba(255,102,0,.28);">⏳</div>
+    <h1 class="text-2xl font-extrabold text-slate-900 mb-2">{{ _('Paiement Orange Money en cours') }}</h1>
+    <p class="text-slate-500 text-sm font-medium">{{ _('Votre commande est enregistrée. Le statut sera mis à jour dès confirmation du paiement.') }}</p>
+
+    {% elif is_paid %}
+    <div class="w-20 h-20 rounded-2xl flex items-center justify-center text-4xl mx-auto mb-5"
+         style="background:linear-gradient(135deg,#16a34a,#22c55e);box-shadow:0 4px 20px rgba(22,163,74,.3);">✅</div>
+    <h1 class="text-2xl font-extrabold text-slate-900 mb-2">{{ _('Commande confirmée !') }}</h1>
+    <p class="text-slate-500 text-sm font-medium">{{ _('Paiement reçu. Merci pour votre achat !') }}</p>
+
+    {% elif is_processing %}
+    <div class="w-20 h-20 rounded-2xl flex items-center justify-center text-4xl mx-auto mb-5"
+         style="background:linear-gradient(135deg,#2563eb,#3b82f6);box-shadow:0 4px 20px rgba(37,99,235,.28);">📦</div>
+    <h1 class="text-2xl font-extrabold text-slate-900 mb-2">{{ _('Commande confirmée !') }}</h1>
+    <p class="text-slate-500 text-sm font-medium">{{ _('Merci pour votre achat. Nous vous contacterons pour la livraison.') }}</p>
+
+    {% else %}
+    <div class="w-20 h-20 rounded-2xl flex items-center justify-center text-4xl mx-auto mb-5"
+         style="background:linear-gradient(135deg,#021a0c,#16a34a);box-shadow:0 4px 20px rgba(21,128,61,.28);">🌿</div>
+    <h1 class="text-2xl font-extrabold text-slate-900 mb-2">{{ _('Commande reçue !') }}</h1>
+    <p class="text-slate-500 text-sm font-medium">{{ _('Merci pour votre achat. Voici le récapitulatif de votre commande.') }}</p>
+    {% endif %}
+  </div>
+
+  {# ── Order card ─────────────────────────────────────────────────────────── #}
+  <div class="bg-white rounded-2xl shadow-card border border-slate-100 card-inset overflow-hidden" id="order-card">
+
+    {# Header #}
+    <div class="px-6 py-5 flex items-center justify-between"
+         style="background:linear-gradient(135deg,#021a0c 0%,#052e16 100%);">
+      <div>
+        <p class="text-[10px] text-white/45 uppercase tracking-widest font-bold mb-0.5">{{ _('N° de commande') }}</p>
+        <p class="text-lg font-extrabold text-white tracking-wide">{{ order.order_number }}</p>
+      </div>
+      <div id="order-status-badge">
+        {% if order.status.value == 'pending' %}
+        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-400/20 text-amber-300 text-xs font-bold border border-amber-400/30">
+          <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>{{ _('En attente') }}
+        </span>
+        {% elif order.status.value == 'payment_pending' %}
+        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-400/20 text-amber-300 text-xs font-bold border border-amber-400/30">
+          <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>{{ _('Paiement en cours') }}
+        </span>
+        {% elif order.status.value == 'paid' %}
+        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-400/20 text-emerald-300 text-xs font-bold border border-emerald-400/30">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>{{ _('Payée') }}
+        </span>
+        {% elif order.status.value == 'processing' %}
+        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-400/20 text-blue-300 text-xs font-bold border border-blue-400/30">
+          <span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>{{ _('En traitement') }}
+        </span>
+        {% else %}
+        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 text-white/60 text-xs font-bold">{{ order.status_label() }}</span>
+        {% endif %}
+      </div>
+    </div>
+
+    {# Customer info grid #}
+    <div class="px-6 py-5 border-b border-slate-100 grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
+      <div>
+        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wide mb-1">{{ _('Client') }}</p>
+        <p class="font-bold text-slate-800">{{ order.customer_name }}</p>
+      </div>
+      <div>
+        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wide mb-1">{{ _('Téléphone') }}</p>
+        <p class="font-bold text-slate-800">{{ order.customer_phone }}</p>
+      </div>
+      <div>
+        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wide mb-1">{{ _('Paiement') }}</p>
+        <p class="font-bold text-slate-800">
+          {% if order.payment_method %}
+            {% if order.payment_method.value == 'orange_money' %}<span style="color:#ea580c;">🟠 Orange Money</span>
+            {% elif order.payment_method.value == 'mtn_mobile_money' %}<span style="color:#d97706;">🟡 MTN MoMo</span>
+            {% else %}<span style="color:#15803d;">💵 {{ _('À la livraison') }}</span>{% endif %}
+          {% else %}—{% endif %}
+        </p>
+      </div>
+      <div>
+        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wide mb-1">{{ _('Date') }}</p>
+        <p class="font-bold text-slate-800">{{ order.created_at.strftime('%d/%m/%Y') }}</p>
+      </div>
+      {% if order.customer_address %}
+      <div class="col-span-2 sm:col-span-4">
+        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wide mb-1">{{ _('Adresse') }}</p>
+        <p class="text-slate-700 font-medium">{{ order.customer_address }}</p>
+      </div>
+      {% endif %}
+    </div>
+
+    {# Order items #}
+    <div class="px-6 py-5 border-b border-slate-100">
+      <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wide mb-3">{{ _('Articles commandés') }}</p>
+      <div class="space-y-2">
+        {% for item in order.items %}
+        <div class="flex justify-between items-center text-sm">
+          <span class="text-slate-600 font-medium">{{ item.product_name }} × {{ item.quantity }} {{ item.product_unit }}</span>
+          <span class="font-bold text-slate-800">{{ '{:,.0f}'.format(item.subtotal_float) }} FCFA</span>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    {# Total #}
+    <div class="px-6 py-5 flex justify-between items-center bg-slate-50/50">
+      <span class="text-base font-bold text-slate-900">{{ _('Total') }}</span>
+      <div class="text-right">
+        <span class="text-2xl font-extrabold text-brand-700">{{ '{:,.0f}'.format(order.total_float) }}</span>
+        <span class="text-sm text-slate-400 ml-1 font-medium">FCFA</span>
+      </div>
+    </div>
+  </div>
+
+  {# Cash on delivery next steps #}
+  {% if is_processing %}
+  <div class="mt-5 rounded-2xl border border-blue-200 bg-blue-50 px-5 py-4 flex items-start gap-3">
+    <span class="text-xl mt-0.5">🚚</span>
+    <div>
+      <p class="font-bold text-blue-800 text-sm mb-1">{{ _('Prochaines étapes') }}</p>
+      <p class="text-blue-700 text-sm font-medium">{{ _('Notre équipe vous contactera au %(phone)s pour confirmer la livraison.', phone=order.customer_phone) }}</p>
+    </div>
+  </div>
+  {% endif %}
+
+  {# Notes #}
+  {% if order.notes %}
+  <div class="mt-4 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-sm text-amber-800 font-medium">
+    <span class="font-bold">{{ _('Note :') }}</span> {{ order.notes }}
+  </div>
+  {% endif %}
+
+  {# Actions #}
+  <div class="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
+    <a href="{{ url_for('marketplace.index') }}"
+       class="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300 text-sm font-semibold transition-all">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+      </svg>
+      {{ _('Continuer mes achats') }}
+    </a>
+    {% if current_user.is_authenticated %}
+    <a href="{{ url_for('marketplace.my_orders') }}"
+       class="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl text-white text-sm font-bold btn-premium-primary">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+      </svg>
+      {{ _('Mes commandes') }}
+    </a>
+    {% endif %}
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% if order.payment and order.payment.method.value == 'mtn_mobile_money' and order.status.value == 'payment_pending' %}
+<script>
+const STATUS_URL = {{ url_for('marketplace.payment_status', order_number=order.order_number) | tojson }};
+let pollCount = 0;
+const MAX_POLLS = 24;
+
+function updateBannerPaid() {
+  const card = document.getElementById('mtn-pending-card');
+  if (card) card.remove();
+  document.getElementById('status-title').textContent = '{{ _("Paiement confirmé !") }}';
+  document.getElementById('status-desc').textContent  = '{{ _("Merci ! Votre paiement MTN MoMo a été reçu.") }}';
+  document.getElementById('order-status-badge').innerHTML =
+    '<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-400/20 text-emerald-300 text-xs font-bold border border-emerald-400/30">' +
+    '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>{{ _("Payée") }}</span>';
+}
+
+function updateBannerFailed() {
+  const card = document.getElementById('mtn-pending-card');
+  if (!card) return;
+  card.innerHTML =
+    '<div class="flex items-start gap-3 text-red-700">' +
+    '<span class="text-xl mt-0.5">❌</span>' +
+    '<div><p class="font-bold text-sm mb-1">{{ _("Paiement échoué") }}</p>' +
+    '<p class="text-sm font-medium">{{ _("Le paiement MTN MoMo n\'a pas abouti. Veuillez nous contacter ou passer une nouvelle commande.") }}</p>' +
+    '</div></div>';
+  card.classList.remove('bg-yellow-50','border-yellow-200');
+  card.classList.add('bg-red-50','border-red-200');
+}
+
+async function checkPaymentNow() {
+  try {
+    const r = await fetch(STATUS_URL);
+    const data = await r.json();
+    if (data.paid) { updateBannerPaid(); return; }
+    if (data.payment_status === 'failed') { updateBannerFailed(); return; }
+  } catch(e) { /* silent */ }
+}
+
+function poll() {
+  if (pollCount >= MAX_POLLS) return;
+  pollCount++;
+  checkPaymentNow().then(() => {
+    if (document.getElementById('mtn-pending-card')) setTimeout(poll, 5000);
+  });
+}
+setTimeout(poll, 5000);
+</script>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,490 @@
+{% extends 'base.html' %}
+{% block title %}{{ _('Tableau de bord') }}{% endblock %}
+{% block page_title %}{{ _('Tableau de bord') }}{% endblock %}
+
+{% block head %}
+<script src="{{ url_for('static', filename='js/chart.umd.min.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+
+{# ── Greeting hero ── #}
+<div class="page-hero px-6 py-5 mb-7 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+  <div>
+    <h1 class="text-2xl font-extrabold text-slate-900 leading-tight">
+      {{ _('Bonjour,') }}
+      <span class="text-gradient-brand">{{ current_user.username }}</span>
+      <span class="ml-1">👋</span>
+    </h1>
+    <p class="mt-1 text-sm text-slate-500 font-medium">
+      {{ now.strftime('%A %d %B %Y') }} &mdash; {{ _('Vue d\'ensemble de votre plateforme') }}
+    </p>
+  </div>
+  <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold self-start shadow-sm
+    {% if current_user.is_admin %}bg-violet-100 text-violet-700 border border-violet-200/60
+    {% elif current_user.is_technician %}bg-brand-100 text-brand-700 border border-brand-200/60
+    {% else %}bg-amber-100 text-amber-700 border border-amber-200/60{% endif %}">
+    <span class="w-1.5 h-1.5 rounded-full animate-pulse
+      {% if current_user.is_admin %}bg-violet-500
+      {% elif current_user.is_technician %}bg-brand-500
+      {% else %}bg-amber-500{% endif %}"></span>
+    {{ current_user.get_role_label() }}
+  </span>
+</div>
+
+{# ── Production stat strip ── #}
+{% if current_user.is_admin or current_user.is_technician %}
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-7">
+
+  <div class="bg-stat-cyan rounded-2xl p-5 shadow-card border flex items-center gap-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-card-md">
+    <div class="w-11 h-11 rounded-xl bg-cyan-400/20 flex items-center justify-center text-xl flex-shrink-0 stat-icon-box">🐟</div>
+    <div class="flex-1 min-w-0">
+      <p class="text-3xl font-extrabold text-slate-800 leading-none count-up" data-target="{{ pond_count }}">{{ pond_count }}</p>
+      <p class="text-xs text-slate-500 mt-1 font-semibold">{{ _('Bassins actifs') }}</p>
+    </div>
+  </div>
+
+  <div class="bg-stat-amber rounded-2xl p-5 shadow-card border flex items-center gap-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-card-md">
+    <div class="w-11 h-11 rounded-xl bg-amber-400/20 flex items-center justify-center text-xl flex-shrink-0 stat-icon-box">🐔</div>
+    <div class="flex-1 min-w-0">
+      <p class="text-3xl font-extrabold text-slate-800 leading-none count-up" data-target="{{ flock_count }}">{{ flock_count }}</p>
+      <p class="text-xs text-slate-500 mt-1 font-semibold">{{ _('Lots de volailles') }}</p>
+    </div>
+  </div>
+
+  <div class="bg-stat-orange rounded-2xl p-5 shadow-card border flex items-center gap-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-card-md">
+    <div class="w-11 h-11 rounded-xl bg-orange-400/20 flex items-center justify-center text-xl flex-shrink-0 stat-icon-box">🐇</div>
+    <div class="flex-1 min-w-0">
+      <p class="text-3xl font-extrabold text-slate-800 leading-none count-up" data-target="{{ batch_count }}">{{ batch_count }}</p>
+      <p class="text-xs text-slate-500 mt-1 font-semibold">{{ _('Lots de lapins') }}</p>
+    </div>
+  </div>
+
+  <div class="bg-stat-brand rounded-2xl p-5 shadow-card border flex items-center gap-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-card-md">
+    <div class="w-11 h-11 rounded-xl bg-brand-400/20 flex items-center justify-center text-xl flex-shrink-0 stat-icon-box">📦</div>
+    <div class="flex-1 min-w-0">
+      <p class="text-3xl font-extrabold text-slate-800 leading-none count-up" data-target="{{ order_count|default(0) }}">{{ order_count|default(0) }}</p>
+      <p class="text-xs text-slate-500 mt-1 font-semibold">{{ _('Commandes totales') }}</p>
+    </div>
+  </div>
+
+</div>
+
+{# ── Finance KPI strip ── #}
+{% if total_revenue_all is defined %}
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-7">
+  <div class="bg-stat-brand rounded-2xl p-5 shadow-card border flex items-center gap-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-card-md">
+    <div class="w-11 h-11 rounded-xl icon-bg-brand flex items-center justify-center text-xl flex-shrink-0 stat-icon-box">💹</div>
+    <div class="flex-1 min-w-0">
+      <p class="text-2xl font-extrabold text-emerald-700 leading-none">{{ '{:,.0f}'.format(total_revenue_all) }}</p>
+      <p class="text-[10px] text-slate-500 font-medium">FCFA {{ _('Revenus totaux') }}</p>
+    </div>
+  </div>
+  <div class="bg-stat-red rounded-2xl p-5 shadow-card border flex items-center gap-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-card-md">
+    <div class="w-11 h-11 rounded-xl icon-bg-red flex items-center justify-center text-xl flex-shrink-0 stat-icon-box">📉</div>
+    <div class="flex-1 min-w-0">
+      <p class="text-2xl font-extrabold text-red-600 leading-none">{{ '{:,.0f}'.format(total_expense_all) }}</p>
+      <p class="text-[10px] text-slate-500 font-medium">FCFA {{ _('Dépenses totales') }}</p>
+    </div>
+  </div>
+  <div class="bg-stat-{{ 'brand' if net_balance_all >= 0 else 'amber' }} rounded-2xl p-5 shadow-card border flex items-center gap-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-card-md">
+    <div class="w-11 h-11 rounded-xl {{ 'icon-bg-brand' if net_balance_all >= 0 else 'icon-bg-amber' }} flex items-center justify-center text-xl flex-shrink-0 stat-icon-box">⚖️</div>
+    <div class="flex-1 min-w-0">
+      <p class="text-2xl font-extrabold {{ 'text-brand-700' if net_balance_all >= 0 else 'text-amber-700' }} leading-none">{{ '{:,.0f}'.format(net_balance_all) }}</p>
+      <p class="text-[10px] text-slate-500 font-medium">FCFA {{ _('Solde net') }}</p>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{# ── Charts + Activity row ── #}
+{% if chart_labels is defined %}
+<div class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-7">
+
+  {# Finance trend chart #}
+  <div class="xl:col-span-2 bg-white rounded-2xl shadow-card border border-slate-100 card-inset p-5">
+    <div class="flex items-center justify-between mb-5">
+      <h2 class="text-sm font-bold text-slate-700 flex items-center gap-2">
+        <span class="w-8 h-8 rounded-lg bg-brand-50 flex items-center justify-center text-base">💹</span>
+        <span>{{ _('Tendance financière — 6 mois') }}</span>
+      </h2>
+      <a href="{{ url_for('finance.index') }}"
+         class="text-xs text-brand-600 hover:text-brand-800 font-bold transition-colors">
+        {{ _('Voir tout →') }}
+      </a>
+    </div>
+    <div class="chart-container" style="height:220px;">
+      <canvas id="financeChart"></canvas>
+    </div>
+  </div>
+
+  {# Activity feed #}
+  <div class="bg-white rounded-2xl shadow-card border border-slate-100 card-inset p-5">
+    <div class="flex items-center justify-between mb-5">
+      <h2 class="text-sm font-bold text-slate-700 flex items-center gap-2">
+        <span class="w-8 h-8 rounded-lg bg-violet-50 flex items-center justify-center text-base">🕐</span>
+        <span>{{ _('Activité récente') }}</span>
+      </h2>
+    </div>
+    {% if activity_feed|default([]) %}
+    <div class="space-y-3">
+      {% for item in activity_feed %}
+      <div class="activity-item pb-3">
+        <div class="activity-dot {{ item.dot_cls }} text-white">
+          <span style="font-size:8px;">{{ '💰' if item.type == 'finance' else ('📦' if item.type == 'order' else '🩺') }}</span>
+        </div>
+        <p class="text-xs font-bold text-slate-700 truncate leading-snug">{{ item.label }}</p>
+        <p class="text-[10px] text-slate-400 font-medium mt-0.5">{{ item.meta }}</p>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-xs text-slate-400 text-center py-8 font-medium">{{ _('Aucune activité récente.') }}</p>
+    {% endif %}
+  </div>
+
+</div>
+{% endif %}
+
+{# ── IoT panel + Recent orders ── #}
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-7">
+
+  {# IoT status panel #}
+  <div class="bg-white rounded-2xl shadow-card border border-slate-100 card-inset p-5">
+    <div class="flex items-center justify-between mb-5">
+      <h2 class="text-sm font-bold text-slate-700 flex items-center gap-2">
+        <span class="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-base">📡</span>
+        <span>{{ _('IoT — Capteurs') }}</span>
+      </h2>
+      <a href="{{ url_for('iot.dashboard') }}"
+         class="text-xs text-brand-600 hover:text-brand-800 font-bold transition-colors">
+        {{ _('Voir tout →') }}
+      </a>
+    </div>
+    <div class="space-y-3">
+      <div class="flex items-center justify-between py-2 border-b border-slate-50">
+        <span class="text-sm text-slate-500 font-medium">{{ _('Planificateur') }}</span>
+        {% if iot_running|default(false) %}
+        <span class="badge-p badge-active-p">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> {{ _('Actif') }}
+        </span>
+        {% else %}
+        <span class="badge-p badge-inactive-p">
+          <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span> {{ _('Inactif') }}
+        </span>
+        {% endif %}
+      </div>
+      <div class="flex items-center justify-between text-sm py-2 border-b border-slate-50">
+        <span class="text-slate-500 font-medium">{{ _('Tâches planifiées') }}</span>
+        <span class="font-extrabold text-slate-800">{{ iot_jobs|default(0) }}</span>
+      </div>
+      <div class="flex items-center justify-between text-sm py-2 border-b border-slate-50">
+        <span class="text-slate-500 font-medium">{{ _('Bassins surveillés') }}</span>
+        <span class="font-extrabold text-slate-800">{{ pond_count }}</span>
+      </div>
+      <div class="flex items-center justify-between text-sm py-2">
+        <span class="text-slate-500 font-medium">{{ _('Lots surveillés') }}</span>
+        <span class="font-extrabold text-slate-800">{{ flock_count + batch_count }}</span>
+      </div>
+    </div>
+    <div class="mt-4 pt-3 border-t border-slate-100">
+      <p class="text-[10px] text-slate-400 font-mono">ModBus TCP · EtherNet/IP · APScheduler</p>
+    </div>
+  </div>
+
+  {# Recent orders #}
+  <div class="lg:col-span-2 bg-white rounded-2xl shadow-card border border-slate-100 card-inset p-5">
+    <div class="flex items-center justify-between mb-5">
+      <h2 class="text-sm font-bold text-slate-700 flex items-center gap-2">
+        <span class="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center text-base">📋</span>
+        <span>{{ _('Commandes récentes') }}</span>
+        {% if pending_orders|default(0) > 0 %}
+        <span class="px-2.5 py-0.5 rounded-full text-xs font-black bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300 border border-amber-300/40 dark:border-amber-700/40">
+          {{ pending_orders }} {{ _('en attente') }}
+        </span>
+        {% endif %}
+      </h2>
+      <a href="{{ url_for('marketplace.admin_orders') }}"
+         class="text-xs text-brand-600 hover:text-brand-800 font-bold transition-colors">
+        {{ _('Voir tout →') }}
+      </a>
+    </div>
+
+    {% if recent_orders %}
+    <div class="space-y-1">
+      {% for order in recent_orders %}
+      <div class="flex items-center justify-between py-2.5 border-b border-slate-50/80 last:border-0 hover:bg-slate-50/60 px-2 rounded-xl transition-colors">
+        <div class="min-w-0 flex-1">
+          <p class="text-sm font-bold text-slate-800 truncate">{{ order.order_number }}</p>
+          <p class="text-xs text-slate-400 truncate font-medium">{{ order.customer_name }} · {{ order.created_at.strftime('%d/%m/%Y') }}</p>
+        </div>
+        <div class="flex items-center gap-3 flex-shrink-0 ml-3">
+          <span class="text-sm font-extrabold text-brand-800">{{ '{:,.0f}'.format(order.total_float) }}</span>
+          {% set sv = order.status.value %}
+          {% if sv in ('paid', 'delivered') %}
+            <span class="badge-p badge-active-p">{{ order.status_label() }}</span>
+          {% elif sv in ('pending', 'payment_pending', 'processing') %}
+            <span class="badge-p badge-maint-p">{{ order.status_label() }}</span>
+          {% elif sv == 'cancelled' %}
+            <span class="badge-p badge-culled-p">{{ order.status_label() }}</span>
+          {% else %}
+            <span class="badge-p badge-inactive-p">{{ order.status_label() }}</span>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="py-10 text-center text-slate-400 text-sm font-medium">{{ _('Aucune commande pour le moment.') }}</div>
+    {% endif %}
+  </div>
+
+</div>
+{% endif %}
+
+{# ── Admin-only extra stats ── #}
+{% if current_user.is_admin %}
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-7">
+  <div class="bg-stat-violet rounded-2xl p-4 shadow-card border flex items-center gap-3 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-card-md">
+    <div class="w-9 h-9 rounded-xl bg-violet-400/20 flex items-center justify-center text-base stat-icon-box">👤</div>
+    <div>
+      <p class="text-xl font-extrabold text-slate-800">{{ user_count|default(0) }}</p>
+      <p class="text-xs text-slate-500 font-semibold">{{ _('Utilisateurs') }}</p>
+    </div>
+  </div>
+  <div class="bg-stat-indigo rounded-2xl p-4 shadow-card border flex items-center gap-3 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-card-md">
+    <div class="w-9 h-9 rounded-xl bg-indigo-400/20 flex items-center justify-center text-base stat-icon-box">📦</div>
+    <div>
+      <p class="text-xl font-extrabold text-slate-800">11</p>
+      <p class="text-xs text-slate-500 font-semibold">{{ _('Blueprints actifs') }}</p>
+    </div>
+  </div>
+  <div class="bg-stat-brand rounded-2xl p-4 shadow-card border flex items-center gap-3 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-card-md">
+    <div class="w-9 h-9 rounded-xl bg-brand-400/20 flex items-center justify-center text-base stat-icon-box">✅</div>
+    <div>
+      <p class="text-xl font-extrabold text-slate-800">{{ pond_count + flock_count + batch_count }}</p>
+      <p class="text-xs text-slate-500 font-semibold">{{ _('Entités actives') }}</p>
+    </div>
+  </div>
+  <div class="bg-stat-amber rounded-2xl p-4 shadow-card border flex items-center gap-3 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-card-md">
+    <div class="w-9 h-9 rounded-xl bg-amber-400/20 flex items-center justify-center text-base stat-icon-box">⚠️</div>
+    <div>
+      <p class="text-xl font-extrabold text-slate-800">{{ pending_orders|default(0) }}</p>
+      <p class="text-xs text-slate-500 font-semibold">{{ _('Alertes commandes') }}</p>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{# ── Quick access module cards ── #}
+<p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">{{ _('Accès rapide') }}</p>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+
+  {% if current_user.is_admin or current_user.is_technician %}
+  <a href="{{ url_for('aquaculture.index') }}"
+     class="group bg-white rounded-2xl p-5 shadow-card border border-slate-100 hover:shadow-card-md hover-glow-cyan transition-all duration-250 flex items-center gap-4 card-inset">
+    <div class="w-13 h-13 rounded-xl icon-bg-cyan flex items-center justify-center text-2xl flex-shrink-0 stat-icon-box module-icon-bounce">🐟</div>
+    <div class="min-w-0">
+      <h3 class="text-sm font-bold text-slate-800 group-hover:text-cyan-700 transition-colors">{{ _('Aquaculture') }}</h3>
+      <p class="text-xs text-slate-500 mt-0.5 font-medium">{{ pond_count }} {{ _('bassin(s) actif(s)') }}</p>
+    </div>
+    <svg class="w-4 h-4 text-slate-300 group-hover:text-cyan-400 transition-all group-hover:translate-x-0.5 ml-auto flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+    </svg>
+  </a>
+
+  <a href="{{ url_for('poultry.index') }}"
+     class="group bg-white rounded-2xl p-5 shadow-card border border-slate-100 hover:shadow-card-md hover-glow-amber transition-all duration-250 flex items-center gap-4 card-inset">
+    <div class="w-13 h-13 rounded-xl icon-bg-amber flex items-center justify-center text-2xl flex-shrink-0 stat-icon-box module-icon-bounce">🐔</div>
+    <div class="min-w-0">
+      <h3 class="text-sm font-bold text-slate-800 group-hover:text-amber-700 transition-colors">{{ _('Aviculture') }}</h3>
+      <p class="text-xs text-slate-500 mt-0.5 font-medium">{{ flock_count }} {{ _('lot(s) actif(s)') }}</p>
+    </div>
+    <svg class="w-4 h-4 text-slate-300 group-hover:text-amber-400 transition-all group-hover:translate-x-0.5 ml-auto flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+    </svg>
+  </a>
+
+  <a href="{{ url_for('cuniculture.index') }}"
+     class="group bg-white rounded-2xl p-5 shadow-card border border-slate-100 hover:shadow-card-md hover-glow-orange transition-all duration-250 flex items-center gap-4 card-inset">
+    <div class="w-13 h-13 rounded-xl icon-bg-orange flex items-center justify-center text-2xl flex-shrink-0 stat-icon-box module-icon-bounce">🐇</div>
+    <div class="min-w-0">
+      <h3 class="text-sm font-bold text-slate-800 group-hover:text-orange-700 transition-colors">{{ _('Cuniculture') }}</h3>
+      <p class="text-xs text-slate-500 mt-0.5 font-medium">{{ batch_count }} {{ _('lot(s) actif(s)') }}</p>
+    </div>
+    <svg class="w-4 h-4 text-slate-300 group-hover:text-orange-400 transition-all group-hover:translate-x-0.5 ml-auto flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+    </svg>
+  </a>
+  {% endif %}
+
+  <a href="{{ url_for('marketplace.index') }}"
+     class="group bg-white rounded-2xl p-5 shadow-card border border-slate-100 hover:shadow-card-md hover-glow-brand transition-all duration-250 flex items-center gap-4 card-inset">
+    <div class="w-13 h-13 rounded-xl icon-bg-brand flex items-center justify-center text-2xl flex-shrink-0 stat-icon-box module-icon-bounce">🛒</div>
+    <div class="min-w-0">
+      <h3 class="text-sm font-bold text-slate-800 group-hover:text-brand-700 transition-colors">{{ _('Marché') }}</h3>
+      <p class="text-xs text-slate-500 mt-0.5 font-medium">{{ order_count|default(0) }} {{ _('commande(s)') }}</p>
+    </div>
+    <svg class="w-4 h-4 text-slate-300 group-hover:text-brand-400 transition-all group-hover:translate-x-0.5 ml-auto flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+    </svg>
+  </a>
+
+  {% if current_user.is_admin or current_user.is_technician %}
+  <a href="{{ url_for('finance.index') }}"
+     class="group bg-white rounded-2xl p-5 shadow-card border border-slate-100 hover:shadow-card-md hover-glow-brand transition-all duration-250 flex items-center gap-4 card-inset">
+    <div class="w-13 h-13 rounded-xl icon-bg-brand flex items-center justify-center text-2xl flex-shrink-0 stat-icon-box module-icon-bounce">💰</div>
+    <div class="min-w-0">
+      <h3 class="text-sm font-bold text-slate-800 group-hover:text-brand-700 transition-colors">{{ _('Finances') }}</h3>
+      <p class="text-xs text-slate-500 mt-0.5 font-medium">
+        {% if net_balance_all is defined %}
+        <span class="{{ 'text-emerald-600' if net_balance_all >= 0 else 'text-amber-600' }} font-bold">
+          {{ '+' if net_balance_all >= 0 else '' }}{{ '{:,.0f}'.format(net_balance_all) }} FCFA
+        </span>
+        {% else %}{{ _('Suivi financier') }}{% endif %}
+      </p>
+    </div>
+    <svg class="w-4 h-4 text-slate-300 group-hover:text-brand-400 transition-all group-hover:translate-x-0.5 ml-auto flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+    </svg>
+  </a>
+
+  <a href="{{ url_for('iot.dashboard') }}"
+     class="group bg-white rounded-2xl p-5 shadow-card border border-slate-100 hover:shadow-card-md hover-glow-indigo transition-all duration-250 flex items-center gap-4 card-inset">
+    <div class="w-13 h-13 rounded-xl icon-bg-indigo flex items-center justify-center text-2xl flex-shrink-0 stat-icon-box module-icon-bounce">📡</div>
+    <div class="min-w-0">
+      <h3 class="text-sm font-bold text-slate-800 group-hover:text-indigo-700 transition-colors">{{ _('IoT & Capteurs') }}</h3>
+      <p class="text-xs text-slate-500 mt-0.5 font-medium">
+        {% if iot_running|default(false) %}
+        <span class="text-emerald-500 font-bold">●</span> {{ iot_jobs|default(0) }} {{ _('tâche(s) active(s)') }}
+        {% else %}
+        <span class="text-slate-400">●</span> {{ _('Planificateur inactif') }}
+        {% endif %}
+      </p>
+    </div>
+    <svg class="w-4 h-4 text-slate-300 group-hover:text-indigo-400 transition-all group-hover:translate-x-0.5 ml-auto flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+    </svg>
+  </a>
+  {% endif %}
+
+  {% if current_user.is_client %}
+  <a href="{{ url_for('marketplace.my_orders') }}"
+     class="group bg-white rounded-2xl p-5 shadow-card border border-slate-100 hover:shadow-card-md hover-glow-brand transition-all duration-250 flex items-center gap-4 card-inset">
+    <div class="w-13 h-13 rounded-xl icon-bg-brand flex items-center justify-center text-2xl flex-shrink-0 stat-icon-box module-icon-bounce">📦</div>
+    <div class="min-w-0">
+      <h3 class="text-sm font-bold text-slate-800 group-hover:text-brand-700 transition-colors">{{ _('Mes commandes') }}</h3>
+      <p class="text-xs text-slate-500 mt-0.5 font-medium">{{ _('Suivre vos commandes') }}</p>
+    </div>
+    <svg class="w-4 h-4 text-slate-300 group-hover:text-brand-400 transition-all group-hover:translate-x-0.5 ml-auto flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+    </svg>
+  </a>
+  {% endif %}
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+{% if chart_labels is defined %}
+(function() {
+  const isDark = document.documentElement.classList.contains('dark');
+  const gridColor  = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)';
+  const tickColor  = isDark ? '#94a3b8' : '#94a3b8';
+  const tooltipBg  = isDark ? '#1a2535' : '#fff';
+  const tooltipBdr = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)';
+
+  const ctx = document.getElementById('financeChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: {{ chart_labels|safe }},
+      datasets: [
+        {
+          label: '{{ _("Revenus") }}',
+          data: {{ chart_revenues|safe }},
+          backgroundColor: 'rgba(22,163,74,0.75)',
+          borderColor: 'rgba(22,163,74,1)',
+          borderWidth: 1.5,
+          borderRadius: 6,
+          borderSkipped: false,
+        },
+        {
+          label: '{{ _("Dépenses") }}',
+          data: {{ chart_expenses|safe }},
+          backgroundColor: 'rgba(239,68,68,0.65)',
+          borderColor: 'rgba(239,68,68,1)',
+          borderWidth: 1.5,
+          borderRadius: 6,
+          borderSkipped: false,
+        },
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: {
+          position: 'top',
+          labels: {
+            boxWidth: 12, boxHeight: 12,
+            font: { family: 'Ubuntu', size: 11, weight: '600' },
+            color: tickColor,
+            padding: 16,
+          }
+        },
+        tooltip: {
+          backgroundColor: tooltipBg,
+          borderColor: tooltipBdr,
+          borderWidth: 1,
+          titleColor: isDark ? '#e2e8f0' : '#1e293b',
+          bodyColor: isDark ? '#94a3b8' : '#64748b',
+          padding: 12,
+          titleFont: { family: 'Ubuntu', weight: '700', size: 12 },
+          bodyFont: { family: 'Ubuntu', size: 11 },
+          callbacks: {
+            label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y.toLocaleString('fr-FR',{maximumFractionDigits:0})} FCFA`
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { color: gridColor, lineWidth: 1 },
+          ticks: { color: tickColor, font: { family: 'Ubuntu', size: 11, weight: '600' } },
+          border: { display: false }
+        },
+        y: {
+          grid: { color: gridColor, lineWidth: 1 },
+          ticks: {
+            color: tickColor,
+            font: { family: 'Ubuntu', size: 11 },
+            callback: v => v.toLocaleString('fr-FR',{notation:'compact',maximumFractionDigits:0})
+          },
+          border: { display: false }
+        }
+      }
+    }
+  });
+})();
+{% endif %}
+
+/* ── Animated counters ── */
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.count-up[data-target]').forEach(el => {
+    const target = parseInt(el.dataset.target) || 0;
+    if (target === 0) return;
+    let current = 0;
+    const step = Math.max(1, Math.ceil(target / 30));
+    const tick = () => {
+      current = Math.min(current + step, target);
+      el.textContent = current.toLocaleString('fr-FR');
+      if (current < target) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  });
+});
+</script>
+{% endblock %}

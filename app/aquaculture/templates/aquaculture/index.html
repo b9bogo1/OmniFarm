@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% from 'macros.html' import status_badge, empty_state, stat_card %}
+{% block title %}{{ _('Aquaculture') }}{% endblock %}
+{% block page_title %}{{ _('Aquaculture') }}{% endblock %}
+
+{% block content %}
+
+{# ── Page header ── #}
+<div class="page-hero px-6 py-5 mb-7 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+  <div class="flex items-center gap-4">
+    <div class="w-13 h-13 rounded-2xl icon-bg-cyan flex items-center justify-center text-2xl shadow-card stat-icon-box flex-shrink-0">🐟</div>
+    <div>
+      <h1 class="text-2xl font-extrabold text-slate-900">{{ _('Aquaculture') }}</h1>
+      <p class="text-sm text-slate-500 mt-0.5 font-medium">{{ _('Gestion des bassins et suivi piscicole') }}</p>
+    </div>
+  </div>
+  <a href="{{ url_for('aquaculture.create_pond') }}"
+     class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-white text-sm font-bold btn-premium-primary">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
+    </svg>
+    {{ _('Nouveau bassin') }}
+  </a>
+</div>
+
+{% if ponds %}
+{# Stats strip #}
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-7">
+  {{ stat_card(_('Bassins'), ponds|length, '🏊', 'bg-stat-cyan') }}
+  {{ stat_card(_('Actifs'), ponds|selectattr('status.value', 'equalto', 'active')|list|length, '✅', 'bg-stat-brand') }}
+  {{ stat_card(_('Total saisies'), ponds|sum(attribute='record_count'), '📋', 'bg-stat-slate') }}
+  {{ stat_card(_('Total mortalités'), ponds|sum(attribute='total_mortality'), '📉', 'bg-stat-red') }}
+</div>
+
+{# Pond cards #}
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+  {% for pond in ponds %}
+  <div class="bg-white rounded-2xl shadow-card border border-slate-100 card-inset hover:shadow-card-md hover-glow-cyan transition-all duration-250 flex flex-col">
+    <div class="p-6 flex-1">
+      <div class="flex items-start justify-between mb-4">
+        <div class="flex-1 min-w-0 mr-3">
+          <h3 class="text-base font-bold text-slate-800 truncate">{{ pond.name }}</h3>
+          <p class="text-xs text-slate-500 mt-0.5 font-medium">{{ pond.species }}</p>
+        </div>
+        {% if pond.status.value == 'active' %}{{ status_badge('active', _('Actif')) }}
+        {% elif pond.status.value == 'inactive' %}{{ status_badge('inactive', _('Inactif')) }}
+        {% elif pond.status.value == 'maintenance' %}{{ status_badge('maintenance', _('Maintenance')) }}
+        {% else %}{{ status_badge('harvested', _('Récolté')) }}{% endif %}
+      </div>
+
+      <div class="grid grid-cols-3 gap-2 mb-4">
+        <div class="swatch-slate text-center p-2.5 rounded-xl border border-slate-100">
+          <p class="text-lg font-extrabold text-slate-700">{{ pond.record_count }}</p>
+          <p class="text-[10px] text-slate-400 leading-tight font-semibold">{{ _('Saisies') }}</p>
+        </div>
+        <div class="swatch-red text-center p-2.5 rounded-xl border border-red-100 dark:border-red-900/40">
+          <p class="text-lg font-extrabold text-red-600 dark:text-red-400">{{ pond.total_mortality }}</p>
+          <p class="text-[10px] text-slate-400 leading-tight font-semibold">{{ _('Morts') }}</p>
+        </div>
+        <div class="swatch-cyan text-center p-2.5 rounded-xl border border-cyan-100 dark:border-cyan-900/40">
+          <p class="text-sm font-extrabold text-cyan-600 dark:text-cyan-400">{{ '%.1f'|format(pond.capacity_m3) if pond.capacity_m3 else '—' }}</p>
+          <p class="text-[10px] text-slate-400 leading-tight font-semibold">m³</p>
+        </div>
+      </div>
+
+      {% if pond.latest_record %}
+      <p class="text-xs text-slate-400 font-medium">
+        {{ _('Dernière saisie :') }}
+        <span class="text-slate-600 font-bold">{{ pond.latest_record.record_date.strftime('%d/%m/%Y') }}</span>
+      </p>
+      {% else %}
+      <p class="text-xs text-slate-400 italic font-medium">{{ _('Aucune saisie') }}</p>
+      {% endif %}
+    </div>
+
+    <div class="px-6 py-4 border-t border-slate-100 flex items-center gap-3">
+      <a href="{{ url_for('aquaculture.pond_detail', pond_id=pond.id) }}"
+         class="flex-1 text-center text-xs font-bold text-brand-700 hover:text-brand-900 transition-colors">
+        {{ _('Détails & saisies') }}
+      </a>
+      <span class="w-px h-4 bg-slate-200"></span>
+      <a href="{{ url_for('aquaculture.add_record', pond_id=pond.id) }}"
+         class="flex-1 text-center text-xs font-bold text-cyan-600 hover:text-cyan-800 transition-colors">
+        + {{ _('Saisie') }}
+      </a>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% else %}
+{{ empty_state('🐟', _('Aucun bassin enregistré'),
+   _('Commencez par créer votre premier bassin piscicole.'),
+   url_for('aquaculture.create_pond'), _('Créer un bassin')) }}
+{% endif %}
+{% endblock %}

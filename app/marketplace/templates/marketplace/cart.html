@@ -1,0 +1,188 @@
+{% extends 'base.html' if current_user.is_authenticated else 'base_shop.html' %}
+{% from 'macros.html' import breadcrumb %}
+{% block title %}{{ _('Mon panier') }}{% endblock %}
+
+{% block content %}
+{{ breadcrumb([(url_for('marketplace.index'), _('Marché')), ('#', _('Panier'))]) }}
+
+<div class="flex items-center gap-4 mb-7">
+  <div class="w-12 h-12 rounded-2xl icon-bg-brand flex items-center justify-center text-2xl stat-icon-box">🛒</div>
+  <div>
+    <h1 class="text-xl font-extrabold text-slate-900">{{ _('Mon panier') }}</h1>
+    <p class="text-sm text-slate-500 mt-0.5 font-medium">
+      {% if items %}
+        {{ items|length }} {{ _('article(s)') }}
+      {% else %}
+        {{ _('Marché — OmniFarm') }}
+      {% endif %}
+    </p>
+  </div>
+</div>
+
+{% if items %}
+<form method="POST" action="{{ url_for('marketplace.cart_update') }}" id="cart-form">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+    {# ── Cart items ─────────────────────────────────────────────────────────── #}
+    <div class="lg:col-span-2 space-y-3">
+
+      {% for product, qty in items %}
+      <div class="bg-white rounded-2xl shadow-card border border-slate-100 card-inset p-4 flex items-center gap-4 hover:shadow-card-md transition-all group">
+
+        {# Product icon #}
+        <div class="w-14 h-14 rounded-xl flex items-center justify-center text-2xl flex-shrink-0 stat-icon-box icon-bg-brand">
+          {{ product.category_icon() }}
+        </div>
+
+        {# Product info #}
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-extrabold text-slate-800 truncate">{{ product.name }}</p>
+          <p class="text-xs text-slate-400 font-medium mt-0.5">{{ '{:,.0f}'.format(product.price_float) }} FCFA / {{ product.unit }}</p>
+        </div>
+
+        {# Qty stepper #}
+        <div class="flex items-center rounded-xl border border-slate-200 overflow-hidden bg-slate-50 flex-shrink-0">
+          <button type="button" onclick="cartStep(this, -0.5)"
+                  class="w-8 h-9 flex items-center justify-center text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors font-bold text-base">−</button>
+          <input type="number" name="qty_{{ product.id }}"
+                 value="{{ qty }}" min="0" step="0.5"
+                 onchange="updateLineTotal(this)"
+                 class="w-14 h-9 text-center text-sm font-bold text-slate-800 bg-transparent border-0 focus:outline-none focus:ring-0 focus:bg-brand-50 transition-colors" />
+          <button type="button" onclick="cartStep(this, 0.5)"
+                  class="w-8 h-9 flex items-center justify-center text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors font-bold text-base">+</button>
+        </div>
+        <span class="text-xs text-slate-400 font-medium flex-shrink-0 hidden sm:block">{{ product.unit }}</span>
+
+        {# Line total #}
+        <div class="text-right flex-shrink-0 w-24 hidden sm:block">
+          <p class="text-sm font-extrabold text-slate-800 line-total" data-price="{{ product.price_float }}">
+            {{ '{:,.0f}'.format(product.price_float * qty) }}
+          </p>
+          <p class="text-[10px] text-slate-400 font-medium">FCFA</p>
+        </div>
+
+        {# Remove #}
+        <form method="POST" action="{{ url_for('marketplace.cart_remove', product_id=product.id) }}" class="flex-shrink-0">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+          <button type="submit"
+                  class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-300 hover:text-red-500 hover:bg-red-50 transition-all"
+                  title="{{ _('Retirer du panier') }}">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+            </svg>
+          </button>
+        </form>
+      </div>
+      {% endfor %}
+
+      {# Update button #}
+      <div class="flex justify-end pt-1">
+        <button type="submit"
+                class="inline-flex items-center gap-2 px-5 py-2 rounded-xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:border-slate-300 text-sm font-semibold transition-all shadow-sm">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+          </svg>
+          {{ _('Mettre à jour') }}
+        </button>
+      </div>
+    </div>
+
+    {# ── Order summary ─────────────────────────────────────────────────────── #}
+    <div class="lg:col-span-1">
+      <div class="bg-white rounded-2xl shadow-card border border-slate-100 card-inset p-6 sticky top-24">
+
+        <h2 class="text-sm font-bold text-slate-700 uppercase tracking-wide mb-4 flex items-center gap-2">
+          <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 19h16a2 2 0 002-2V7a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+          </svg>
+          {{ _('Récapitulatif') }}
+        </h2>
+
+        <div class="space-y-2 mb-5">
+          {% for product, qty in items %}
+          <div class="flex justify-between text-sm">
+            <span class="text-slate-500 truncate pr-2 font-medium">
+              {{ product.category_icon() }} {{ product.name }} × {{ qty }}
+            </span>
+            <span class="text-slate-700 font-bold whitespace-nowrap">{{ '{:,.0f}'.format(product.price_float * qty) }}</span>
+          </div>
+          {% endfor %}
+        </div>
+
+        <div class="border-t border-slate-100 pt-4 mb-5">
+          <div class="flex justify-between items-baseline">
+            <span class="text-base font-bold text-slate-800">{{ _('Total') }}</span>
+            <div class="text-right">
+              <span class="text-2xl font-extrabold text-brand-700">{{ '{:,.0f}'.format(total) }}</span>
+              <span class="text-xs text-slate-400 ml-1 font-medium">FCFA</span>
+            </div>
+          </div>
+        </div>
+
+        <a href="{{ url_for('marketplace.checkout') }}"
+           class="flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl text-white font-bold text-sm btn-premium-primary">
+          {{ _('Commander') }}
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+          </svg>
+        </a>
+        <a href="{{ url_for('marketplace.index') }}"
+           class="mt-2 flex items-center justify-center gap-1.5 w-full py-2 text-xs text-slate-400 hover:text-slate-600 font-medium transition-colors">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+          </svg>
+          {{ _('Continuer mes achats') }}
+        </a>
+
+        {# Security badge #}
+        <div class="mt-4 flex items-center gap-2 px-3 py-2.5 rounded-xl bg-slate-50 text-xs text-slate-400 font-medium">
+          <svg class="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+          </svg>
+          {{ _('Paiement 100% sécurisé') }}
+        </div>
+      </div>
+    </div>
+
+  </div>
+</form>
+
+{% else %}
+{# Empty cart #}
+<div class="bg-white rounded-2xl shadow-card border border-slate-100 card-inset py-20 text-center">
+  <div class="w-20 h-20 rounded-2xl flex items-center justify-center text-4xl mx-auto mb-5 stat-icon-box icon-bg-brand">🛒</div>
+  <h2 class="text-lg font-bold text-slate-700 mb-2">{{ _('Votre panier est vide') }}</h2>
+  <p class="text-sm text-slate-400 mb-6 font-medium">{{ _('Découvrez nos produits frais et ajoutez-les à votre panier.') }}</p>
+  <a href="{{ url_for('marketplace.index') }}"
+     class="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl text-white text-sm font-bold btn-premium-primary">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+    </svg>
+    {{ _('Voir le catalogue') }}
+  </a>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+function cartStep(btn, delta) {
+  const inp = btn.parentElement.querySelector('input[type=number]');
+  const newVal = Math.max(0, Math.round(((parseFloat(inp.value) || 0) + delta) * 2) / 2);
+  inp.value = newVal;
+  updateLineTotal(inp);
+}
+
+function updateLineTotal(inp) {
+  const card = inp.closest('.bg-white');
+  const totalEl = card ? card.querySelector('.line-total') : null;
+  if (!totalEl) return;
+  const price = parseFloat(totalEl.dataset.price) || 0;
+  const qty = parseFloat(inp.value) || 0;
+  totalEl.textContent = (price * qty).toLocaleString(undefined, {maximumFractionDigits: 0});
+}
+</script>
+{% endblock %}

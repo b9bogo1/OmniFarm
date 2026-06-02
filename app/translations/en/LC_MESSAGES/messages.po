@@ -1,0 +1,5212 @@
+# English translations for PROJECT.
+# Copyright (C) 2026 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-04-25 13:58+0100\n"
+"PO-Revision-Date: 2026-04-23 07:02+0100\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: en\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: app/aquaculture/forms.py:14
+msgid "Nom du bassin"
+msgstr ""
+
+#: app/aquaculture/forms.py:16
+msgid "Ex: Bassin A1, Mare Nord"
+msgstr ""
+
+#: app/aquaculture/forms.py:19
+msgid "Espèce principale"
+msgstr ""
+
+#: app/aquaculture/forms.py:21
+msgid "Ex: Tilapia, Silure, Carpe commune"
+msgstr ""
+
+#: app/aquaculture/forms.py:24
+#: app/aquaculture/templates/aquaculture/detail.html:46
+msgid "Capacité (m³)"
+msgstr ""
+
+#: app/aquaculture/forms.py:25
+msgid "Doit être positif."
+msgstr ""
+
+#: app/aquaculture/forms.py:28 app/auth/templates/auth/admin_users.html:62
+#: app/cuniculture/forms.py:43
+#: app/marketplace/templates/marketplace/admin/products.html:79
+#: app/poultry/forms.py:43
+msgid "Statut"
+msgstr "Status"
+
+#: app/aquaculture/forms.py:30
+#: app/aquaculture/templates/aquaculture/detail.html:16
+#: app/aquaculture/templates/aquaculture/index.html:44
+#: app/auth/templates/auth/admin_users.html:108 app/cuniculture/forms.py:45
+#: app/cuniculture/templates/cuniculture/detail.html:15
+#: app/cuniculture/templates/cuniculture/index.html:42
+#: app/iot/templates/iot/dashboard.html:22
+#: app/iot/templates/iot/dashboard.html:83
+#: app/main/templates/main/dashboard.html:88
+#: app/marketplace/templates/marketplace/admin/carousel.html:103
+#: app/marketplace/templates/marketplace/admin/products.html:122
+#: app/poultry/forms.py:45 app/poultry/templates/poultry/detail.html:15
+#: app/poultry/templates/poultry/index.html:42
+msgid "Actif"
+msgstr "Active"
+
+#: app/aquaculture/forms.py:31
+#: app/aquaculture/templates/aquaculture/detail.html:17
+#: app/aquaculture/templates/aquaculture/index.html:45
+#: app/auth/templates/auth/admin_users.html:112
+#: app/iot/templates/iot/dashboard.html:26
+#: app/main/templates/main/dashboard.html:92
+#: app/marketplace/templates/marketplace/admin/carousel.html:91
+#: app/marketplace/templates/marketplace/admin/carousel.html:103
+#: app/marketplace/templates/marketplace/admin/products.html:126
+msgid "Inactif"
+msgstr "Inactive"
+
+#: app/aquaculture/forms.py:32
+msgid "En maintenance"
+msgstr ""
+
+#: app/aquaculture/forms.py:33
+msgid "Vidé / Récolté"
+msgstr ""
+
+#: app/aquaculture/forms.py:36
+msgid "Date d'installation"
+msgstr ""
+
+#: app/aquaculture/forms.py:37 app/aquaculture/forms.py:99
+#: app/aquaculture/templates/aquaculture/detail.html:53
+#: app/aquaculture/templates/aquaculture/pond_form.html:36
+#: app/aquaculture/templates/aquaculture/record_form.html:64
+#: app/cuniculture/forms.py:50 app/cuniculture/forms.py:112
+#: app/cuniculture/templates/cuniculture/batch_form.html:38
+#: app/cuniculture/templates/cuniculture/record_form.html:61
+#: app/finance/forms.py:71 app/health/forms.py:66 app/poultry/forms.py:50
+#: app/poultry/forms.py:109 app/poultry/templates/poultry/flock_form.html:38
+#: app/poultry/templates/poultry/record_form.html:63
+msgid "Notes"
+msgstr ""
+
+#: app/aquaculture/forms.py:38 app/aquaculture/forms.py:100
+#: app/auth/forms.py:135 app/cuniculture/forms.py:51
+#: app/cuniculture/forms.py:113 app/marketplace/forms.py:57
+#: app/marketplace/forms.py:140 app/poultry/forms.py:51
+#: app/poultry/forms.py:110
+msgid "Enregistrer"
+msgstr "Save"
+
+#: app/aquaculture/forms.py:43 app/cuniculture/forms.py:56
+#: app/poultry/forms.py:56
+msgid "Date d'observation"
+msgstr ""
+
+#: app/aquaculture/forms.py:50
+msgid "Effectif actuel (poissons)"
+msgstr ""
+
+#: app/aquaculture/forms.py:54 app/cuniculture/forms.py:91
+msgid "Poids moyen (g)"
+msgstr ""
+
+#: app/aquaculture/forms.py:56
+msgid "Poids moyen mesuré par sondage"
+msgstr ""
+
+#: app/aquaculture/forms.py:61 app/cuniculture/forms.py:63
+msgid "Aliment distribué (kg)"
+msgstr ""
+
+#: app/aquaculture/forms.py:65 app/cuniculture/forms.py:67
+#: app/poultry/forms.py:67
+msgid "Type d'aliment"
+msgstr ""
+
+#: app/aquaculture/forms.py:67
+msgid "Ex: Granulés 3mm, Farine de poisson"
+msgstr ""
+
+#: app/aquaculture/forms.py:72 app/cuniculture/forms.py:97
+#: app/poultry/forms.py:90
+msgid "Mortalité (nombre)"
+msgstr ""
+
+#: app/aquaculture/forms.py:77 app/cuniculture/forms.py:102
+#: app/poultry/forms.py:95
+msgid "Cause de mortalité"
+msgstr ""
+
+#: app/aquaculture/forms.py:83
+msgid "Température eau (°C)"
+msgstr ""
+
+#: app/aquaculture/forms.py:87
+msgid "pH"
+msgstr ""
+
+#: app/aquaculture/forms.py:91
+msgid "Oxygène dissous (mg/L)"
+msgstr ""
+
+#: app/aquaculture/forms.py:95
+msgid "Turbidité (NTU)"
+msgstr ""
+
+#: app/aquaculture/routes.py:19
+#: app/aquaculture/templates/aquaculture/detail.html:6
+#: app/aquaculture/templates/aquaculture/index.html:3
+#: app/aquaculture/templates/aquaculture/index.html:12
+#: app/aquaculture/templates/aquaculture/pond_form.html:7
+#: app/aquaculture/templates/aquaculture/record_form.html:7
+#: app/auth/templates/auth/login.html:83 app/finance/forms.py:24
+#: app/main/templates/main/dashboard.html:208 app/models/finance.py:107
+#: app/models/health.py:81 app/templates/base.html:147
+msgid "Aquaculture"
+msgstr "Aquaculture"
+
+#: app/aquaculture/routes.py:39
+#, python-format
+msgid "Bassin « %(name)s » créé avec succès."
+msgstr ""
+
+#: app/aquaculture/routes.py:43
+#: app/aquaculture/templates/aquaculture/index.html:21
+msgid "Nouveau bassin"
+msgstr ""
+
+#: app/aquaculture/routes.py:60
+#, python-format
+msgid "Bassin « %(name)s » mis à jour."
+msgstr ""
+
+#: app/aquaculture/routes.py:65
+msgid "Modifier le bassin"
+msgstr ""
+
+#: app/aquaculture/routes.py:76
+#, python-format
+msgid "Bassin « %(name)s » et toutes ses données supprimés."
+msgstr ""
+
+#: app/aquaculture/routes.py:123 app/cuniculture/routes.py:125
+#: app/poultry/routes.py:125
+#, python-format
+msgid "Saisie du %(date)s enregistrée."
+msgstr ""
+
+#: app/aquaculture/routes.py:127 app/cuniculture/routes.py:129
+#: app/poultry/routes.py:129
+msgid "Nouvelle saisie journalière"
+msgstr ""
+
+#: app/aquaculture/routes.py:141 app/cuniculture/routes.py:146
+#: app/poultry/routes.py:144
+msgid "Saisie mise à jour."
+msgstr ""
+
+#: app/aquaculture/routes.py:145 app/cuniculture/routes.py:150
+#: app/poultry/routes.py:148
+msgid "Modifier la saisie"
+msgstr ""
+
+#: app/aquaculture/routes.py:156 app/cuniculture/routes.py:161
+#: app/poultry/routes.py:159
+msgid "Enregistrement supprimé."
+msgstr ""
+
+#: app/aquaculture/templates/aquaculture/detail.html:18
+#: app/aquaculture/templates/aquaculture/index.html:46 app/finance/forms.py:15
+#: app/models/finance.py:93
+msgid "Maintenance"
+msgstr ""
+
+#: app/aquaculture/templates/aquaculture/detail.html:19
+#: app/aquaculture/templates/aquaculture/index.html:47
+msgid "Récolté"
+msgstr ""
+
+#: app/aquaculture/templates/aquaculture/detail.html:23
+msgid "Installé le"
+msgstr ""
+
+#: app/aquaculture/templates/aquaculture/detail.html:33
+#: app/aquaculture/templates/aquaculture/record_form.html:9
+#: app/cuniculture/templates/cuniculture/detail.html:32
+#: app/cuniculture/templates/cuniculture/record_form.html:9
+#: app/poultry/templates/poultry/detail.html:32
+#: app/poultry/templates/poultry/record_form.html:9
+msgid "Nouvelle saisie"
+msgstr ""
+
+#: app/aquaculture/templates/aquaculture/detail.html:37
+#: app/aquaculture/templates/aquaculture/detail.html:104
+#: app/aquaculture/templates/aquaculture/pond_form.html:9
+#: app/auth/templates/auth/admin_user_form.html:8
+#: app/auth/templates/auth/admin_users.html:127
+#: app/cuniculture/templates/cuniculture/batch_form.html:9
+#: app/cuniculture/templates/cuniculture/detail.html:35
+#: app/cuniculture/templates/cuniculture/detail.html:90
+#: app/marketplace/templates/marketplace/admin/carousel.html:150
+#: app/marketplace/templates/marketplace/admin/carousel_form.html:9
+#: app/marketplace/templates/marketplace/admin/product_form.html:9
+#: app/marketplace/templates/marketplace/admin/products.html:137
+#: app/poultry/templates/poultry/detail.html:35
+#: app/poultry/templates/poultry/detail.html:90
+#: app/poultry/templates/poultry/flock_form.html:9
+msgid "Modifier"
+msgstr "Edit"
+
+#: app/aquaculture/templates/aquaculture/detail.html:44
+#: app/aquaculture/templates/aquaculture/index.html:53
+msgid "Saisies"
+msgstr ""
+
+#: app/aquaculture/templates/aquaculture/detail.html:45
+#: app/cuniculture/templates/cuniculture/detail.html:41
+#: app/poultry/templates/poultry/detail.html:41
+msgid "Mortalités"
+msgstr ""
+
+#: app/aquaculture/templates/aquaculture/detail.html:48
+msgid "Temp. eau (°C)"
+msgstr ""
+
+#: app/aquaculture/templates/aquaculture/detail.html:62
+#: app/cuniculture/templates/cuniculture/detail.html:49
+#: app/poultry/templates/poultry/detail.html:49
+msgid "Historique des saisies"
+msgstr ""
+
+#: app/aquaculture/templates/aquaculture/detail.html:73
+#: app/cuniculture/templates/cuniculture/detail.html:60 app/finance/forms.py:54
+#: app/health/forms.py:41
+#: app/marketplace/templates/marketplace/order_confirmation.html:127
+#: app/poultry/templates/poultry/detail.html:60
+msgid "Date"
+msgstr ""
+
+#: app/aquaculture/templates/aquaculture/detail.html:74
+msgid "Effectif"
+msgstr ""
+
+#: app/aquaculture/templates/aquaculture/detail.html:75
+msgid "Poids moy. (g)"
+msgstr ""
+
+#: app/aquaculture/templates/aquaculture/detail.html:76
+#: app/cuniculture/templates/cuniculture/detail.html:61
+#: app/poultry/templates/poultry/detail.html:61
+msgid "Aliment (kg)"
+msgstr ""
+
+#: app/aquaculture/templates/aquaculture/detail.html:77
+#: app/aquaculture/templates/aquaculture/record_form.html:46
+#: app/cuniculture/templates/cuniculture/detail.html:66
+#: app/poultry/templates/poultry/detail.html:65
+#: app/poultry/templates/poultry/record_form.html:47
+msgid "Mortalité"
+msgstr ""
+
+#: app/aquaculture/templates/aquaculture/detail.html:78
+msgid "T°C eau"
+msgstr ""
+
+#: app/aquaculture/templates/aquaculture/detail.html:81
+#: app/cuniculture/templates/cuniculture/detail.html:68
+#: app/poultry/templates/poultry/detail.html:68
+msgid "Saisi par"
+msgstr ""
+
+#: app/aquaculture/templates/aquaculture/detail.html:105
+#: app/aquaculture/templates/aquaculture/pond_form.html:52
+#: app/auth/templates/auth/admin_user_form.html:76
+#: app/auth/templates/auth/admin_users.html:129
+#: app/cuniculture/templates/cuniculture/batch_form.html:50
+#: app/cuniculture/templates/cuniculture/detail.html:91
+#: app/marketplace/templates/marketplace/admin/products.html:141
+#: app/poultry/templates/poultry/detail.html:91
+#: app/poultry/templates/poultry/flock_form.html:50
+msgid "Supprimer"
+msgstr "Delete"
+
+#: app/aquaculture/templates/aquaculture/detail.html:106
+#: app/cuniculture/templates/cuniculture/detail.html:91
+#: app/poultry/templates/poultry/detail.html:91
+msgid "Supprimer cette saisie ?"
+msgstr ""
+
+#: app/aquaculture/templates/aquaculture/detail.html:117
+msgid "Aucune saisie pour ce bassin."
+msgstr ""
+
+#: app/aquaculture/templates/aquaculture/detail.html:120
+#: app/cuniculture/templates/cuniculture/detail.html:105
+#: app/poultry/templates/poultry/detail.html:105
+msgid "Première saisie"
+msgstr ""
+
+#: app/aquaculture/templates/aquaculture/index.html:13
+msgid "Gestion des bassins et suivi piscicole"
+msgstr ""
+
+#: app/aquaculture/templates/aquaculture/index.html:28
+msgid "Bassins"
+msgstr ""
+
+#: app/aquaculture/templates/aquaculture/index.html:29
+#: app/auth/templates/auth/admin_users.html:46
+#: app/cuniculture/templates/cuniculture/index.html:28
+#: app/marketplace/templates/marketplace/admin/products.html:58
+#: app/poultry/templates/poultry/index.html:28
+msgid "Actifs"
+msgstr ""
+
+#: app/aquaculture/templates/aquaculture/index.html:30
+#: app/cuniculture/templates/cuniculture/index.html:29
+#: app/poultry/templates/poultry/index.html:29
+msgid "Total saisies"
+msgstr ""
+
+#: app/aquaculture/templates/aquaculture/index.html:31
+#: app/poultry/templates/poultry/index.html:30
+msgid "Total mortalités"
+msgstr ""
+
+#: app/aquaculture/templates/aquaculture/index.html:57
+#: app/cuniculture/templates/cuniculture/index.html:58
+#: app/poultry/templates/poultry/index.html:54
+msgid "Morts"
+msgstr ""
+
+#: app/aquaculture/templates/aquaculture/index.html:67
+#: app/cuniculture/templates/cuniculture/index.html:67
+#: app/poultry/templates/poultry/index.html:66
+msgid "Dernière saisie :"
+msgstr ""
+
+#: app/aquaculture/templates/aquaculture/index.html:71
+#: app/cuniculture/templates/cuniculture/index.html:69
+#: app/poultry/templates/poultry/index.html:68
+msgid "Aucune saisie"
+msgstr ""
+
+#: app/aquaculture/templates/aquaculture/index.html:78
+#: app/cuniculture/templates/cuniculture/index.html:74
+#: app/poultry/templates/poultry/index.html:73
+msgid "Détails & saisies"
+msgstr ""
+
+#: app/aquaculture/templates/aquaculture/index.html:83
+#: app/cuniculture/templates/cuniculture/index.html:77
+#: app/poultry/templates/poultry/index.html:76
+msgid "Saisie"
+msgstr ""
+
+#: app/aquaculture/templates/aquaculture/index.html:91
+msgid "Aucun bassin enregistré"
+msgstr ""
+
+#: app/aquaculture/templates/aquaculture/index.html:92
+msgid "Commencez par créer votre premier bassin piscicole."
+msgstr ""
+
+#: app/aquaculture/templates/aquaculture/index.html:93
+msgid "Créer un bassin"
+msgstr ""
+
+#: app/aquaculture/templates/aquaculture/pond_form.html:8
+#: app/auth/templates/auth/admin_user_form.html:8
+#: app/cuniculture/templates/cuniculture/batch_form.html:8
+#: app/poultry/templates/poultry/flock_form.html:8
+msgid "Nouveau"
+msgstr ""
+
+#: app/aquaculture/templates/aquaculture/pond_form.html:9
+#: app/cuniculture/templates/cuniculture/batch_form.html:9
+#: app/poultry/templates/poultry/flock_form.html:9
+msgid "Créer"
+msgstr ""
+
+#: app/aquaculture/templates/aquaculture/pond_form.html:17
+msgid "Aquaculture — Gestion des bassins"
+msgstr ""
+
+#: app/aquaculture/templates/aquaculture/pond_form.html:25
+msgid "Informations du bassin"
+msgstr ""
+
+#: app/aquaculture/templates/aquaculture/pond_form.html:27
+msgid "Ex: Bassin A1"
+msgstr ""
+
+#: app/aquaculture/templates/aquaculture/pond_form.html:28
+msgid "Ex: Tilapia du Nil"
+msgstr ""
+
+#: app/aquaculture/templates/aquaculture/pond_form.html:37
+msgid "Observations, source d'eau, équipements..."
+msgstr ""
+
+#: app/aquaculture/templates/aquaculture/pond_form.html:44
+#: app/aquaculture/templates/aquaculture/record_form.html:72
+#: app/auth/templates/auth/admin_user_form.html:68
+#: app/cuniculture/templates/cuniculture/batch_form.html:45
+#: app/cuniculture/templates/cuniculture/record_form.html:68
+#: app/marketplace/templates/marketplace/admin/carousel_form.html:169
+#: app/marketplace/templates/marketplace/admin/product_form.html:166
+#: app/poultry/templates/poultry/flock_form.html:45
+#: app/poultry/templates/poultry/record_form.html:70
+msgid "Annuler"
+msgstr "Cancel"
+
+#: app/aquaculture/templates/aquaculture/pond_form.html:48
+msgid "Supprimer ce bassin et toutes ses données ?"
+msgstr ""
+
+#: app/aquaculture/templates/aquaculture/record_form.html:9
+#: app/cuniculture/templates/cuniculture/record_form.html:9
+#: app/poultry/templates/poultry/record_form.html:9
+msgid "Modifier saisie"
+msgstr ""
+
+#: app/aquaculture/templates/aquaculture/record_form.html:17
+msgid "Bassin :"
+msgstr ""
+
+#: app/aquaculture/templates/aquaculture/record_form.html:25
+#: app/cuniculture/templates/cuniculture/record_form.html:25
+#: app/poultry/templates/poultry/record_form.html:25
+msgid "Date de saisie"
+msgstr ""
+
+#: app/aquaculture/templates/aquaculture/record_form.html:30
+#: app/marketplace/templates/marketplace/admin/products.html:78
+msgid "Stock"
+msgstr ""
+
+#: app/aquaculture/templates/aquaculture/record_form.html:38
+#: app/cuniculture/templates/cuniculture/record_form.html:30
+#: app/finance/forms.py:9 app/models/finance.py:87
+msgid "Alimentation"
+msgstr ""
+
+#: app/aquaculture/templates/aquaculture/record_form.html:41
+msgid "Granulés 3mm"
+msgstr ""
+
+#: app/aquaculture/templates/aquaculture/record_form.html:49
+msgid "Asphyxie, maladie..."
+msgstr ""
+
+#: app/aquaculture/templates/aquaculture/record_form.html:54
+msgid "Paramètres environnementaux"
+msgstr ""
+
+#: app/aquaculture/templates/aquaculture/record_form.html:54
+#: app/cuniculture/templates/cuniculture/record_form.html:56
+#: app/poultry/templates/poultry/record_form.html:55
+msgid "IoT-ready"
+msgstr ""
+
+#: app/aquaculture/templates/aquaculture/record_form.html:65
+msgid "Observations particulières..."
+msgstr ""
+
+#: app/auth/forms.py:10 app/auth/forms.py:26 app/auth/forms.py:61
+#: app/auth/forms.py:96
+msgid "Nom d'utilisateur"
+msgstr "Username"
+
+#: app/auth/forms.py:12 app/auth/forms.py:18 app/auth/forms.py:28
+#: app/auth/forms.py:37 app/auth/forms.py:45 app/auth/forms.py:52
+#: app/auth/forms.py:63 app/auth/forms.py:72 app/auth/forms.py:80
+#: app/auth/forms.py:87 app/auth/forms.py:98 app/auth/forms.py:107
+msgid "Ce champ est requis."
+msgstr ""
+
+#: app/auth/forms.py:13
+msgid "Entre 1 et 64 caractères."
+msgstr ""
+
+#: app/auth/forms.py:17 app/auth/forms.py:43 app/auth/forms.py:78
+#: app/auth/forms.py:123 app/auth/templates/auth/admin_user_form.html:52
+msgid "Mot de passe"
+msgstr "Password"
+
+#: app/auth/forms.py:20
+msgid "Se souvenir de moi"
+msgstr "Remember me"
+
+#: app/auth/forms.py:21 app/auth/routes.py:35
+#: app/auth/templates/auth/login.html:6
+msgid "Connexion"
+msgstr "Sign in"
+
+#: app/auth/forms.py:29 app/auth/forms.py:64 app/auth/forms.py:99
+msgid "Entre 3 et 64 caractères."
+msgstr ""
+
+#: app/auth/forms.py:31 app/auth/forms.py:66 app/auth/forms.py:101
+msgid "Lettres, chiffres, tirets et points uniquement."
+msgstr ""
+
+#: app/auth/forms.py:35 app/auth/forms.py:70 app/auth/forms.py:105
+msgid "Adresse e-mail"
+msgstr "Email address"
+
+#: app/auth/forms.py:38 app/auth/forms.py:73 app/auth/forms.py:108
+msgid "Adresse e-mail invalide."
+msgstr ""
+
+#: app/auth/forms.py:39 app/auth/forms.py:74 app/auth/forms.py:109
+msgid "Entre 6 et 120 caractères."
+msgstr ""
+
+#: app/auth/forms.py:46 app/auth/forms.py:81 app/auth/forms.py:126
+msgid "Au moins 8 caractères."
+msgstr ""
+
+#: app/auth/forms.py:50 app/auth/forms.py:85 app/auth/forms.py:130
+msgid "Confirmer le mot de passe"
+msgstr "Confirm password"
+
+#: app/auth/forms.py:53 app/auth/forms.py:88 app/auth/forms.py:132
+msgid "Les mots de passe ne correspondent pas."
+msgstr ""
+
+#: app/auth/forms.py:56
+msgid "Créer le compte administrateur"
+msgstr ""
+
+#: app/auth/forms.py:91
+msgid "Créer mon compte"
+msgstr ""
+
+#: app/auth/forms.py:113 app/auth/templates/auth/admin_users.html:61
+msgid "Rôle"
+msgstr ""
+
+#: app/auth/forms.py:115
+msgid "Administrateur"
+msgstr ""
+
+#: app/auth/forms.py:116 app/auth/templates/auth/admin_users.html:97
+msgid "Technicien"
+msgstr ""
+
+#: app/auth/forms.py:117 app/auth/templates/auth/admin_users.html:101
+#: app/marketplace/templates/marketplace/order_confirmation.html:109
+msgid "Client"
+msgstr ""
+
+#: app/auth/forms.py:121
+msgid "Compte actif"
+msgstr ""
+
+#: app/auth/routes.py:33
+msgid "Identifiants incorrects ou compte désactivé. Veuillez réessayer."
+msgstr ""
+
+#: app/auth/routes.py:46 app/auth/routes.py:151 app/auth/routes.py:191
+msgid "Ce nom d'utilisateur est déjà utilisé."
+msgstr ""
+
+#: app/auth/routes.py:48 app/auth/routes.py:153 app/auth/routes.py:193
+msgid "Cette adresse e-mail est déjà utilisée."
+msgstr ""
+
+#: app/auth/routes.py:64
+#, python-format
+msgid "Bienvenue %(u)s ! Votre compte a été créé avec succès."
+msgstr ""
+
+#: app/auth/routes.py:68 app/auth/templates/auth/register.html:6
+#: app/auth/templates/auth/register.html:115
+#: app/marketplace/templates/marketplace/index.html:108
+msgid "Créer un compte"
+msgstr "Create an account"
+
+#: app/auth/routes.py:75
+msgid "Vous avez été déconnecté avec succès."
+msgstr ""
+
+#: app/auth/routes.py:119
+msgid "Compte administrateur créé. Connectez-vous pour commencer."
+msgstr "Administrator account created. Log in to get started."
+
+#: app/auth/routes.py:122 app/auth/templates/auth/setup.html:6
+msgid "Configuration initiale"
+msgstr ""
+
+#: app/auth/routes.py:140 app/auth/templates/auth/admin_users.html:12
+msgid "Gestion des utilisateurs"
+msgstr ""
+
+#: app/auth/routes.py:149
+msgid "Le mot de passe est requis pour la création."
+msgstr ""
+
+#: app/auth/routes.py:166
+#, python-format
+msgid "Utilisateur %(u)s créé avec succès."
+msgstr ""
+
+#: app/auth/routes.py:170 app/auth/templates/auth/admin_users.html:22
+msgid "Nouvel utilisateur"
+msgstr ""
+
+#: app/auth/routes.py:199
+msgid "Impossible de rétrograder le dernier administrateur."
+msgstr ""
+
+#: app/auth/routes.py:201 app/auth/routes.py:216
+msgid "Modifier l'utilisateur"
+msgstr ""
+
+#: app/auth/routes.py:212
+#, python-format
+msgid "Utilisateur %(u)s mis à jour."
+msgstr ""
+
+#: app/auth/routes.py:227
+msgid "Vous ne pouvez pas supprimer votre propre compte."
+msgstr ""
+
+#: app/auth/routes.py:232
+msgid "Impossible de supprimer le dernier administrateur."
+msgstr ""
+
+#: app/auth/routes.py:238
+#, python-format
+msgid "Utilisateur %(u)s supprimé."
+msgstr ""
+
+#: app/auth/templates/auth/admin_user_form.html:7
+#: app/auth/templates/auth/admin_users.html:6
+#: app/main/templates/main/dashboard.html:171 app/templates/base.html:270
+msgid "Utilisateurs"
+msgstr ""
+
+#: app/auth/templates/auth/admin_user_form.html:18
+#: app/auth/templates/auth/admin_users.html:13
+msgid "Administration — OmniFarm Hub"
+msgstr ""
+
+#: app/auth/templates/auth/admin_user_form.html:26
+msgid "Informations du compte"
+msgstr ""
+
+#: app/auth/templates/auth/admin_user_form.html:34
+msgid "Rôle & accès"
+msgstr ""
+
+#: app/auth/templates/auth/admin_user_form.html:41
+msgid "Un compte inactif ne peut pas se connecter."
+msgstr ""
+
+#: app/auth/templates/auth/admin_user_form.html:54
+msgid "Laisser vide pour ne pas modifier"
+msgstr ""
+
+#: app/auth/templates/auth/admin_user_form.html:72
+msgid "Supprimer cet utilisateur ?"
+msgstr ""
+
+#: app/auth/templates/auth/admin_users.html:3
+msgid "Utilisateurs — Admin"
+msgstr ""
+
+#: app/auth/templates/auth/admin_users.html:30
+#: app/marketplace/templates/marketplace/admin/orders.html:45
+#: app/marketplace/templates/marketplace/admin/products.html:54
+#: app/marketplace/templates/marketplace/cart.html:116
+#: app/marketplace/templates/marketplace/order_confirmation.html:153
+msgid "Total"
+msgstr ""
+
+#: app/auth/templates/auth/admin_users.html:34
+msgid "Admins"
+msgstr ""
+
+#: app/auth/templates/auth/admin_users.html:38
+msgid "Techniciens"
+msgstr ""
+
+#: app/auth/templates/auth/admin_users.html:42
+msgid "Clients"
+msgstr ""
+
+#: app/auth/templates/auth/admin_users.html:50
+#: app/marketplace/templates/marketplace/admin/products.html:62
+msgid "Inactifs"
+msgstr ""
+
+#: app/auth/templates/auth/admin_users.html:59
+msgid "Utilisateur"
+msgstr ""
+
+#: app/auth/templates/auth/admin_users.html:60
+msgid "E-mail"
+msgstr ""
+
+#: app/auth/templates/auth/admin_users.html:63
+msgid "Créé le"
+msgstr ""
+
+#: app/auth/templates/auth/admin_users.html:64
+msgid "Dernière connexion"
+msgstr ""
+
+#: app/auth/templates/auth/admin_users.html:65
+#: app/marketplace/templates/marketplace/admin/products.html:80
+msgid "Actions"
+msgstr ""
+
+#: app/auth/templates/auth/admin_users.html:82
+msgid "(vous)"
+msgstr ""
+
+#: app/auth/templates/auth/admin_users.html:93
+#: app/marketplace/templates/marketplace/admin/analytics.html:3
+#: app/marketplace/templates/marketplace/admin/carousel.html:3
+#: app/marketplace/templates/marketplace/admin/carousel_form.html:3
+#: app/marketplace/templates/marketplace/admin/product_form.html:3
+#: app/templates/base.html:261
+msgid "Admin"
+msgstr "Admin"
+
+#: app/auth/templates/auth/admin_users.html:130
+#, python-format
+msgid "Supprimer l'utilisateur %(u)s ? Cette action est irréversible."
+msgstr ""
+
+#: app/auth/templates/auth/admin_users.html:140
+msgid "utilisateur(s) au total"
+msgstr ""
+
+#: app/auth/templates/auth/admin_users.html:145
+msgid "Aucun utilisateur"
+msgstr ""
+
+#: app/auth/templates/auth/admin_users.html:148
+msgid "Créer le premier utilisateur"
+msgstr ""
+
+#: app/auth/templates/auth/login.html:69
+msgid "Gérez votre ferme"
+msgstr "Manage your farm"
+
+#: app/auth/templates/auth/login.html:71
+msgid "en toute intelligence."
+msgstr "with intelligence."
+
+#: app/auth/templates/auth/login.html:75
+msgid ""
+"Plateforme centralisée pour la gestion multi-espèces, le suivi des "
+"opérations agricoles et la commercialisation directe de vos produits."
+msgstr "Centralized platform for multi-species management, farm operations tracking, and direct sales of your products."
+
+#: app/auth/templates/auth/login.html:81
+msgid "Modules actifs"
+msgstr "Active modules"
+
+#: app/auth/templates/auth/login.html:83 app/finance/forms.py:25
+#: app/main/templates/main/dashboard.html:220 app/models/finance.py:108
+#: app/models/health.py:82 app/poultry/routes.py:18
+#: app/poultry/templates/poultry/detail.html:6
+#: app/poultry/templates/poultry/flock_form.html:7
+#: app/poultry/templates/poultry/index.html:3
+#: app/poultry/templates/poultry/index.html:12
+#: app/poultry/templates/poultry/record_form.html:7 app/templates/base.html:156
+msgid "Aviculture"
+msgstr "Poultry farming"
+
+#: app/auth/templates/auth/login.html:83 app/cuniculture/routes.py:18
+#: app/cuniculture/templates/cuniculture/batch_form.html:7
+#: app/cuniculture/templates/cuniculture/detail.html:6
+#: app/cuniculture/templates/cuniculture/index.html:3
+#: app/cuniculture/templates/cuniculture/index.html:12
+#: app/cuniculture/templates/cuniculture/record_form.html:7
+#: app/finance/forms.py:26 app/main/templates/main/dashboard.html:232
+#: app/models/finance.py:109 app/models/health.py:83
+#: app/templates/base.html:165
+msgid "Cuniculture"
+msgstr "Rabbit farming"
+
+#: app/auth/templates/auth/login.html:83
+#: app/main/templates/main/dashboard.html:245 app/marketplace/routes.py:57
+#: app/marketplace/templates/marketplace/admin/analytics.html:11
+#: app/marketplace/templates/marketplace/admin/carousel.html:7
+#: app/marketplace/templates/marketplace/admin/carousel_form.html:7
+#: app/marketplace/templates/marketplace/admin/orders.html:7
+#: app/marketplace/templates/marketplace/admin/product_form.html:7
+#: app/marketplace/templates/marketplace/admin/products.html:7
+#: app/marketplace/templates/marketplace/cart.html:6
+#: app/marketplace/templates/marketplace/checkout.html:7
+#: app/marketplace/templates/marketplace/index.html:3
+#: app/marketplace/templates/marketplace/my_orders.html:6
+#: app/templates/base.html:180
+msgid "Marché"
+msgstr "Market"
+
+#: app/auth/templates/auth/login.html:83
+#: app/main/templates/main/dashboard.html:258 app/templates/base.html:254
+msgid "IoT & Capteurs"
+msgstr "IoT & Sensors"
+
+#: app/auth/templates/auth/login.html:112
+msgid "Bienvenue"
+msgstr "Welcome"
+
+#: app/auth/templates/auth/login.html:113
+msgid "Connectez-vous à votre espace de gestion."
+msgstr "Sign in to your management space."
+
+#: app/auth/templates/auth/login.html:145
+msgid "admin ou admin@omnifarm.local"
+msgstr "admin or admin@omnifarm.local"
+
+#: app/auth/templates/auth/login.html:186
+msgid "Pas encore de compte ?"
+msgstr "No account yet?"
+
+#: app/auth/templates/auth/login.html:188
+#: app/marketplace/templates/marketplace/index.html:33
+msgid "Créer un compte gratuit"
+msgstr "Create a free account"
+
+#: app/auth/templates/auth/register.html:69
+msgid "Rejoignez"
+msgstr "Join"
+
+#: app/auth/templates/auth/register.html:71 app/templates/base.html:7
+msgid "OmniFarm Hub"
+msgstr ""
+
+#: app/auth/templates/auth/register.html:75
+msgid ""
+"Créez votre compte pour suivre vos commandes, consulter votre historique "
+"d'achats et accéder à notre boutique en ligne."
+msgstr "Create your account to track your orders, view your purchase history, and access our online store."
+
+#: app/auth/templates/auth/register.html:81
+msgid "Vos avantages"
+msgstr "Your benefits"
+
+#: app/auth/templates/auth/register.html:83
+msgid "Suivi de vos commandes en temps réel"
+msgstr "Track your orders in real time"
+
+#: app/auth/templates/auth/register.html:84
+msgid "Historique complet de vos achats"
+msgstr "Full purchase history"
+
+#: app/auth/templates/auth/register.html:85
+msgid "Livraison directe depuis la ferme"
+msgstr "Direct delivery from the farm"
+
+#: app/auth/templates/auth/register.html:86
+msgid "Notifications de statut par téléphone"
+msgstr "Status notifications by phone"
+
+#: app/auth/templates/auth/register.html:116
+msgid "Gratuit — suivez vos commandes en temps réel."
+msgstr "Free — track your orders in real time."
+
+#: app/auth/templates/auth/register.html:148
+msgid "Ex : jean.dupont"
+msgstr "Ex: john.doe"
+
+#: app/auth/templates/auth/register.html:164
+msgid "votre@email.com"
+msgstr "your@email.com"
+
+#: app/auth/templates/auth/register.html:179
+msgid "Min. 8 caractères"
+msgstr "Min. 8 characters"
+
+#: app/auth/templates/auth/register.html:211
+msgid "ou"
+msgstr "or"
+
+#: app/auth/templates/auth/register.html:217
+msgid "Déjà un compte ?"
+msgstr ""
+
+#: app/auth/templates/auth/register.html:219
+#: app/marketplace/templates/marketplace/index.html:167
+#: app/templates/base_shop.html:211 app/templates/base_shop.html:327
+#: app/templates/base_shop.html:411
+msgid "Se connecter"
+msgstr "Sign in"
+
+#: app/auth/templates/auth/register.html:226
+msgid "Commander sans créer de compte"
+msgstr "Shop without creating an account"
+
+#: app/auth/templates/auth/setup.html:63
+msgid "Première installation"
+msgstr ""
+
+#: app/auth/templates/auth/setup.html:67
+msgid "Bienvenue sur"
+msgstr ""
+
+#: app/auth/templates/auth/setup.html:71
+msgid ""
+"Créez le compte administrateur principal pour démarrer la gestion de "
+"votre ferme. Cette page ne sera disponible qu'une seule fois."
+msgstr ""
+
+#: app/auth/templates/auth/setup.html:76
+msgid "Créer le compte admin"
+msgstr ""
+
+#: app/auth/templates/auth/setup.html:76
+msgid "Configurer vos modules"
+msgstr ""
+
+#: app/auth/templates/auth/setup.html:76
+msgid "Connecter vos capteurs IoT"
+msgstr ""
+
+#: app/auth/templates/auth/setup.html:106
+msgid "Créer l'administrateur"
+msgstr ""
+
+#: app/auth/templates/auth/setup.html:107
+msgid "Ce compte aura un accès complet à toutes les fonctionnalités."
+msgstr ""
+
+#: app/auth/templates/auth/setup.html:133
+msgid "•••••••• (min. 8 caractères)"
+msgstr ""
+
+#: app/auth/templates/auth/setup.html:156
+msgid ""
+"Cette page est uniquement accessible lors de la première installation. "
+"Elle sera automatiquement désactivée après la création du compte."
+msgstr ""
+
+#: app/cuniculture/forms.py:14
+msgid "Nom de la cage / lot"
+msgstr ""
+
+#: app/cuniculture/forms.py:16
+msgid "Ex: Cage C12, Lot Géniteurs Mars-2026"
+msgstr ""
+
+#: app/cuniculture/forms.py:19
+msgid "Race"
+msgstr ""
+
+#: app/cuniculture/forms.py:21
+msgid "Ex: Néo-Zélandais, Californien, Local"
+msgstr ""
+
+#: app/cuniculture/forms.py:24
+msgid "Date d'acquisition"
+msgstr ""
+
+#: app/cuniculture/forms.py:29
+#: app/cuniculture/templates/cuniculture/detail.html:40 app/poultry/forms.py:34
+#: app/poultry/templates/poultry/detail.html:40
+msgid "Effectif initial"
+msgstr ""
+
+#: app/cuniculture/forms.py:33
+msgid "Dont femelles"
+msgstr ""
+
+#: app/cuniculture/forms.py:38
+msgid "Dont mâles"
+msgstr ""
+
+#: app/cuniculture/forms.py:46
+#: app/cuniculture/templates/cuniculture/detail.html:16
+#: app/cuniculture/templates/cuniculture/index.html:43 app/poultry/forms.py:46
+#: app/poultry/templates/poultry/detail.html:16
+#: app/poultry/templates/poultry/index.html:43
+msgid "Vendu"
+msgstr ""
+
+#: app/cuniculture/forms.py:47
+#: app/cuniculture/templates/cuniculture/detail.html:17
+#: app/cuniculture/templates/cuniculture/index.html:44
+msgid "Décédé"
+msgstr ""
+
+#: app/cuniculture/forms.py:69
+msgid "Ex: Granulés, Foin, Légumes verts"
+msgstr ""
+
+#: app/cuniculture/forms.py:74
+msgid "Portées mises bas"
+msgstr ""
+
+#: app/cuniculture/forms.py:79
+msgid "Lapereaux nés (total)"
+msgstr ""
+
+#: app/cuniculture/forms.py:84
+msgid "Lapereaux survivants"
+msgstr ""
+
+#: app/cuniculture/forms.py:108 app/poultry/forms.py:101
+msgid "Température ambiante (°C)"
+msgstr ""
+
+#: app/cuniculture/routes.py:40 app/poultry/routes.py:40
+#, python-format
+msgid "Lot « %(name)s » créé avec succès."
+msgstr ""
+
+#: app/cuniculture/routes.py:44
+msgid "Nouveau lot de lapins"
+msgstr ""
+
+#: app/cuniculture/routes.py:63 app/poultry/routes.py:63
+#, python-format
+msgid "Lot « %(name)s » mis à jour."
+msgstr ""
+
+#: app/cuniculture/routes.py:68 app/poultry/routes.py:68
+msgid "Modifier le lot"
+msgstr ""
+
+#: app/cuniculture/routes.py:79 app/poultry/routes.py:79
+#, python-format
+msgid "Lot « %(name)s » et toutes ses données supprimés."
+msgstr ""
+
+#: app/cuniculture/templates/cuniculture/batch_form.html:17
+msgid "Cuniculture — Gestion des lots"
+msgstr ""
+
+#: app/cuniculture/templates/cuniculture/batch_form.html:25
+#: app/poultry/templates/poultry/flock_form.html:25
+msgid "Informations du lot"
+msgstr ""
+
+#: app/cuniculture/templates/cuniculture/batch_form.html:27
+msgid "Ex: Cage C12"
+msgstr ""
+
+#: app/cuniculture/templates/cuniculture/batch_form.html:28
+msgid "Ex: Néo-Zélandais"
+msgstr ""
+
+#: app/cuniculture/templates/cuniculture/batch_form.html:39
+msgid "Observations, origine, programme de reproduction..."
+msgstr ""
+
+#: app/cuniculture/templates/cuniculture/batch_form.html:48
+#: app/poultry/templates/poultry/flock_form.html:48
+msgid "Supprimer ce lot et toutes ses données ?"
+msgstr ""
+
+#: app/cuniculture/templates/cuniculture/detail.html:19
+#: app/cuniculture/templates/cuniculture/index.html:40
+msgid "Race non précisée"
+msgstr ""
+
+#: app/cuniculture/templates/cuniculture/detail.html:21
+msgid "Acquis le :"
+msgstr ""
+
+#: app/cuniculture/templates/cuniculture/detail.html:42
+#: app/poultry/templates/poultry/detail.html:42
+msgid "Âge (jours)"
+msgstr ""
+
+#: app/cuniculture/templates/cuniculture/detail.html:43
+#: app/cuniculture/templates/cuniculture/index.html:30
+msgid "Lapereaux nés"
+msgstr ""
+
+#: app/cuniculture/templates/cuniculture/detail.html:62
+msgid "Portées"
+msgstr ""
+
+#: app/cuniculture/templates/cuniculture/detail.html:63
+#: app/cuniculture/templates/cuniculture/index.html:54
+msgid "Lapereaux"
+msgstr ""
+
+#: app/cuniculture/templates/cuniculture/detail.html:64
+msgid "Survivants"
+msgstr ""
+
+#: app/cuniculture/templates/cuniculture/detail.html:65
+#: app/poultry/templates/poultry/detail.html:64
+msgid "Poids moy.(g)"
+msgstr ""
+
+#: app/cuniculture/templates/cuniculture/detail.html:67
+msgid "T°C"
+msgstr ""
+
+#: app/cuniculture/templates/cuniculture/detail.html:102
+#: app/poultry/templates/poultry/detail.html:102
+msgid "Aucune saisie pour ce lot."
+msgstr ""
+
+#: app/cuniculture/templates/cuniculture/index.html:13
+msgid "Gestion des lapins et suivi de production"
+msgstr ""
+
+#: app/cuniculture/templates/cuniculture/index.html:21
+#: app/poultry/templates/poultry/index.html:21
+msgid "Nouveau lot"
+msgstr ""
+
+#: app/cuniculture/templates/cuniculture/index.html:27
+#: app/poultry/templates/poultry/index.html:27
+msgid "Lots"
+msgstr ""
+
+#: app/cuniculture/templates/cuniculture/index.html:50
+#: app/poultry/templates/poultry/index.html:50
+msgid "Initial"
+msgstr ""
+
+#: app/cuniculture/templates/cuniculture/index.html:64
+msgid "jours"
+msgstr ""
+
+#: app/cuniculture/templates/cuniculture/index.html:84
+msgid "Aucun lot de lapins"
+msgstr ""
+
+#: app/cuniculture/templates/cuniculture/index.html:85
+msgid "Commencez par enregistrer votre premier lot de lapins."
+msgstr ""
+
+#: app/cuniculture/templates/cuniculture/index.html:86
+#: app/poultry/templates/poultry/index.html:85
+msgid "Créer un lot"
+msgstr ""
+
+#: app/cuniculture/templates/cuniculture/record_form.html:17
+#: app/poultry/templates/poultry/record_form.html:17
+msgid "Lot :"
+msgstr ""
+
+#: app/cuniculture/templates/cuniculture/record_form.html:33
+msgid "Granulés, Foin"
+msgstr ""
+
+#: app/cuniculture/templates/cuniculture/record_form.html:38
+msgid "Reproduction"
+msgstr ""
+
+#: app/cuniculture/templates/cuniculture/record_form.html:47
+msgid "Croissance & mortalité"
+msgstr ""
+
+#: app/cuniculture/templates/cuniculture/record_form.html:51
+msgid "Cause..."
+msgstr ""
+
+#: app/cuniculture/templates/cuniculture/record_form.html:56
+#: app/poultry/templates/poultry/record_form.html:55
+msgid "Environnement"
+msgstr ""
+
+#: app/cuniculture/templates/cuniculture/record_form.html:62
+msgid "Observations particulières, traitements..."
+msgstr ""
+
+#: app/finance/forms.py:10 app/models/finance.py:88
+msgid "Médicaments"
+msgstr ""
+
+#: app/finance/forms.py:11 app/models/finance.py:89
+msgid "Équipement"
+msgstr ""
+
+#: app/finance/forms.py:12 app/models/finance.py:90
+msgid "Main d'œuvre"
+msgstr ""
+
+#: app/finance/forms.py:13 app/models/finance.py:91
+msgid "Services publics"
+msgstr ""
+
+#: app/finance/forms.py:14 app/models/finance.py:92
+msgid "Transport"
+msgstr ""
+
+#: app/finance/forms.py:16 app/models/finance.py:94
+msgid "Vente produit"
+msgstr ""
+
+#: app/finance/forms.py:17 app/models/finance.py:95
+msgid "Vente directe"
+msgstr ""
+
+#: app/finance/forms.py:18 app/models/finance.py:96
+msgid "Subvention"
+msgstr ""
+
+#: app/finance/forms.py:19 app/marketplace/templates/marketplace/index.html:315
+#: app/models/finance.py:97 app/models/marketplace.py:67
+msgid "Autre"
+msgstr ""
+
+#: app/finance/forms.py:23 app/models/finance.py:110
+msgid "Général"
+msgstr ""
+
+#: app/finance/forms.py:32
+msgid "Type"
+msgstr ""
+
+#: app/finance/forms.py:34
+msgid "Dépense"
+msgstr ""
+
+#: app/finance/forms.py:35
+msgid "Revenu"
+msgstr ""
+
+#: app/finance/forms.py:40 app/marketplace/forms.py:24
+#: app/marketplace/templates/marketplace/admin/products.html:76
+msgid "Catégorie"
+msgstr ""
+
+#: app/finance/forms.py:45 app/marketplace/forms.py:20
+msgid "Description"
+msgstr ""
+
+#: app/finance/forms.py:49
+msgid "Montant (FCFA)"
+msgstr ""
+
+#: app/finance/forms.py:51
+msgid "Le montant doit être positif."
+msgstr ""
+
+#: app/finance/forms.py:58
+msgid "Unité de production"
+msgstr ""
+
+#: app/finance/forms.py:63
+msgid "Moyen de paiement"
+msgstr ""
+
+#: app/finance/forms.py:67
+msgid "Référence"
+msgstr ""
+
+#: app/finance/routes.py:54 app/templates/base.html:220
+msgid "Finances"
+msgstr ""
+
+#: app/finance/routes.py:79
+#, python-format
+msgid "Entrée « %(desc)s » enregistrée."
+msgstr ""
+
+#: app/finance/routes.py:84
+msgid "Nouvelle entrée financière"
+msgstr ""
+
+#: app/finance/routes.py:106
+msgid "Entrée mise à jour."
+msgstr ""
+
+#: app/finance/routes.py:112
+msgid "Modifier l'entrée"
+msgstr ""
+
+#: app/finance/routes.py:124
+msgid "Entrée supprimée."
+msgstr ""
+
+#: app/finance/routes.py:166
+msgid "Résumé financier"
+msgstr ""
+
+#: app/health/forms.py:9 app/models/health.py:67
+msgid "Vaccination"
+msgstr ""
+
+#: app/health/forms.py:10 app/models/health.py:68
+msgid "Traitement"
+msgstr ""
+
+#: app/health/forms.py:11 app/models/health.py:69
+msgid "Déparasitage"
+msgstr ""
+
+#: app/health/forms.py:12 app/models/health.py:70
+msgid "Inspection vétérinaire"
+msgstr ""
+
+#: app/health/forms.py:13 app/models/health.py:71
+msgid "Chirurgie"
+msgstr ""
+
+#: app/health/forms.py:17
+msgid "Aviculture (Volailles)"
+msgstr ""
+
+#: app/health/forms.py:18
+msgid "Cuniculture (Lapins)"
+msgstr ""
+
+#: app/health/forms.py:19
+msgid "Aquaculture (Poissons)"
+msgstr ""
+
+#: app/health/forms.py:25
+msgid "Espèce / Unité"
+msgstr ""
+
+#: app/health/forms.py:30
+msgid "Lot / Bassin"
+msgstr ""
+
+#: app/health/forms.py:36
+msgid "Type d'événement"
+msgstr ""
+
+#: app/health/forms.py:45
+msgid "Produit utilisé"
+msgstr ""
+
+#: app/health/forms.py:49
+msgid "Dose / Dosage"
+msgstr ""
+
+#: app/health/forms.py:53
+msgid "Administré par"
+msgstr ""
+
+#: app/health/forms.py:57
+msgid "Prochaine échéance"
+msgstr ""
+
+#: app/health/forms.py:61
+msgid "Coût (FCFA)"
+msgstr ""
+
+#: app/health/routes.py:74 app/templates/base.html:229
+msgid "Santé animale"
+msgstr ""
+
+#: app/health/routes.py:85 app/health/routes.py:125
+msgid "— aucun —"
+msgstr ""
+
+#: app/health/routes.py:106
+msgid "Événement de santé enregistré."
+msgstr ""
+
+#: app/health/routes.py:112
+msgid "Nouvel événement de santé"
+msgstr ""
+
+#: app/health/routes.py:142
+msgid "Événement mis à jour."
+msgstr ""
+
+#: app/health/routes.py:150
+msgid "Modifier l'événement"
+msgstr ""
+
+#: app/health/routes.py:163
+msgid "Événement supprimé."
+msgstr ""
+
+#: app/iot/routes.py:60 app/iot/templates/iot/dashboard.html:3
+#: app/iot/templates/iot/dashboard.html:6
+#: app/iot/templates/iot/dashboard.html:11
+msgid "IoT & Télémétrie"
+msgstr ""
+
+#: app/iot/templates/iot/dashboard.html:12
+msgid "Surveillance des capteurs environnementaux en temps réel"
+msgstr ""
+
+#: app/iot/templates/iot/dashboard.html:19
+msgid "Planificateur de tâches"
+msgstr ""
+
+#: app/iot/templates/iot/dashboard.html:36
+msgid "Tâche"
+msgstr ""
+
+#: app/iot/templates/iot/dashboard.html:37
+msgid "Déclencheur"
+msgstr ""
+
+#: app/iot/templates/iot/dashboard.html:38
+msgid "Prochaine exécution"
+msgstr ""
+
+#: app/iot/templates/iot/dashboard.html:55
+msgid "Aucune tâche planifiée."
+msgstr ""
+
+#: app/iot/templates/iot/dashboard.html:63
+msgid ""
+"Les lectures de capteurs ci-dessous sont simulées (mode stub). Connectez "
+"vos appareils ModBus TCP ou EtherNet/IP et configurez"
+msgstr ""
+
+#: app/iot/templates/iot/dashboard.html:66
+msgid "dans votre fichier"
+msgstr ""
+
+#: app/iot/templates/iot/dashboard.html:67
+msgid "pour activer la collecte réelle."
+msgstr ""
+
+#: app/iot/templates/iot/dashboard.html:74
+msgid "Bassins — capteurs aquatiques"
+msgstr ""
+
+#: app/iot/templates/iot/dashboard.html:90
+#: app/iot/templates/iot/dashboard.html:132
+#: app/iot/templates/iot/dashboard.html:157
+msgid "Température"
+msgstr ""
+
+#: app/iot/templates/iot/dashboard.html:107
+#: app/iot/templates/iot/dashboard.html:141
+#: app/iot/templates/iot/dashboard.html:166
+msgid "Aucune lecture disponible"
+msgstr ""
+
+#: app/iot/templates/iot/dashboard.html:117
+msgid "Capteurs climatiques (volailles & lapins)"
+msgstr ""
+
+#: app/iot/templates/iot/dashboard.html:136
+#: app/iot/templates/iot/dashboard.html:161
+msgid "Humidité"
+msgstr ""
+
+#: app/iot/templates/iot/dashboard.html:177
+msgid "Aucune entité active"
+msgstr ""
+
+#: app/iot/templates/iot/dashboard.html:178
+msgid ""
+"Créez des bassins, lots de volailles ou lapins pour voir leurs données de"
+" capteurs ici."
+msgstr ""
+
+#: app/main/routes.py:26 app/main/templates/main/dashboard.html:2
+#: app/templates/base.html:132 app/templates/base_shop.html:408
+msgid "Tableau de bord"
+msgstr ""
+
+#: app/main/templates/main/dashboard.html:10
+msgid "Bonjour,"
+msgstr ""
+
+#: app/main/templates/main/dashboard.html:15
+msgid "Vue d'ensemble de votre plateforme"
+msgstr ""
+
+#: app/main/templates/main/dashboard.html:38
+msgid "Bassins actifs"
+msgstr ""
+
+#: app/main/templates/main/dashboard.html:46
+msgid "Lots de volailles"
+msgstr ""
+
+#: app/main/templates/main/dashboard.html:54
+msgid "Lots de lapins"
+msgstr ""
+
+#: app/main/templates/main/dashboard.html:62
+#: app/marketplace/templates/marketplace/admin/analytics.html:59
+msgid "Commandes totales"
+msgstr ""
+
+#: app/main/templates/main/dashboard.html:76
+msgid "IoT — Capteurs"
+msgstr ""
+
+#: app/main/templates/main/dashboard.html:80
+#: app/main/templates/main/dashboard.html:128
+msgid "Voir tout →"
+msgstr ""
+
+#: app/main/templates/main/dashboard.html:85
+msgid "Planificateur"
+msgstr ""
+
+#: app/main/templates/main/dashboard.html:97
+msgid "Tâches planifiées"
+msgstr ""
+
+#: app/main/templates/main/dashboard.html:101
+msgid "Bassins surveillés"
+msgstr ""
+
+#: app/main/templates/main/dashboard.html:105
+msgid "Lots surveillés"
+msgstr ""
+
+#: app/main/templates/main/dashboard.html:119
+msgid "Commandes récentes"
+msgstr ""
+
+#: app/main/templates/main/dashboard.html:122
+msgid "en attente"
+msgstr ""
+
+#: app/main/templates/main/dashboard.html:157
+msgid "Aucune commande pour le moment."
+msgstr "No orders yet."
+
+#: app/main/templates/main/dashboard.html:178
+msgid "Blueprints actifs"
+msgstr "Active blueprints"
+
+#: app/main/templates/main/dashboard.html:185
+msgid "Entités actives"
+msgstr "Active entities"
+
+#: app/main/templates/main/dashboard.html:192
+msgid "Alertes commandes"
+msgstr "Order alerts"
+
+#: app/main/templates/main/dashboard.html:199
+msgid "Accès rapide"
+msgstr "Quick access"
+
+#: app/main/templates/main/dashboard.html:209
+msgid "bassin(s) actif(s)"
+msgstr "active pond(s)"
+
+#: app/main/templates/main/dashboard.html:221
+#: app/main/templates/main/dashboard.html:233
+msgid "lot(s) actif(s)"
+msgstr "active batch(es)"
+
+#: app/main/templates/main/dashboard.html:246
+msgid "commande(s)"
+msgstr "order(s)"
+
+#: app/main/templates/main/dashboard.html:261
+msgid "tâche(s) active(s)"
+msgstr "active task(s)"
+
+#: app/main/templates/main/dashboard.html:263
+msgid "Planificateur inactif"
+msgstr "Scheduler inactive"
+
+#: app/main/templates/main/dashboard.html:278 app/marketplace/routes.py:287
+#: app/marketplace/templates/marketplace/my_orders.html:3
+#: app/marketplace/templates/marketplace/my_orders.html:6
+#: app/marketplace/templates/marketplace/my_orders.html:12
+#: app/marketplace/templates/marketplace/order_confirmation.html:194
+#: app/templates/base.html:194 app/templates/base_shop.html:161
+#: app/templates/base_shop.html:278 app/templates/base_shop.html:398
+msgid "Mes commandes"
+msgstr "My orders"
+
+#: app/main/templates/main/dashboard.html:279
+msgid "Suivre vos commandes"
+msgstr "Track your orders"
+
+#: app/marketplace/forms.py:16
+msgid "Nom du produit"
+msgstr "Product name"
+
+#: app/marketplace/forms.py:26
+msgid "🐟 Poisson"
+msgstr "🐟 Fish"
+
+#: app/marketplace/forms.py:27
+msgid "🐔 Volaille"
+msgstr "🐔 Poultry"
+
+#: app/marketplace/forms.py:28
+msgid "🐇 Lapin"
+msgstr "🐇 Rabbit"
+
+#: app/marketplace/forms.py:29
+msgid "🥚 Œufs"
+msgstr "🥚 Eggs"
+
+#: app/marketplace/forms.py:30
+msgid "🌿 Autre"
+msgstr "🌿 Other"
+
+#: app/marketplace/forms.py:34
+msgid "Prix unitaire (FCFA)"
+msgstr "Unit price (FCFA)"
+
+#: app/marketplace/forms.py:35
+msgid "Le prix doit être positif."
+msgstr "Price must be positive."
+
+#: app/marketplace/forms.py:38
+msgid "Unité de vente"
+msgstr "Sales unit"
+
+#: app/marketplace/forms.py:40
+msgid "Ex: kg, pièce, douzaine, sachet"
+msgstr "Ex: kg, piece, dozen, bag"
+
+#: app/marketplace/forms.py:43
+msgid "Stock disponible"
+msgstr "Available stock"
+
+#: app/marketplace/forms.py:47
+msgid "Visible et disponible à la vente"
+msgstr "Visible and available for sale"
+
+#: app/marketplace/forms.py:49
+#: app/marketplace/templates/marketplace/admin/product_form.html:50
+msgid "Photo du produit"
+msgstr "Product photo"
+
+#: app/marketplace/forms.py:52
+msgid "JPG, PNG ou WebP uniquement (max 5 Mo)."
+msgstr "JPG, PNG or WebP only (max 5 MB)."
+
+#: app/marketplace/forms.py:54
+msgid "Facultatif — JPG/PNG/WebP, max 5 Mo. L'image sera recadrée en 400×400 px."
+msgstr "Optional — JPG/PNG/WebP, max 5 MB. Image will be cropped to 400×400 px."
+
+#: app/marketplace/forms.py:56
+msgid "Supprimer la photo actuelle"
+msgstr "Remove current photo"
+
+#: app/marketplace/forms.py:62
+msgid "Nom complet"
+msgstr "Full name"
+
+#: app/marketplace/forms.py:66
+msgid "Numéro de téléphone"
+msgstr "Phone number"
+
+#: app/marketplace/forms.py:68
+msgid "Ex: +237 6XX XXX XXX"
+msgstr ""
+
+#: app/marketplace/forms.py:71
+msgid "Adresse de livraison"
+msgstr "Delivery address"
+
+#: app/marketplace/forms.py:73
+msgid "Quartier, ville, point de repère"
+msgstr "District, city, landmark"
+
+#: app/marketplace/forms.py:76
+#: app/marketplace/templates/marketplace/checkout.html:64
+msgid "Mode de paiement"
+msgstr "Payment method"
+
+#: app/marketplace/forms.py:78
+msgid "Orange Money"
+msgstr "Orange Money"
+
+#: app/marketplace/forms.py:79
+msgid "MTN Mobile Money (MoMo)"
+msgstr "MTN Mobile Money (MoMo)"
+
+#: app/marketplace/forms.py:80
+msgid "Paiement à la livraison"
+msgstr "Cash on delivery"
+
+#: app/marketplace/forms.py:84
+msgid "Numéro Mobile Money"
+msgstr "Mobile Money number"
+
+#: app/marketplace/forms.py:86
+msgid "Laissez vide si identique au numéro de contact"
+msgstr "Leave empty if same as contact number"
+
+#: app/marketplace/forms.py:89
+msgid "Instructions / Notes"
+msgstr "Instructions / Notes"
+
+#: app/marketplace/forms.py:92
+#: app/marketplace/templates/marketplace/checkout.html:143
+msgid "Confirmer la commande"
+msgstr "Confirm order"
+
+#: app/marketplace/forms.py:96
+msgid "Nouveau statut"
+msgstr "New status"
+
+#: app/marketplace/forms.py:97
+#: app/marketplace/templates/marketplace/admin/orders.html:162
+#: app/marketplace/templates/marketplace/cart.html:87
+msgid "Mettre à jour"
+msgstr "Update"
+
+#: app/marketplace/forms.py:105
+msgid "Titre principal"
+msgstr "Main title"
+
+#: app/marketplace/forms.py:109
+msgid "Sous-titre"
+msgstr "Subtitle"
+
+#: app/marketplace/forms.py:111
+msgid "Phrase d'accroche visible sous le titre."
+msgstr "Tagline visible below the title."
+
+#: app/marketplace/forms.py:114
+msgid "Texte du bouton"
+msgstr "Button text"
+
+#: app/marketplace/forms.py:116
+#: app/marketplace/templates/marketplace/admin/carousel_form.html:136
+msgid "Ex : Commander maintenant"
+msgstr "Ex: Order now"
+
+#: app/marketplace/forms.py:119
+msgid "Lien du bouton"
+msgstr "Button link"
+
+#: app/marketplace/forms.py:122
+msgid "URL de destination. Utilisez #products pour défiler vers le catalogue."
+msgstr "Destination URL. Use #products to scroll to the catalog."
+
+#: app/marketplace/forms.py:125
+msgid "Ordre d'affichage"
+msgstr "Display order"
+
+#: app/marketplace/forms.py:128
+msgid "Les valeurs les plus petites s'affichent en premier."
+msgstr "Smaller values are displayed first."
+
+#: app/marketplace/forms.py:130
+msgid "Slide visible dans le carousel"
+msgstr "Slide visible in the carousel"
+
+#: app/marketplace/forms.py:132
+#: app/marketplace/templates/marketplace/admin/carousel_form.html:56
+msgid "Image de fond"
+msgstr "Background image"
+
+#: app/marketplace/forms.py:135
+msgid "JPG, PNG ou WebP uniquement (max 8 Mo)."
+msgstr "JPG, PNG or WebP only (max 8 MB)."
+
+#: app/marketplace/forms.py:137
+msgid "Recommandé : 1400 × 700 px, format paysage. Max 8 Mo."
+msgstr "Recommended: 1400 × 700 px, landscape format. Max 8 MB."
+
+#: app/marketplace/forms.py:139
+msgid "Supprimer l'image actuelle"
+msgstr "Remove current image"
+
+#: app/marketplace/routes.py:81
+#: app/marketplace/templates/marketplace/cart.html:3
+#: app/marketplace/templates/marketplace/cart.html:11
+#: app/templates/base_shop.html:187 app/templates/base_shop.html:396
+msgid "Mon panier"
+msgstr "My cart"
+
+#: app/marketplace/routes.py:91
+msgid "Requête invalide."
+msgstr "Invalid request."
+
+#: app/marketplace/routes.py:96
+msgid "Produit ajouté au panier."
+msgstr "Product added to cart."
+
+#: app/marketplace/routes.py:98
+msgid "Produit indisponible."
+msgstr "Product unavailable."
+
+#: app/marketplace/routes.py:105
+msgid "Article retiré du panier."
+msgstr "Item removed from cart."
+
+#: app/marketplace/routes.py:120
+msgid "Panier mis à jour."
+msgstr "Cart updated."
+
+#: app/marketplace/routes.py:131
+msgid "Votre panier est vide."
+msgstr ""
+
+#: app/marketplace/routes.py:142
+msgid "Votre panier est vide ou les produits ne sont plus disponibles."
+msgstr ""
+
+#: app/marketplace/routes.py:190 app/marketplace/routes.py:203
+#, python-format
+msgid "Commande OmniFarm %(num)s"
+msgstr ""
+
+#: app/marketplace/routes.py:197
+#, python-format
+msgid "Orange Money : %(msg)s"
+msgstr ""
+
+#: app/marketplace/routes.py:208
+#, python-format
+msgid "MTN MoMo : %(msg)s"
+msgstr ""
+
+#: app/marketplace/routes.py:223
+#, python-format
+msgid "Commande %(num)s confirmée avec succès !"
+msgstr ""
+
+#: app/marketplace/routes.py:233
+#: app/marketplace/templates/marketplace/checkout.html:39
+msgid "Finaliser la commande"
+msgstr ""
+
+#: app/marketplace/routes.py:243
+msgid "Confirmation de commande"
+msgstr ""
+
+#: app/marketplace/routes.py:315
+#: app/marketplace/templates/marketplace/admin/product_form.html:8
+#: app/marketplace/templates/marketplace/admin/products.html:8
+#: app/marketplace/templates/marketplace/admin/products.html:35
+msgid "Gestion des produits"
+msgstr ""
+
+#: app/marketplace/routes.py:332 app/marketplace/routes.py:351
+#: app/marketplace/templates/marketplace/admin/product_form.html:9
+#: app/marketplace/templates/marketplace/admin/product_form.html:38
+#: app/marketplace/templates/marketplace/admin/products.html:45
+msgid "Nouveau produit"
+msgstr "New product"
+
+#: app/marketplace/routes.py:347
+#, python-format
+msgid "Produit « %(name)s » créé."
+msgstr ""
+
+#: app/marketplace/routes.py:373 app/marketplace/routes.py:392
+#: app/marketplace/templates/marketplace/admin/product_form.html:38
+msgid "Modifier le produit"
+msgstr ""
+
+#: app/marketplace/routes.py:387
+#, python-format
+msgid "Produit « %(name)s » mis à jour."
+msgstr ""
+
+#: app/marketplace/routes.py:404
+#, python-format
+msgid "Produit « %(name)s » supprimé."
+msgstr ""
+
+#: app/marketplace/routes.py:456
+#: app/marketplace/templates/marketplace/admin/orders.html:8
+#: app/marketplace/templates/marketplace/admin/orders.html:34
+msgid "Gestion des commandes"
+msgstr "Order management"
+
+#: app/marketplace/routes.py:469
+#, python-format
+msgid "Statut de la commande %(num)s mis à jour."
+msgstr ""
+
+#: app/marketplace/routes.py:471
+msgid "Statut invalide."
+msgstr ""
+
+#: app/marketplace/routes.py:484
+#: app/marketplace/templates/marketplace/admin/carousel.html:8
+#: app/marketplace/templates/marketplace/admin/carousel.html:42
+msgid "Gestion du carousel"
+msgstr "Carousel management"
+
+#: app/marketplace/routes.py:501 app/marketplace/routes.py:519
+#: app/marketplace/templates/marketplace/admin/carousel_form.html:9
+#: app/marketplace/templates/marketplace/admin/carousel_form.html:45
+msgid "Nouveau slide"
+msgstr "New slide"
+
+#: app/marketplace/routes.py:515
+#, python-format
+msgid "Slide « %(t)s » créé."
+msgstr ""
+
+#: app/marketplace/routes.py:538 app/marketplace/routes.py:555
+#: app/marketplace/templates/marketplace/admin/carousel_form.html:45
+msgid "Modifier le slide"
+msgstr "Edit slide"
+
+#: app/marketplace/routes.py:551
+#, python-format
+msgid "Slide « %(t)s » mis à jour."
+msgstr ""
+
+#: app/marketplace/routes.py:567
+#, python-format
+msgid "Slide « %(t)s » supprimé."
+msgstr ""
+
+#: app/marketplace/routes.py:577
+msgid "activé"
+msgstr ""
+
+#: app/marketplace/routes.py:577
+msgid "désactivé"
+msgstr ""
+
+#: app/marketplace/routes.py:578
+#, python-format
+msgid "Slide « %(t)s » %(s)s."
+msgstr ""
+
+#: app/marketplace/routes.py:836
+#: app/marketplace/templates/marketplace/admin/analytics.html:3
+#: app/marketplace/templates/marketplace/admin/analytics.html:12
+#: app/marketplace/templates/marketplace/admin/analytics.html:36
+#: app/marketplace/templates/marketplace/index.html:452
+msgid "Analytiques"
+msgstr "Analytics"
+
+#: app/marketplace/templates/marketplace/cart.html:6
+#: app/marketplace/templates/marketplace/checkout.html:8
+#: app/marketplace/templates/marketplace/index.html:293
+#: app/templates/base_shop.html:150 app/templates/base_shop.html:267
+msgid "Panier"
+msgstr ""
+
+#: app/marketplace/templates/marketplace/cart.html:14
+msgid "article(s)"
+msgstr ""
+
+#: app/marketplace/templates/marketplace/cart.html:16
+#: app/marketplace/templates/marketplace/checkout.html:40
+#: app/marketplace/templates/marketplace/my_orders.html:13
+msgid "Marché — OmniFarm"
+msgstr "Market — OmniFarm"
+
+#: app/marketplace/templates/marketplace/cart.html:71
+msgid "Retirer du panier"
+msgstr ""
+
+#: app/marketplace/templates/marketplace/cart.html:100
+msgid "Récapitulatif"
+msgstr ""
+
+#: app/marketplace/templates/marketplace/cart.html:126
+#: app/marketplace/templates/marketplace/checkout.html:3
+msgid "Commander"
+msgstr ""
+
+#: app/marketplace/templates/marketplace/cart.html:136
+#: app/marketplace/templates/marketplace/order_confirmation.html:186
+msgid "Continuer mes achats"
+msgstr ""
+
+#: app/marketplace/templates/marketplace/cart.html:144
+#: app/marketplace/templates/marketplace/checkout.html:188
+#, python-format
+msgid "Paiement 100% sécurisé"
+msgstr ""
+
+#: app/marketplace/templates/marketplace/cart.html:156
+msgid "Votre panier est vide"
+msgstr ""
+
+#: app/marketplace/templates/marketplace/cart.html:157
+msgid "Découvrez nos produits frais et ajoutez-les à votre panier."
+msgstr ""
+
+#: app/marketplace/templates/marketplace/admin/orders.html:196
+#: app/marketplace/templates/marketplace/cart.html:163
+#: app/marketplace/templates/marketplace/my_orders.html:21
+msgid "Voir le catalogue"
+msgstr "View catalog"
+
+#: app/marketplace/templates/marketplace/admin/orders.html:88
+#: app/marketplace/templates/marketplace/checkout.html:9
+#: app/marketplace/templates/marketplace/my_orders.html:59
+msgid "Commande"
+msgstr ""
+
+#: app/marketplace/templates/marketplace/checkout.html:14
+msgid "Infos"
+msgstr ""
+
+#: app/marketplace/templates/marketplace/checkout.html:14
+#: app/marketplace/templates/marketplace/order_confirmation.html:117
+msgid "Paiement"
+msgstr ""
+
+#: app/marketplace/templates/marketplace/checkout.html:14
+msgid "Confirmation"
+msgstr ""
+
+#: app/marketplace/templates/marketplace/checkout.html:51
+msgid "Vos coordonnées"
+msgstr ""
+
+#: app/marketplace/templates/marketplace/checkout.html:54
+msgid "Jean Dupont"
+msgstr ""
+
+#: app/marketplace/templates/marketplace/checkout.html:57
+msgid "Quartier, ville, point de repère..."
+msgstr ""
+
+#: app/marketplace/templates/marketplace/checkout.html:78
+msgid "Paiement sécurisé"
+msgstr ""
+
+#: app/marketplace/templates/marketplace/checkout.html:94
+msgid "Confirmez sur votre téléphone"
+msgstr ""
+
+#: app/marketplace/templates/marketplace/checkout.html:109
+#: app/marketplace/templates/marketplace/checkout.html:181
+#: app/marketplace/templates/marketplace/checkout.html:212
+#: app/marketplace/templates/marketplace/order_confirmation.html:122
+msgid "À la livraison"
+msgstr ""
+
+#: app/marketplace/templates/marketplace/checkout.html:110
+msgid "Payez à la réception"
+msgstr ""
+
+#: app/marketplace/templates/marketplace/checkout.html:124
+msgid ""
+"Entrez le numéro Mobile Money à débiter. Laissez vide pour utiliser votre"
+" numéro de contact."
+msgstr ""
+
+#: app/marketplace/templates/marketplace/checkout.html:135
+msgid "Instructions"
+msgstr "Instructions"
+
+#: app/marketplace/templates/marketplace/checkout.html:137
+msgid "Instructions particulières pour la livraison..."
+msgstr "Special delivery instructions..."
+
+#: app/marketplace/templates/marketplace/checkout.html:153
+msgid "Votre commande"
+msgstr "Your order"
+
+#: app/marketplace/templates/marketplace/checkout.html:169
+msgid "Total à payer"
+msgstr "Total to pay"
+
+#: app/marketplace/templates/marketplace/checkout.html:203
+msgid "Entrez votre numéro Orange Money."
+msgstr "Enter your Orange Money number."
+
+#: app/marketplace/templates/marketplace/checkout.html:208
+msgid ""
+"Entrez votre numéro MTN MoMo. Vous recevrez une invite de paiement sur "
+"votre téléphone."
+msgstr "Enter your MTN MoMo number. You will receive a payment prompt on your phone."
+
+#: app/marketplace/templates/marketplace/checkout.html:245
+msgid "Traitement en cours..."
+msgstr "Processing..."
+
+#: app/marketplace/templates/marketplace/index.html:3
+msgid "Boutique OmniFarm"
+msgstr "OmniFarm Shop"
+
+#: app/marketplace/templates/marketplace/index.html:11
+msgid "Bienvenue chez OmniFarm"
+msgstr "Welcome to OmniFarm"
+
+#: app/marketplace/templates/marketplace/index.html:12
+msgid ""
+"Commandez directement depuis notre ferme : poissons frais, volailles, "
+"lapins et œufs livrés chez vous."
+msgstr "Order directly from our farm: fresh fish, poultry, rabbits and eggs delivered to your door."
+
+#: app/marketplace/templates/marketplace/index.html:13
+#: app/marketplace/templates/marketplace/my_orders.html:137
+msgid "Découvrir le catalogue"
+msgstr "Explore the catalog"
+
+#: app/marketplace/templates/marketplace/index.html:21
+msgid "Produits frais de qualité"
+msgstr "Fresh Quality Products"
+
+#: app/marketplace/templates/marketplace/index.html:22
+msgid ""
+"Élevage artisanal et contrôlé. Chaque produit est tracé de la ferme à "
+"votre table."
+msgstr "Artisanal, controlled farming. Every product is traced from farm to table."
+
+#: app/marketplace/templates/marketplace/index.html:23
+msgid "Commander maintenant"
+msgstr "Order now"
+
+#: app/marketplace/templates/marketplace/index.html:31
+msgid "Livraison directe à domicile"
+msgstr "Direct Home Delivery"
+
+#: app/marketplace/templates/marketplace/index.html:32
+msgid ""
+"Créez votre compte et suivez vos commandes en temps réel. Paiement Mobile"
+" Money ou à la livraison."
+msgstr "Create your account and track your orders in real time. Pay by Mobile Money or cash on delivery."
+
+#: app/marketplace/templates/marketplace/index.html:48
+msgid "Carousel de présentation"
+msgstr "Showcase carousel"
+
+#: app/marketplace/templates/marketplace/index.html:58
+msgid "Gérer le carousel"
+msgstr "Manage carousel"
+
+#: app/marketplace/templates/marketplace/index.html:88
+#: app/marketplace/templates/marketplace/index.html:151
+msgid "Produits frais disponibles"
+msgstr "Fresh products available"
+
+#: app/marketplace/templates/marketplace/index.html:117
+#: app/marketplace/templates/marketplace/index.html:176
+#: app/marketplace/templates/marketplace/index.html:315
+#: app/models/marketplace.py:63
+msgid "Poisson"
+msgstr "Fish"
+
+#: app/marketplace/templates/marketplace/index.html:117
+#: app/marketplace/templates/marketplace/index.html:176
+#: app/marketplace/templates/marketplace/index.html:315
+#: app/models/marketplace.py:64
+msgid "Volaille"
+msgstr "Poultry"
+
+#: app/marketplace/templates/marketplace/index.html:117
+#: app/marketplace/templates/marketplace/index.html:176
+#: app/marketplace/templates/marketplace/index.html:315
+#: app/models/marketplace.py:65
+msgid "Lapin"
+msgstr "Rabbit"
+
+#: app/marketplace/templates/marketplace/index.html:117
+#: app/marketplace/templates/marketplace/index.html:176
+#: app/marketplace/templates/marketplace/index.html:315
+#: app/models/marketplace.py:66 app/poultry/templates/poultry/detail.html:63
+msgid "Œufs"
+msgstr "Eggs"
+
+#: app/marketplace/templates/marketplace/index.html:198
+msgid "Élevage artisanal"
+msgstr "Artisanal farming"
+
+#: app/marketplace/templates/marketplace/index.html:200
+msgid "Livraison rapide"
+msgstr "Fast delivery"
+
+#: app/marketplace/templates/marketplace/index.html:202
+msgid "Mobile Money"
+msgstr "Mobile Money"
+
+#: app/marketplace/templates/marketplace/index.html:204
+msgid "Qualité garantie"
+msgstr "Guaranteed quality"
+
+#: app/marketplace/templates/marketplace/index.html:227
+msgid "Slide précédent"
+msgstr "Previous slide"
+
+#: app/marketplace/templates/marketplace/index.html:237
+msgid "Slide suivant"
+msgstr "Next slide"
+
+#: app/marketplace/templates/marketplace/index.html:248
+msgid "Aller au slide"
+msgstr "Go to slide"
+
+#: app/marketplace/templates/marketplace/index.html:267
+msgid "Rechercher des produits..."
+msgstr "Search for products..."
+
+#: app/marketplace/templates/marketplace/index.html:272
+#: app/marketplace/templates/marketplace/index.html:334
+msgid "Effacer la recherche"
+msgstr "Clear search"
+
+#: app/marketplace/templates/marketplace/admin/analytics.html:25
+#: app/marketplace/templates/marketplace/admin/carousel.html:25
+#: app/marketplace/templates/marketplace/admin/carousel_form.html:26
+#: app/marketplace/templates/marketplace/admin/orders.html:26
+#: app/marketplace/templates/marketplace/admin/product_form.html:27
+#: app/marketplace/templates/marketplace/admin/products.html:26
+#: app/marketplace/templates/marketplace/index.html:286
+#: app/marketplace/templates/marketplace/index.html:438
+#: app/templates/base.html:204 app/templates/base_shop.html:294
+msgid "Commandes"
+msgstr "Orders"
+
+#: app/marketplace/templates/marketplace/index.html:308
+msgid "Tous"
+msgstr "All"
+
+#: app/marketplace/templates/marketplace/index.html:320
+msgid "produit(s)"
+msgstr "product(s)"
+
+#: app/marketplace/templates/marketplace/index.html:332
+msgid "Aucun produit trouvé pour cette recherche."
+msgstr "No product found for this search."
+
+#: app/marketplace/templates/marketplace/admin/products.html:109
+#: app/marketplace/templates/marketplace/index.html:368
+#: app/marketplace/templates/marketplace/index.html:677
+#: app/marketplace/templates/marketplace/index.html:686
+msgid "Épuisé"
+msgstr "Out of stock"
+
+#: app/marketplace/templates/marketplace/index.html:372
+#: app/marketplace/templates/marketplace/index.html:679
+msgid "Stock limité :"
+msgstr "Limited stock:"
+
+#: app/marketplace/templates/marketplace/index.html:409
+#: app/marketplace/templates/marketplace/index.html:697
+msgid "Ajouter"
+msgstr "Add"
+
+#: app/marketplace/templates/marketplace/index.html:423
+msgid "Mode administrateur"
+msgstr "Administrator mode"
+
+#: app/marketplace/templates/marketplace/admin/analytics.html:20
+#: app/marketplace/templates/marketplace/admin/carousel.html:18
+#: app/marketplace/templates/marketplace/admin/carousel_form.html:19
+#: app/marketplace/templates/marketplace/admin/orders.html:18
+#: app/marketplace/templates/marketplace/admin/product_form.html:20
+#: app/marketplace/templates/marketplace/admin/products.html:19
+#: app/marketplace/templates/marketplace/index.html:431
+msgid "Produits"
+msgstr "Products"
+
+#: app/marketplace/templates/marketplace/admin/analytics.html:30
+#: app/marketplace/templates/marketplace/admin/carousel.html:3
+#: app/marketplace/templates/marketplace/admin/carousel.html:33
+#: app/marketplace/templates/marketplace/admin/carousel_form.html:3
+#: app/marketplace/templates/marketplace/admin/carousel_form.html:8
+#: app/marketplace/templates/marketplace/admin/carousel_form.html:34
+#: app/marketplace/templates/marketplace/index.html:445
+msgid "Carousel"
+msgstr "Carousel"
+
+#: app/marketplace/templates/marketplace/index.html:461
+msgid "Aucun produit disponible"
+msgstr "No product available"
+
+#: app/marketplace/templates/marketplace/index.html:462
+msgid "Le catalogue est vide pour le moment. Revenez bientôt !"
+msgstr "The catalog is empty for now. Come back soon!"
+
+#: app/marketplace/templates/marketplace/index.html:467
+msgid "Ajouter le premier produit"
+msgstr "Add the first product"
+
+#: app/marketplace/templates/marketplace/admin/orders.html:72
+#: app/marketplace/templates/marketplace/my_orders.html:38
+msgid "Toutes"
+msgstr "All"
+
+#: app/marketplace/templates/marketplace/admin/orders.html:49
+#: app/marketplace/templates/marketplace/admin/orders.html:73
+#: app/marketplace/templates/marketplace/my_orders.html:39
+msgid "En cours"
+msgstr "In progress"
+
+#: app/marketplace/templates/marketplace/my_orders.html:40
+msgid "Terminées"
+msgstr "Completed"
+
+#: app/marketplace/templates/marketplace/admin/orders.html:75
+#: app/marketplace/templates/marketplace/my_orders.html:41
+msgid "Annulées"
+msgstr "Cancelled"
+
+#: app/marketplace/templates/marketplace/my_orders.html:90
+msgid "Voir les détails"
+msgstr "View details"
+
+#: app/marketplace/templates/marketplace/my_orders.html:101
+msgid "Articles"
+msgstr "Items"
+
+#: app/marketplace/templates/marketplace/admin/orders.html:185
+#: app/marketplace/templates/marketplace/my_orders.html:128
+msgid "Aucune commande dans cette catégorie."
+msgstr "No orders in this category."
+
+#: app/marketplace/templates/marketplace/admin/orders.html:194
+#: app/marketplace/templates/marketplace/my_orders.html:135
+msgid "Aucune commande"
+msgstr "No orders"
+
+#: app/marketplace/templates/marketplace/my_orders.html:136
+msgid "Vous n'avez pas encore passé de commande."
+msgstr "You have not placed any order yet."
+
+#: app/marketplace/templates/marketplace/order_confirmation.html:2
+msgid "Commande confirmée"
+msgstr "Order confirmed"
+
+#: app/marketplace/templates/marketplace/order_confirmation.html:19
+msgid "Paiement MTN en attente"
+msgstr "MTN payment pending"
+
+#: app/marketplace/templates/marketplace/order_confirmation.html:20
+msgid "Vérifiez votre téléphone et approuvez le paiement Mobile Money."
+msgstr "Check your phone and approve the Mobile Money payment."
+
+#: app/marketplace/templates/marketplace/order_confirmation.html:26
+msgid "Action requise sur votre téléphone"
+msgstr "Action required on your phone"
+
+#: app/marketplace/templates/marketplace/order_confirmation.html:28
+msgid "Une demande de paiement MTN MoMo a été envoyée au numéro"
+msgstr "An MTN MoMo payment request was sent to"
+
+#: app/marketplace/templates/marketplace/order_confirmation.html:30
+msgid "Entrez votre PIN pour confirmer."
+msgstr "Enter your PIN to confirm."
+
+#: app/marketplace/templates/marketplace/order_confirmation.html:34
+msgid "En attente de confirmation…"
+msgstr "Waiting for confirmation…"
+
+#: app/marketplace/templates/marketplace/order_confirmation.html:43
+msgid "Vérifier le paiement"
+msgstr "Check payment"
+
+#: app/marketplace/templates/marketplace/order_confirmation.html:50
+msgid "Paiement Orange Money en cours"
+msgstr "Orange Money payment in progress"
+
+#: app/marketplace/templates/marketplace/order_confirmation.html:51
+msgid ""
+"Votre commande est enregistrée. Le statut sera mis à jour dès "
+"confirmation du paiement."
+msgstr "Your order has been registered. Status will be updated once payment is confirmed."
+
+#: app/marketplace/templates/marketplace/order_confirmation.html:56
+#: app/marketplace/templates/marketplace/order_confirmation.html:62
+msgid "Commande confirmée !"
+msgstr "Order confirmed!"
+
+#: app/marketplace/templates/marketplace/order_confirmation.html:57
+msgid "Paiement reçu. Merci pour votre achat !"
+msgstr "Payment received. Thank you for your purchase!"
+
+#: app/marketplace/templates/marketplace/order_confirmation.html:63
+msgid "Merci pour votre achat. Nous vous contacterons pour la livraison."
+msgstr "Thank you for your purchase. We will contact you for delivery."
+
+#: app/marketplace/templates/marketplace/order_confirmation.html:68
+msgid "Commande reçue !"
+msgstr "Order received!"
+
+#: app/marketplace/templates/marketplace/order_confirmation.html:69
+msgid "Merci pour votre achat. Voici le récapitulatif de votre commande."
+msgstr "Thank you for your purchase. Here is your order summary."
+
+#: app/marketplace/templates/marketplace/order_confirmation.html:80
+msgid "N° de commande"
+msgstr "Order no."
+
+#: app/marketplace/templates/marketplace/admin/analytics.html:65
+#: app/marketplace/templates/marketplace/admin/orders.html:147
+#: app/marketplace/templates/marketplace/order_confirmation.html:86
+#: app/models/marketplace.py:111
+msgid "En attente"
+msgstr "Pending"
+
+#: app/marketplace/templates/marketplace/admin/orders.html:148
+#: app/marketplace/templates/marketplace/order_confirmation.html:90
+#: app/models/marketplace.py:112
+msgid "Paiement en cours"
+msgstr "Payment in progress"
+
+#: app/marketplace/templates/marketplace/admin/orders.html:149
+#: app/marketplace/templates/marketplace/order_confirmation.html:94
+#: app/marketplace/templates/marketplace/order_confirmation.html:216
+#: app/models/marketplace.py:113
+msgid "Payée"
+msgstr "Paid"
+
+#: app/marketplace/templates/marketplace/admin/orders.html:150
+#: app/marketplace/templates/marketplace/order_confirmation.html:98
+#: app/models/marketplace.py:114
+msgid "En traitement"
+msgstr "Processing"
+
+#: app/marketplace/templates/marketplace/order_confirmation.html:113
+msgid "Téléphone"
+msgstr "Phone"
+
+#: app/marketplace/templates/marketplace/order_confirmation.html:132
+msgid "Adresse"
+msgstr "Address"
+
+#: app/marketplace/templates/marketplace/order_confirmation.html:140
+msgid "Articles commandés"
+msgstr "Ordered items"
+
+#: app/marketplace/templates/marketplace/order_confirmation.html:166
+msgid "Prochaines étapes"
+msgstr "Next steps"
+
+#: app/marketplace/templates/marketplace/order_confirmation.html:167
+#, python-format
+msgid "Notre équipe vous contactera au %(phone)s pour confirmer la livraison."
+msgstr "Our team will contact you at %(phone)s to confirm delivery."
+
+#: app/marketplace/templates/marketplace/admin/orders.html:168
+#: app/marketplace/templates/marketplace/order_confirmation.html:175
+msgid "Note :"
+msgstr "Note:"
+
+#: app/marketplace/templates/marketplace/order_confirmation.html:212
+msgid "Paiement confirmé !"
+msgstr "Payment confirmed!"
+
+#: app/marketplace/templates/marketplace/order_confirmation.html:213
+msgid "Merci ! Votre paiement MTN MoMo a été reçu."
+msgstr "Thank you! Your MTN MoMo payment was received."
+
+#: app/marketplace/templates/marketplace/order_confirmation.html:225
+msgid "Paiement échoué"
+msgstr "Payment failed"
+
+#: app/marketplace/templates/marketplace/order_confirmation.html:226
+msgid ""
+"Le paiement MTN MoMo n'a pas abouti. Veuillez nous contacter ou passer "
+"une nouvelle commande."
+msgstr "The MTN MoMo payment failed. Please contact us or place a new order."
+
+#: app/marketplace/templates/marketplace/admin/analytics.html:44
+msgid "Tableau de bord analytique"
+msgstr "Analytics dashboard"
+
+#: app/marketplace/templates/marketplace/admin/analytics.html:45
+msgid "Données en temps réel depuis la base de données"
+msgstr "Real-time data from the database"
+
+#: app/marketplace/templates/marketplace/admin/analytics.html:53
+msgid "Revenus totaux"
+msgstr "Total revenue"
+
+#: app/marketplace/templates/marketplace/admin/analytics.html:61
+msgid "toutes périodes"
+msgstr "all periods"
+
+#: app/marketplace/templates/marketplace/admin/analytics.html:67
+msgid "à traiter"
+msgstr "to process"
+
+#: app/marketplace/templates/marketplace/admin/analytics.html:71
+msgid "Panier moyen"
+msgstr "Average cart value"
+
+#: app/marketplace/templates/marketplace/admin/analytics.html:80
+msgid "Revenus — 30 derniers jours"
+msgstr "Revenue — last 30 days"
+
+#: app/marketplace/templates/marketplace/admin/analytics.html:86
+msgid "Aucune donnée pour cette période."
+msgstr "No data for this period."
+
+#: app/marketplace/templates/marketplace/admin/analytics.html:95
+msgid "Commandes par statut"
+msgstr "Orders by status"
+
+#: app/marketplace/templates/marketplace/admin/analytics.html:101
+msgid "Aucune commande."
+msgstr "No orders."
+
+#: app/marketplace/templates/marketplace/admin/analytics.html:107
+msgid "Modes de paiement"
+msgstr "Payment methods"
+
+#: app/marketplace/templates/marketplace/admin/analytics.html:113
+msgid "Aucune donnée."
+msgstr "No data."
+
+#: app/marketplace/templates/marketplace/admin/analytics.html:119
+msgid "Top 5 produits"
+msgstr "Top 5 products"
+
+#: app/marketplace/templates/marketplace/admin/analytics.html:136
+msgid "Aucune vente enregistrée."
+msgstr "No sales recorded."
+
+#: app/marketplace/templates/marketplace/admin/carousel.html:44
+msgid "slide(s)"
+msgstr "slide(s)"
+
+#: app/marketplace/templates/marketplace/admin/carousel.html:45
+msgid "actif(s)"
+msgstr "active"
+
+#: app/marketplace/templates/marketplace/admin/carousel.html:55
+msgid "Ajouter un slide"
+msgstr "Add a slide"
+
+#: app/marketplace/templates/marketplace/admin/carousel.html:65
+msgid ""
+"Les slides sont affichés dans l'ordre croissant du champ « Ordre ». Les "
+"slides inactifs ne sont pas visibles sur le site. Format d'image "
+"recommandé : 1400 × 700 px."
+msgstr "Slides are displayed in ascending order of the 'Order' field. Inactive slides are not visible on the site. Recommended image format: 1400 × 700 px."
+
+#: app/marketplace/templates/marketplace/admin/carousel.html:105
+msgid "Ordre :"
+msgstr "Order:"
+
+#: app/marketplace/templates/marketplace/admin/carousel.html:130
+#: app/marketplace/templates/marketplace/admin/carousel.html:135
+msgid "Désactiver"
+msgstr "Disable"
+
+#: app/marketplace/templates/marketplace/admin/carousel.html:130
+#: app/marketplace/templates/marketplace/admin/carousel.html:140
+msgid "Activer"
+msgstr "Enable"
+
+#: app/marketplace/templates/marketplace/admin/carousel.html:154
+msgid "Supprimer ce slide ?"
+msgstr "Delete this slide?"
+
+#: app/marketplace/templates/marketplace/admin/carousel.html:174
+msgid "Aucun slide créé"
+msgstr "No slide created"
+
+#: app/marketplace/templates/marketplace/admin/carousel.html:175
+msgid "Le carousel affichera des slides par défaut jusqu'à ce que vous en créiez."
+msgstr "The carousel will display default slides until you create some."
+
+#: app/marketplace/templates/marketplace/admin/carousel.html:179
+msgid "Créer le premier slide"
+msgstr "Create the first slide"
+
+#: app/marketplace/templates/marketplace/admin/carousel.html:191
+msgid "Prévisualiser la boutique"
+msgstr "Preview the shop"
+
+#: app/marketplace/templates/marketplace/admin/carousel_form.html:47
+msgid "Carousel — Admin"
+msgstr "Carousel — Admin"
+
+#: app/marketplace/templates/marketplace/admin/carousel_form.html:96
+msgid "Choisir une image…"
+msgstr "Choose an image…"
+
+#: app/marketplace/templates/marketplace/admin/carousel_form.html:98
+msgid "JPG · PNG · WebP — max 8 Mo"
+msgstr "JPG · PNG · WebP — max 8 MB"
+
+#: app/marketplace/templates/marketplace/admin/carousel_form.html:114
+msgid "(ignoré si une nouvelle image est choisie)"
+msgstr "(ignored if a new image is chosen)"
+
+#: app/marketplace/templates/marketplace/admin/carousel_form.html:119
+msgid ""
+"L'image sera recadrée en 1400 × 700 px (format paysage, zoom centré). "
+"Elle doit couvrir toute la largeur du carousel."
+msgstr "The image will be cropped to 1400 × 700 px (landscape, centered zoom). It must cover the full width of the carousel."
+
+#: app/marketplace/templates/marketplace/admin/carousel_form.html:127
+msgid "Contenu du slide"
+msgstr "Slide content"
+
+#: app/marketplace/templates/marketplace/admin/carousel_form.html:128
+msgid "Ex : Bienvenue chez OmniFarm"
+msgstr "Ex: Welcome to OmniFarm"
+
+#: app/marketplace/templates/marketplace/admin/carousel_form.html:129
+msgid "Phrase d'accroche courte visible sous le titre…"
+msgstr "Short tagline visible below the title…"
+
+#: app/marketplace/templates/marketplace/admin/carousel_form.html:134
+msgid "Bouton d'action (optionnel)"
+msgstr "Action button (optional)"
+
+#: app/marketplace/templates/marketplace/admin/carousel_form.html:143
+msgid "Paramètres"
+msgstr "Settings"
+
+#: app/marketplace/templates/marketplace/admin/carousel_form.html:152
+msgid "Les slides inactifs ne s'affichent pas dans le carousel."
+msgstr "Inactive slides are not displayed in the carousel."
+
+#: app/marketplace/templates/marketplace/admin/carousel_form.html:186
+msgid "Fichier trop grand (max 8 Mo)"
+msgstr "File too large (max 8 MB)"
+
+#: app/marketplace/templates/marketplace/admin/orders.html:3
+msgid "Commandes — Admin"
+msgstr "Orders — Admin"
+
+#: app/marketplace/templates/marketplace/admin/orders.html:35
+#: app/marketplace/templates/marketplace/admin/product_form.html:40
+#: app/marketplace/templates/marketplace/admin/products.html:36
+msgid "Marché — Admin"
+msgstr "Market — Admin"
+
+#: app/marketplace/templates/marketplace/admin/orders.html:53
+#: app/marketplace/templates/marketplace/admin/orders.html:74
+msgid "Payées"
+msgstr "Paid"
+
+#: app/marketplace/templates/marketplace/admin/orders.html:57
+msgid "encaissés"
+msgstr "collected"
+
+#: app/marketplace/templates/marketplace/admin/orders.html:130
+msgid "Livraison"
+msgstr "Delivery"
+
+#: app/marketplace/templates/marketplace/admin/orders.html:142
+msgid "Statut :"
+msgstr "Status:"
+
+#: app/marketplace/templates/marketplace/admin/orders.html:151
+#: app/models/marketplace.py:116
+msgid "Livrée"
+msgstr "Delivered"
+
+#: app/marketplace/templates/marketplace/admin/orders.html:152
+#: app/models/marketplace.py:117
+msgid "Annulée"
+msgstr "Cancelled"
+
+#: app/marketplace/templates/marketplace/admin/orders.html:191
+msgid "commande(s) au total"
+msgstr "order(s) total"
+
+#: app/marketplace/templates/marketplace/admin/orders.html:195
+msgid "Aucune commande n'a encore été passée."
+msgstr "No order has been placed yet."
+
+#: app/marketplace/templates/marketplace/admin/product_form.html:3
+#: app/marketplace/templates/marketplace/admin/products.html:75
+msgid "Produit"
+msgstr "Product"
+
+#: app/marketplace/templates/marketplace/admin/product_form.html:90
+msgid "Choisir une photo…"
+msgstr "Choose a photo…"
+
+#: app/marketplace/templates/marketplace/admin/product_form.html:92
+msgid "JPG · PNG · WebP — max 5 Mo"
+msgstr "JPG · PNG · WebP — max 5 MB"
+
+#: app/marketplace/templates/marketplace/admin/product_form.html:112
+msgid "(ignoré si une nouvelle photo est choisie)"
+msgstr "(ignored if a new photo is chosen)"
+
+#: app/marketplace/templates/marketplace/admin/product_form.html:117
+msgid ""
+"L'image sera automatiquement recadrée à 400×400 px (zoom centré). Formats"
+" acceptés : JPG, PNG, WebP."
+msgstr "The image will automatically be cropped to 400×400 px (centered zoom). Accepted formats: JPG, PNG, WebP."
+
+#: app/marketplace/templates/marketplace/admin/product_form.html:125
+msgid "Informations du produit"
+msgstr "Product information"
+
+#: app/marketplace/templates/marketplace/admin/product_form.html:127
+msgid "Ex : Tilapia frais"
+msgstr "Ex: Fresh Tilapia"
+
+#: app/marketplace/templates/marketplace/admin/product_form.html:130
+msgid "Description courte du produit..."
+msgstr "Short product description..."
+
+#: app/marketplace/templates/marketplace/admin/product_form.html:135
+msgid "Prix & stock"
+msgstr "Price & stock"
+
+#: app/marketplace/templates/marketplace/admin/product_form.html:138
+msgid "kg, pièce, douzaine..."
+msgstr "kg, piece, dozen..."
+
+#: app/marketplace/templates/marketplace/admin/product_form.html:139
+msgid "Laisser vide = illimité"
+msgstr "Leave empty = unlimited"
+
+#: app/marketplace/templates/marketplace/admin/product_form.html:145
+msgid "Disponibilité"
+msgstr "Availability"
+
+#: app/marketplace/templates/marketplace/admin/product_form.html:149
+msgid "Les produits inactifs ne sont pas visibles dans le catalogue."
+msgstr "Inactive products are not visible in the catalog."
+
+#: app/marketplace/templates/marketplace/admin/product_form.html:188
+msgid "Fichier trop grand (max 5 Mo)"
+msgstr "File too large (max 5 MB)"
+
+#: app/marketplace/templates/marketplace/admin/products.html:3
+msgid "Produits — Admin"
+msgstr "Products — Admin"
+
+#: app/marketplace/templates/marketplace/admin/products.html:66
+msgid "Stock limité"
+msgstr "Limited stock"
+
+#: app/marketplace/templates/marketplace/admin/products.html:77
+msgid "Prix"
+msgstr "Price"
+
+#: app/marketplace/templates/marketplace/admin/products.html:142
+msgid "Supprimer ce produit ? Cette action est irréversible."
+msgstr "Delete this product? This action is irreversible."
+
+#: app/marketplace/templates/marketplace/admin/products.html:154
+msgid "produit(s) au total"
+msgstr "product(s) total"
+
+#: app/marketplace/templates/marketplace/admin/products.html:157
+msgid "Aucun produit"
+msgstr "No product"
+
+#: app/marketplace/templates/marketplace/admin/products.html:158
+msgid "Commencez par ajouter votre premier produit au catalogue."
+msgstr "Start by adding your first product to the catalog."
+
+#: app/marketplace/templates/marketplace/admin/products.html:159
+msgid "Ajouter un produit"
+msgstr "Add a product"
+
+#: app/models/marketplace.py:115
+msgid "Expédiée"
+msgstr "Shipped"
+
+#: app/poultry/forms.py:14
+msgid "Nom du lot"
+msgstr ""
+
+#: app/poultry/forms.py:16
+msgid "Ex: Lot Poulet Mars-2026, Pondeuses Bâtiment B"
+msgstr ""
+
+#: app/poultry/forms.py:19
+msgid "Espèce / Type"
+msgstr ""
+
+#: app/poultry/forms.py:21
+msgid "Ex: Poulet de chair, Pondeuse, Pintade"
+msgstr ""
+
+#: app/poultry/forms.py:24
+msgid "Souche / Race"
+msgstr ""
+
+#: app/poultry/forms.py:26
+msgid "Ex: Cobb 500, ISA Brown, Ross 308"
+msgstr ""
+
+#: app/poultry/forms.py:29
+msgid "Date de mise en place"
+msgstr ""
+
+#: app/poultry/forms.py:38
+msgid "Bâtiment / Poulailler"
+msgstr ""
+
+#: app/poultry/forms.py:40
+msgid "Ex: Bâtiment A, Poulailler 2"
+msgstr ""
+
+#: app/poultry/forms.py:47 app/poultry/templates/poultry/detail.html:17
+#: app/poultry/templates/poultry/index.html:44
+msgid "Réformé"
+msgstr ""
+
+#: app/poultry/forms.py:63
+msgid "Aliment consommé (kg)"
+msgstr ""
+
+#: app/poultry/forms.py:69
+msgid "Ex: Démarrage, Croissance, Finition"
+msgstr ""
+
+#: app/poultry/forms.py:72
+msgid "Eau consommée (L)"
+msgstr ""
+
+#: app/poultry/forms.py:78
+msgid "Œufs collectés"
+msgstr ""
+
+#: app/poultry/forms.py:81
+msgid "Laisser à 0 pour les lots chair"
+msgstr ""
+
+#: app/poultry/forms.py:84
+msgid "Poids vif moyen (g)"
+msgstr ""
+
+#: app/poultry/forms.py:105
+msgid "Humidité relative (%)"
+msgstr ""
+
+#: app/poultry/routes.py:44
+msgid "Nouveau lot de volailles"
+msgstr ""
+
+#: app/poultry/templates/poultry/detail.html:21
+msgid "Mise en place :"
+msgstr ""
+
+#: app/poultry/templates/poultry/detail.html:43
+msgid "Œufs (total)"
+msgstr ""
+
+#: app/poultry/templates/poultry/detail.html:62
+msgid "Eau (L)"
+msgstr ""
+
+#: app/poultry/templates/poultry/detail.html:66
+msgid "T°C amb."
+msgstr ""
+
+#: app/poultry/templates/poultry/detail.html:67
+msgid "HR (%)"
+msgstr ""
+
+#: app/poultry/templates/poultry/flock_form.html:17
+msgid "Aviculture — Gestion des lots"
+msgstr ""
+
+#: app/poultry/templates/poultry/flock_form.html:27
+msgid "Ex: Lot Poulet Mars-2026"
+msgstr ""
+
+#: app/poultry/templates/poultry/flock_form.html:28
+msgid "Ex: Poulet de chair"
+msgstr ""
+
+#: app/poultry/templates/poultry/flock_form.html:29
+msgid "Ex: Cobb 500"
+msgstr ""
+
+#: app/poultry/templates/poultry/flock_form.html:30
+msgid "Ex: Bâtiment A"
+msgstr ""
+
+#: app/poultry/templates/poultry/flock_form.html:39
+msgid "Observations, source, programme vaccinal..."
+msgstr ""
+
+#: app/poultry/templates/poultry/index.html:13
+msgid "Gestion des lots de volailles et suivi de production"
+msgstr ""
+
+#: app/poultry/templates/poultry/index.html:58
+msgid "Jours"
+msgstr ""
+
+#: app/poultry/templates/poultry/index.html:63
+msgid "Bâtiment :"
+msgstr ""
+
+#: app/poultry/templates/poultry/index.html:83
+msgid "Aucun lot de volailles"
+msgstr ""
+
+#: app/poultry/templates/poultry/index.html:84
+msgid "Commencez par enregistrer votre premier lot de volailles."
+msgstr ""
+
+#: app/poultry/templates/poultry/record_form.html:30
+msgid "Alimentation & eau"
+msgstr ""
+
+#: app/poultry/templates/poultry/record_form.html:33
+msgid "Croissance"
+msgstr ""
+
+#: app/poultry/templates/poultry/record_form.html:39
+#: app/templates/base.html:138
+msgid "Production"
+msgstr ""
+
+#: app/poultry/templates/poultry/record_form.html:50
+msgid "Maladie de Newcastle, stress thermique..."
+msgstr ""
+
+#: app/poultry/templates/poultry/record_form.html:64
+msgid "Observations particulières, traitements appliqués..."
+msgstr ""
+
+#: app/reports/routes.py:45 app/templates/base.html:238
+msgid "Rapports"
+msgstr ""
+
+#: app/templates/base.html:117
+msgid "Gestion agricole"
+msgstr ""
+
+#: app/templates/base.html:171
+msgid "Commerce"
+msgstr ""
+
+#: app/templates/base.html:211
+msgid "Gestion"
+msgstr ""
+
+#: app/templates/base.html:245
+msgid "Système"
+msgstr ""
+
+#: app/templates/base.html:290 app/templates/base.html:414
+msgid "Thème clair"
+msgstr ""
+
+#: app/templates/base.html:290 app/templates/base.html:414
+msgid "Thème sombre"
+msgstr ""
+
+#: app/templates/base.html:306 app/templates/base_shop.html:321
+#: app/templates/base_shop.html:409
+msgid "Déconnexion"
+msgstr ""
+
+#: app/templates/base.html:385 app/templates/base_shop.html:418
+msgid "Tous droits réservés"
+msgstr ""
+
+#: app/templates/base.html:388
+msgid "Système opérationnel"
+msgstr ""
+
+#: app/templates/base_shop.html:7
+msgid "OmniFarm Boutique"
+msgstr ""
+
+#: app/templates/base_shop.html:131 app/templates/base_shop.html:379
+#: app/templates/base_shop.html:393
+msgid "Boutique"
+msgstr ""
+
+#: app/templates/base_shop.html:137
+msgid "Navigation principale"
+msgstr ""
+
+#: app/templates/base_shop.html:143 app/templates/base_shop.html:260
+msgid "Accueil"
+msgstr ""
+
+#: app/templates/base_shop.html:169 app/templates/base_shop.html:287
+msgid "Administration"
+msgstr ""
+
+#: app/templates/base_shop.html:203 app/templates/base_shop.html:316
+msgid "Dashboard"
+msgstr ""
+
+#: app/templates/base_shop.html:219
+msgid "Ouvrir le menu"
+msgstr ""
+
+#: app/templates/base_shop.html:229
+msgid "Menu de navigation"
+msgstr ""
+
+#: app/templates/base_shop.html:245
+msgid "Fermer le menu"
+msgstr ""
+
+#: app/templates/base_shop.html:303
+msgid "Langue"
+msgstr ""
+
+#: app/templates/base_shop.html:348
+msgid "Fermer"
+msgstr ""
+
+#: app/templates/base_shop.html:383
+msgid "Produits frais et de qualité, directement de notre ferme à votre table."
+msgstr ""
+
+#: app/templates/base_shop.html:387
+msgid "Livraison disponible"
+msgstr ""
+
+#: app/templates/base_shop.html:395
+msgid "Catalogue"
+msgstr ""
+
+#: app/templates/base_shop.html:405
+msgid "Compte"
+msgstr ""
+
+#: app/templates/base_shop.html:419
+msgid "Plateforme gérée par"
+msgstr ""
+
+#: app/templates/macros.html:127
+msgid "Pagination"
+msgstr ""
+
+#: app/templates/errors/403.html:2 app/templates/errors/403.html:8
+msgid "Accès refusé"
+msgstr ""
+
+#: app/templates/errors/403.html:6 app/templates/errors/404.html:6
+#: app/templates/errors/413.html:6 app/templates/errors/429.html:6
+#: app/templates/errors/500.html:6
+msgid "Erreur"
+msgstr ""
+
+#: app/templates/errors/403.html:9
+msgid ""
+"Vous ne disposez pas des permissions nécessaires pour accéder à cette "
+"ressource."
+msgstr ""
+
+#: app/templates/errors/403.html:11 app/templates/errors/404.html:11
+#: app/templates/errors/413.html:11 app/templates/errors/429.html:11
+#: app/templates/errors/500.html:11
+msgid "Retour au tableau de bord"
+msgstr ""
+
+#: app/templates/errors/404.html:2 app/templates/errors/404.html:8
+msgid "Page introuvable"
+msgstr ""
+
+#: app/templates/errors/404.html:9
+msgid "La ressource demandée n'existe pas ou a été déplacée."
+msgstr ""
+
+#: app/templates/errors/413.html:2 app/templates/errors/413.html:8
+msgid "Fichier trop grand"
+msgstr ""
+
+#: app/templates/errors/413.html:9
+msgid "Le fichier envoyé dépasse la taille maximale autorisée (10 Mo)."
+msgstr ""
+
+#: app/templates/errors/429.html:2 app/templates/errors/429.html:8
+msgid "Trop de requêtes"
+msgstr ""
+
+#: app/templates/errors/429.html:9
+msgid ""
+"Vous avez envoyé trop de requêtes en peu de temps. Veuillez patienter un "
+"moment."
+msgstr ""
+
+#: app/templates/errors/500.html:2
+msgid "Erreur serveur"
+msgstr ""
+
+#: app/templates/errors/500.html:8
+msgid "Erreur interne du serveur"
+msgstr ""
+
+#: app/templates/errors/500.html:9
+msgid "Une erreur inattendue s'est produite. L'équipe technique a été notifiée."
+msgstr ""
+
+#~ msgid "Nom du bassin"
+#~ msgstr "Pond information"
+
+#~ msgid "Ex: Bassin A1, Mare Nord"
+#~ msgstr "Ex: Pond A1"
+
+#~ msgid "Espèce principale"
+#~ msgstr ""
+
+#~ msgid "Ex: Tilapia, Silure, Carpe commune"
+#~ msgstr ""
+
+#~ msgid "Doit être positif."
+#~ msgstr ""
+
+#~ msgid "En maintenance"
+#~ msgstr "Maintenance"
+
+#~ msgid "Vidé / Récolté"
+#~ msgstr "Harvested"
+
+#~ msgid "Date d'installation"
+#~ msgstr "First install"
+
+#~ msgid "Enregistrer"
+#~ msgstr "Record deleted."
+
+#~ msgid "Date d'observation"
+#~ msgstr ""
+
+#~ msgid "Effectif actuel (poissons)"
+#~ msgstr ""
+
+#~ msgid "Poids moyen (g)"
+#~ msgstr "Avg weight (g)"
+
+#~ msgid "Poids moyen mesuré par sondage"
+#~ msgstr ""
+
+#~ msgid "Aliment distribué (kg)"
+#~ msgstr "Feed (kg)"
+
+#~ msgid "Type d'aliment"
+#~ msgstr "Payment"
+
+#~ msgid "Ex: Granulés 3mm, Farine de poisson"
+#~ msgstr ""
+
+#~ msgid "Mortalité (nombre)"
+#~ msgstr "Mortality"
+
+#~ msgid "Cause de mortalité"
+#~ msgstr "Growth & mortality"
+
+#~ msgid "Température eau (°C)"
+#~ msgstr "Water temp. (°C)"
+
+#~ msgid "pH"
+#~ msgstr ""
+
+#~ msgid "Oxygène dissous (mg/L)"
+#~ msgstr ""
+
+#~ msgid "Turbidité (NTU)"
+#~ msgstr ""
+
+#~ msgid "Ce champ est requis."
+#~ msgstr ""
+
+#~ msgid "Entre 1 et 64 caractères."
+#~ msgstr ""
+
+#~ msgid "Se souvenir de moi"
+#~ msgstr ""
+
+#~ msgid "Entre 3 et 64 caractères."
+#~ msgstr ""
+
+#~ msgid "Lettres, chiffres, tirets et points uniquement."
+#~ msgstr ""
+
+#~ msgid "Entre 6 et 120 caractères."
+#~ msgstr ""
+
+#~ msgid "Au moins 8 caractères."
+#~ msgstr "•••••••• (min. 8 characters)"
+
+#~ msgid "Confirmer le mot de passe"
+#~ msgstr "Password"
+
+#~ msgid "Les mots de passe ne correspondent pas."
+#~ msgstr ""
+
+#~ msgid "Nom de la cage / lot"
+#~ msgstr ""
+
+#~ msgid "Ex: Cage C12, Lot Géniteurs Mars-2026"
+#~ msgstr "Ex: Chicken Batch March-2026"
+
+#~ msgid "Race"
+#~ msgstr ""
+
+#~ msgid "Ex: Néo-Zélandais, Californien, Local"
+#~ msgstr "Ex: New Zealand White"
+
+#~ msgid "Date d'acquisition"
+#~ msgstr "Entry date"
+
+#~ msgid "Dont femelles"
+#~ msgstr ""
+
+#~ msgid "Dont mâles"
+#~ msgstr ""
+
+#~ msgid "Ex: Granulés, Foin, Légumes verts"
+#~ msgstr ""
+
+#~ msgid "Portées mises bas"
+#~ msgstr ""
+
+#~ msgid "Lapereaux nés (total)"
+#~ msgstr "Kits born"
+
+#~ msgid "Lapereaux survivants"
+#~ msgstr "Kits born"
+
+#~ msgid "Température ambiante (°C)"
+#~ msgstr "Temperature"
+
+#~ msgid "Nom du produit"
+#~ msgstr "New product"
+
+#~ msgid "Description"
+#~ msgstr ""
+
+#~ msgid "🐟 Poisson"
+#~ msgstr "Fish"
+
+#~ msgid "🐔 Volaille"
+#~ msgstr "Poultry"
+
+#~ msgid "🐇 Lapin"
+#~ msgstr "Rabbit"
+
+#~ msgid "🥚 Œufs"
+#~ msgstr "Eggs"
+
+#~ msgid "🌿 Autre"
+#~ msgstr "Other"
+
+#~ msgid "Prix unitaire (FCFA)"
+#~ msgstr "Unit price (FCFA)"
+
+#~ msgid "Le prix doit être positif."
+#~ msgstr "Price must be positive."
+
+#~ msgid "Unité de vente"
+#~ msgstr "Unit of sale"
+
+#~ msgid "Ex: kg, pièce, douzaine, sachet"
+#~ msgstr "kg, piece, dozen..."
+
+#~ msgid "Visible et disponible à la vente"
+#~ msgstr "Visible and available for sale"
+
+#~ msgid "Nom complet"
+#~ msgstr "Full name"
+
+#~ msgid "Numéro de téléphone"
+#~ msgstr "Phone"
+
+#~ msgid "Ex: +237 6XX XXX XXX"
+#~ msgstr "Ex: +237 6XX XXX XXX"
+
+#~ msgid "Adresse de livraison"
+#~ msgstr "Cash on delivery"
+
+#~ msgid "Quartier, ville, point de repère"
+#~ msgstr "Neighborhood, city, landmark..."
+
+#~ msgid "Orange Money"
+#~ msgstr "Orange Money"
+
+#~ msgid "MTN Mobile Money (MoMo)"
+#~ msgstr "MTN Mobile Money (MoMo)"
+
+#~ msgid "Paiement à la livraison"
+#~ msgstr "Cash on delivery"
+
+#~ msgid "Numéro Mobile Money"
+#~ msgstr "Mobile Money number"
+
+#~ msgid "Laissez vide si identique au numéro de contact"
+#~ msgstr "Leave blank if same as contact number"
+
+#~ msgid "Confirmer la commande"
+#~ msgstr "Place order"
+
+#~ msgid "Nouveau statut"
+#~ msgstr "New batch"
+
+#~ msgid "Actualiser"
+#~ msgstr "Refresh"
+
+#~ msgid "Nom du lot"
+#~ msgstr "Batch information"
+
+#~ msgid "Ex: Lot Poulet Mars-2026, Pondeuses Bâtiment B"
+#~ msgstr "Ex: Chicken Batch March-2026"
+
+#~ msgid "Espèce / Type"
+#~ msgstr ""
+
+#~ msgid "Ex: Poulet de chair, Pondeuse, Pintade"
+#~ msgstr "Ex: Broiler chicken"
+
+#~ msgid "Souche / Race"
+#~ msgstr ""
+
+#~ msgid "Ex: Cobb 500, ISA Brown, Ross 308"
+#~ msgstr ""
+
+#~ msgid "Date de mise en place"
+#~ msgstr "Setup date:"
+
+#~ msgid "Bâtiment / Poulailler"
+#~ msgstr ""
+
+#~ msgid "Ex: Bâtiment A, Poulailler 2"
+#~ msgstr "Ex: Building A"
+
+#~ msgid "Aliment consommé (kg)"
+#~ msgstr "Feed (kg)"
+
+#~ msgid "Ex: Démarrage, Croissance, Finition"
+#~ msgstr ""
+
+#~ msgid "Eau consommée (L)"
+#~ msgstr ""
+
+#~ msgid "Œufs collectés"
+#~ msgstr ""
+
+#~ msgid "Poids vif moyen (g)"
+#~ msgstr "Avg weight (g)"
+
+#~ msgid "Humidité relative (%)"
+#~ msgstr ""
+
+#~ msgid "Voir le panier"
+#~ msgstr "View cart"
+
+#~ msgid "Service IoT non démarré."
+#~ msgstr "IoT service not started."
+
+#~ msgid "Capacité (m³)"
+#~ msgstr "Capacity (m³)"
+
+#~ msgid "Statut"
+#~ msgstr "Status"
+
+#~ msgid "Actif"
+#~ msgstr "Active"
+
+#~ msgid "Inactif"
+#~ msgstr "Inactive"
+
+#~ msgid "Notes"
+#~ msgstr "Notes"
+
+#~ msgid "Aquaculture"
+#~ msgstr "Aquaculture"
+
+#~ msgid "Bassin « %(name)s » créé avec succès."
+#~ msgstr "Pond \"%(name)s\" created successfully."
+
+#~ msgid "Nouveau bassin"
+#~ msgstr "New pond"
+
+#~ msgid "Bassin « %(name)s » mis à jour."
+#~ msgstr "Pond \"%(name)s\" updated."
+
+#~ msgid "Modifier le bassin"
+#~ msgstr "Edit pond"
+
+#~ msgid "Bassin « %(name)s » et toutes ses données supprimés."
+#~ msgstr "Pond \"%(name)s\" and all its data deleted."
+
+#~ msgid "Saisie du %(date)s enregistrée."
+#~ msgstr "Entry for %(date)s saved."
+
+#~ msgid "Nouvelle saisie journalière"
+#~ msgstr "New daily entry"
+
+#~ msgid "Saisie mise à jour."
+#~ msgstr "Entry updated."
+
+#~ msgid "Modifier la saisie"
+#~ msgstr "Edit entry"
+
+#~ msgid "Enregistrement supprimé."
+#~ msgstr "Record deleted."
+
+#~ msgid "Maintenance"
+#~ msgstr "Maintenance"
+
+#~ msgid "Récolté"
+#~ msgstr "Harvested"
+
+#~ msgid "Installé le"
+#~ msgstr "Installed on"
+
+#~ msgid "Nouvelle saisie"
+#~ msgstr "New entry"
+
+#~ msgid "Modifier"
+#~ msgstr "Edit"
+
+#~ msgid "Saisies"
+#~ msgstr "Entries"
+
+#~ msgid "Mortalités"
+#~ msgstr "Mortalities"
+
+#~ msgid "Temp. eau (°C)"
+#~ msgstr "Water temp. (°C)"
+
+#~ msgid "Historique des saisies"
+#~ msgstr "Entry history"
+
+#~ msgid "Date"
+#~ msgstr "Date"
+
+#~ msgid "Effectif"
+#~ msgstr "Stock count"
+
+#~ msgid "Poids moy. (g)"
+#~ msgstr "Avg weight (g)"
+
+#~ msgid "Aliment (kg)"
+#~ msgstr "Feed (kg)"
+
+#~ msgid "Mortalité"
+#~ msgstr "Mortality"
+
+#~ msgid "T°C eau"
+#~ msgstr "Water temp."
+
+#~ msgid "Saisi par"
+#~ msgstr "Entered by"
+
+#~ msgid "Supprimer"
+#~ msgstr "Delete"
+
+#~ msgid "Supprimer cette saisie ?"
+#~ msgstr "Delete this entry?"
+
+#~ msgid "Aucune saisie pour ce bassin."
+#~ msgstr "No entries for this pond."
+
+#~ msgid "Première saisie"
+#~ msgstr "First entry"
+
+#~ msgid "Gestion des bassins et suivi piscicole"
+#~ msgstr "Pond management and fish monitoring"
+
+#~ msgid "Bassins"
+#~ msgstr "Ponds"
+
+#~ msgid "Actifs"
+#~ msgstr "Active"
+
+#~ msgid "Total saisies"
+#~ msgstr "Total entries"
+
+#~ msgid "Total mortalités"
+#~ msgstr "Total mortalities"
+
+#~ msgid "Morts"
+#~ msgstr "Deaths"
+
+#~ msgid "Dernière saisie :"
+#~ msgstr "Last entry:"
+
+#~ msgid "Aucune saisie"
+#~ msgstr "No entries"
+
+#~ msgid "Détails & saisies"
+#~ msgstr "Details & entries"
+
+#~ msgid "Saisie"
+#~ msgstr "Entry"
+
+#~ msgid "Aucun bassin enregistré"
+#~ msgstr "No ponds registered"
+
+#~ msgid "Commencez par créer votre premier bassin piscicole."
+#~ msgstr "Start by creating your first fish pond."
+
+#~ msgid "Créer un bassin"
+#~ msgstr "Create a pond"
+
+#~ msgid "Nouveau"
+#~ msgstr "New"
+
+#~ msgid "Créer"
+#~ msgstr "Create"
+
+#~ msgid "Aquaculture — Gestion des bassins"
+#~ msgstr "Aquaculture — Pond Management"
+
+#~ msgid "Informations du bassin"
+#~ msgstr "Pond information"
+
+#~ msgid "Ex: Bassin A1"
+#~ msgstr "Ex: Pond A1"
+
+#~ msgid "Ex: Tilapia du Nil"
+#~ msgstr "Ex: Nile Tilapia"
+
+#~ msgid "Observations, source d'eau, équipements..."
+#~ msgstr "Observations, water source, equipment..."
+
+#~ msgid "Annuler"
+#~ msgstr "Cancel"
+
+#~ msgid "Supprimer ce bassin et toutes ses données ?"
+#~ msgstr "Delete this pond and all its data?"
+
+#~ msgid "Modifier saisie"
+#~ msgstr "Edit entry"
+
+#~ msgid "Bassin :"
+#~ msgstr "Pond:"
+
+#~ msgid "Date de saisie"
+#~ msgstr "Entry date"
+
+#~ msgid "Stock"
+#~ msgstr "Stock"
+
+#~ msgid "Alimentation"
+#~ msgstr "Feeding"
+
+#~ msgid "Granulés 3mm"
+#~ msgstr "3mm pellets"
+
+#~ msgid "Asphyxie, maladie..."
+#~ msgstr "Asphyxia, disease..."
+
+#~ msgid "Paramètres environnementaux"
+#~ msgstr "Environmental parameters"
+
+#~ msgid "IoT-ready"
+#~ msgstr "IoT-ready"
+
+#~ msgid "Observations particulières..."
+#~ msgstr "Special observations..."
+
+#~ msgid "Nom d'utilisateur"
+#~ msgstr "New user"
+
+#~ msgid "Mot de passe"
+#~ msgstr "Password"
+
+#~ msgid "Connexion"
+#~ msgstr "Sign in"
+
+#~ msgid "Adresse e-mail"
+#~ msgstr "Address"
+
+#~ msgid "Adresse e-mail invalide."
+#~ msgstr "This email address is already in use."
+
+#~ msgid "Créer le compte administrateur"
+#~ msgstr "Create admin account"
+
+#~ msgid "Créer mon compte"
+#~ msgstr "Create a batch"
+
+#~ msgid "Rôle"
+#~ msgstr "Role"
+
+#~ msgid "Administrateur"
+#~ msgstr "Administrator mode"
+
+#~ msgid "Technicien"
+#~ msgstr "Technician"
+
+#~ msgid "Client"
+#~ msgstr "Customer"
+
+#~ msgid "Compte actif"
+#~ msgstr "Account"
+
+#~ msgid "Identifiants incorrects ou compte désactivé. Veuillez réessayer."
+#~ msgstr "Incorrect credentials or disabled account. Please try again."
+
+#~ msgid "Ce nom d'utilisateur est déjà utilisé."
+#~ msgstr "This username is already taken."
+
+#~ msgid "Cette adresse e-mail est déjà utilisée."
+#~ msgstr "This email address is already in use."
+
+#~ msgid "Bienvenue %(u)s ! Votre compte a été créé avec succès."
+#~ msgstr "Welcome %(u)s! Your account has been created successfully."
+
+#~ msgid "Créer un compte"
+#~ msgstr "Create a batch"
+
+#~ msgid "Vous avez été déconnecté avec succès."
+#~ msgstr "You have been signed out successfully."
+
+#~ msgid "Compte administrateur créé. Connectez-vous pour commencer."
+#~ msgstr "Administrator account created. Log in to get started."
+
+#~ msgid "Configuration initiale"
+#~ msgstr "Initial setup"
+
+#~ msgid "Gestion des utilisateurs"
+#~ msgstr "User management"
+
+#~ msgid "Le mot de passe est requis pour la création."
+#~ msgstr "Password is required for creation."
+
+#~ msgid "Utilisateur %(u)s créé avec succès."
+#~ msgstr "User %(u)s created successfully."
+
+#~ msgid "Nouvel utilisateur"
+#~ msgstr "New user"
+
+#~ msgid "Impossible de rétrograder le dernier administrateur."
+#~ msgstr "Cannot downgrade the last administrator."
+
+#~ msgid "Modifier l'utilisateur"
+#~ msgstr "Edit user"
+
+#~ msgid "Utilisateur %(u)s mis à jour."
+#~ msgstr "User %(u)s updated."
+
+#~ msgid "Vous ne pouvez pas supprimer votre propre compte."
+#~ msgstr "You cannot delete your own account."
+
+#~ msgid "Impossible de supprimer le dernier administrateur."
+#~ msgstr "Cannot delete the last administrator."
+
+#~ msgid "Utilisateur %(u)s supprimé."
+#~ msgstr "User %(u)s deleted."
+
+#~ msgid "Utilisateurs"
+#~ msgstr "Users"
+
+#~ msgid "Administration — OmniFarm Hub"
+#~ msgstr "Administration — OmniFarm Hub"
+
+#~ msgid "Informations du compte"
+#~ msgstr "Account information"
+
+#~ msgid "Rôle & accès"
+#~ msgstr "Role & access"
+
+#~ msgid "Un compte inactif ne peut pas se connecter."
+#~ msgstr "An inactive account cannot log in."
+
+#~ msgid "Laisser vide pour ne pas modifier"
+#~ msgstr "Leave blank to keep current password"
+
+#~ msgid "Supprimer cet utilisateur ?"
+#~ msgstr "Delete this user?"
+
+#~ msgid "Utilisateurs — Admin"
+#~ msgstr "Users — Admin"
+
+#~ msgid "Total"
+#~ msgstr "Total"
+
+#~ msgid "Admins"
+#~ msgstr "Admins"
+
+#~ msgid "Techniciens"
+#~ msgstr "Technicians"
+
+#~ msgid "Clients"
+#~ msgstr "Customers"
+
+#~ msgid "Inactifs"
+#~ msgstr "Inactive"
+
+#~ msgid "Utilisateur"
+#~ msgstr "User"
+
+#~ msgid "E-mail"
+#~ msgstr "Email"
+
+#~ msgid "Créé le"
+#~ msgstr "Created on"
+
+#~ msgid "Dernière connexion"
+#~ msgstr "Last login"
+
+#~ msgid "Actions"
+#~ msgstr "Actions"
+
+#~ msgid "(vous)"
+#~ msgstr "(you)"
+
+#~ msgid "Admin"
+#~ msgstr "Admin"
+
+#~ msgid "Supprimer l'utilisateur %(u)s ? Cette action est irréversible."
+#~ msgstr "Delete user %(u)s? This action cannot be undone."
+
+#~ msgid "utilisateur(s) au total"
+#~ msgstr "user(s) total"
+
+#~ msgid "Aucun utilisateur"
+#~ msgstr "No users"
+
+#~ msgid "Créer le premier utilisateur"
+#~ msgstr "Create first user"
+
+#~ msgid "Gérez votre ferme"
+#~ msgstr "Manage your farm"
+
+#~ msgid "en toute intelligence."
+#~ msgstr "with intelligence."
+
+#~ msgid ""
+#~ "Plateforme centralisée pour la gestion "
+#~ "multi-espèces, le suivi des opérations "
+#~ "agricoles et la commercialisation directe "
+#~ "de vos produits."
+#~ msgstr ""
+#~ "Centralized platform for multi-species "
+#~ "management, agricultural operations tracking, "
+#~ "and direct product sales."
+
+#~ msgid "Modules actifs"
+#~ msgstr "Active modules"
+
+#~ msgid "Aviculture"
+#~ msgstr "Poultry farming"
+
+#~ msgid "Cuniculture"
+#~ msgstr "Rabbit farming"
+
+#~ msgid "Marché"
+#~ msgstr "Market"
+
+#~ msgid "IoT & Capteurs"
+#~ msgstr "IoT & Sensors"
+
+#~ msgid "Bienvenue"
+#~ msgstr "Welcome"
+
+#~ msgid "Connectez-vous à votre espace de gestion."
+#~ msgstr "Sign in to your management space."
+
+#~ msgid "admin ou admin@omnifarm.local"
+#~ msgstr "admin or admin@omnifarm.local"
+
+#~ msgid "Pas encore de compte ?"
+#~ msgstr "Create admin account"
+
+#~ msgid "Créer un compte gratuit"
+#~ msgstr "Create admin account"
+
+#~ msgid "Rejoignez"
+#~ msgstr "Join"
+
+#~ msgid "OmniFarm Hub"
+#~ msgstr "OmniFarm Hub"
+
+#~ msgid ""
+#~ "Créez votre compte pour suivre vos "
+#~ "commandes, consulter votre historique d'achats"
+#~ " et accéder à notre boutique en "
+#~ "ligne."
+#~ msgstr ""
+#~ "Create your account to track orders, "
+#~ "view your purchase history and access"
+#~ " our online shop."
+
+#~ msgid "Vos avantages"
+#~ msgstr "Your benefits"
+
+#~ msgid "Suivi de vos commandes en temps réel"
+#~ msgstr "Track your orders"
+
+#~ msgid "Historique complet de vos achats"
+#~ msgstr "Full purchase history"
+
+#~ msgid "Livraison directe depuis la ferme"
+#~ msgstr "Fresh products straight from the farm"
+
+#~ msgid "Notifications de statut par téléphone"
+#~ msgstr ""
+
+#~ msgid "Gratuit — suivez vos commandes en temps réel."
+#~ msgstr "Free — track your orders in real time."
+
+#~ msgid "Ex : jean.dupont"
+#~ msgstr "John Doe"
+
+#~ msgid "votre@email.com"
+#~ msgstr "your@email.com"
+
+#~ msgid "Min. 8 caractères"
+#~ msgstr "•••••••• (min. 8 characters)"
+
+#~ msgid "ou"
+#~ msgstr "All"
+
+#~ msgid "Déjà un compte ?"
+#~ msgstr "Already have an account?"
+
+#~ msgid "Se connecter"
+#~ msgstr "Sign in"
+
+#~ msgid "Commander sans créer de compte"
+#~ msgstr "Recent orders"
+
+#~ msgid "Première installation"
+#~ msgstr "First install"
+
+#~ msgid "Bienvenue sur"
+#~ msgstr "Welcome to"
+
+#~ msgid ""
+#~ "Créez le compte administrateur principal "
+#~ "pour démarrer la gestion de votre "
+#~ "ferme. Cette page ne sera disponible "
+#~ "qu'une seule fois."
+#~ msgstr ""
+#~ "Create the main administrator account to"
+#~ " start managing your farm. This page"
+#~ " will only be available once."
+
+#~ msgid "Créer le compte admin"
+#~ msgstr "Create admin account"
+
+#~ msgid "Configurer vos modules"
+#~ msgstr "Configure your modules"
+
+#~ msgid "Connecter vos capteurs IoT"
+#~ msgstr "Connect your IoT sensors"
+
+#~ msgid "Créer l'administrateur"
+#~ msgstr "Create administrator"
+
+#~ msgid "Ce compte aura un accès complet à toutes les fonctionnalités."
+#~ msgstr "This account will have full access to all features."
+
+#~ msgid "•••••••• (min. 8 caractères)"
+#~ msgstr "•••••••• (min. 8 characters)"
+
+#~ msgid ""
+#~ "Cette page est uniquement accessible "
+#~ "lors de la première installation. Elle"
+#~ " sera automatiquement désactivée après la"
+#~ " création du compte."
+#~ msgstr ""
+#~ "This page is only accessible during "
+#~ "the first installation. It will be "
+#~ "automatically disabled after the account "
+#~ "is created."
+
+#~ msgid "Effectif initial"
+#~ msgstr "Initial count"
+
+#~ msgid "Vendu"
+#~ msgstr "Sold"
+
+#~ msgid "Décédé"
+#~ msgstr "Deceased"
+
+#~ msgid "Lot « %(name)s » créé avec succès."
+#~ msgstr "Batch \"%(name)s\" created successfully."
+
+#~ msgid "Nouveau lot de lapins"
+#~ msgstr "New rabbit batch"
+
+#~ msgid "Lot « %(name)s » mis à jour."
+#~ msgstr "Batch \"%(name)s\" updated."
+
+#~ msgid "Modifier le lot"
+#~ msgstr "Edit batch"
+
+#~ msgid "Lot « %(name)s » et toutes ses données supprimés."
+#~ msgstr "Batch \"%(name)s\" and all its data deleted."
+
+#~ msgid "Cuniculture — Gestion des lots"
+#~ msgstr "Cuniculture — Batch management"
+
+#~ msgid "Informations du lot"
+#~ msgstr "Batch information"
+
+#~ msgid "Ex: Cage C12"
+#~ msgstr "Ex: Cage C12"
+
+#~ msgid "Ex: Néo-Zélandais"
+#~ msgstr "Ex: New Zealand White"
+
+#~ msgid "Observations, origine, programme de reproduction..."
+#~ msgstr "Observations, origin, breeding program..."
+
+#~ msgid "Supprimer ce lot et toutes ses données ?"
+#~ msgstr "Delete this batch and all its data?"
+
+#~ msgid "Race non précisée"
+#~ msgstr "Breed unspecified"
+
+#~ msgid "Acquis le :"
+#~ msgstr "Acquired on:"
+
+#~ msgid "Âge (jours)"
+#~ msgstr "Age (days)"
+
+#~ msgid "Lapereaux nés"
+#~ msgstr "Kits born"
+
+#~ msgid "Portées"
+#~ msgstr "Litters"
+
+#~ msgid "Lapereaux"
+#~ msgstr "Kits"
+
+#~ msgid "Survivants"
+#~ msgstr "Survivors"
+
+#~ msgid "Poids moy.(g)"
+#~ msgstr "Avg weight (g)"
+
+#~ msgid "T°C"
+#~ msgstr "Temp."
+
+#~ msgid "Aucune saisie pour ce lot."
+#~ msgstr "No entries for this batch."
+
+#~ msgid "Gestion des lapins et suivi de production"
+#~ msgstr "Rabbit management and production tracking"
+
+#~ msgid "Nouveau lot"
+#~ msgstr "New batch"
+
+#~ msgid "Lots"
+#~ msgstr "Batches"
+
+#~ msgid "Initial"
+#~ msgstr "Initial"
+
+#~ msgid "jours"
+#~ msgstr "days"
+
+#~ msgid "Aucun lot de lapins"
+#~ msgstr "No rabbit batches"
+
+#~ msgid "Commencez par enregistrer votre premier lot de lapins."
+#~ msgstr "Start by registering your first rabbit batch."
+
+#~ msgid "Créer un lot"
+#~ msgstr "Create a batch"
+
+#~ msgid "Lot :"
+#~ msgstr "Batch:"
+
+#~ msgid "Granulés, Foin"
+#~ msgstr "Pellets, Hay"
+
+#~ msgid "Reproduction"
+#~ msgstr "Reproduction"
+
+#~ msgid "Croissance & mortalité"
+#~ msgstr "Growth & mortality"
+
+#~ msgid "Cause..."
+#~ msgstr "Cause..."
+
+#~ msgid "Environnement"
+#~ msgstr "Environment"
+
+#~ msgid "Observations particulières, traitements..."
+#~ msgstr "Special observations, treatments..."
+
+#~ msgid "Médicaments"
+#~ msgstr "Medications"
+
+#~ msgid "Équipement"
+#~ msgstr "Equipment"
+
+#~ msgid "Main d'œuvre"
+#~ msgstr "Labor"
+
+#~ msgid "Services publics"
+#~ msgstr "Utilities"
+
+#~ msgid "Transport"
+#~ msgstr "Transport"
+
+#~ msgid "Vente produit"
+#~ msgstr "Product sale"
+
+#~ msgid "Vente directe"
+#~ msgstr "Direct sale"
+
+#~ msgid "Subvention"
+#~ msgstr "Subsidy"
+
+#~ msgid "Autre"
+#~ msgstr "Other"
+
+#~ msgid "Général"
+#~ msgstr "General"
+
+#~ msgid "Type"
+#~ msgstr "Type"
+
+#~ msgid "Dépense"
+#~ msgstr "Expense"
+
+#~ msgid "Revenu"
+#~ msgstr "Revenue"
+
+#~ msgid "Catégorie"
+#~ msgstr "Category"
+
+#~ msgid "Montant (FCFA)"
+#~ msgstr "Amount (XAF)"
+
+#~ msgid "Le montant doit être positif."
+#~ msgstr "Amount must be positive."
+
+#~ msgid "Unité de production"
+#~ msgstr "Production unit"
+
+#~ msgid "Moyen de paiement"
+#~ msgstr "Payment method"
+
+#~ msgid "Référence"
+#~ msgstr "Reference"
+
+#~ msgid "Finances"
+#~ msgstr "Finances"
+
+#~ msgid "Entrée « %(desc)s » enregistrée."
+#~ msgstr "Entry \"%(desc)s\" saved."
+
+#~ msgid "Nouvelle entrée financière"
+#~ msgstr "New financial entry"
+
+#~ msgid "Entrée mise à jour."
+#~ msgstr "Entry updated."
+
+#~ msgid "Modifier l'entrée"
+#~ msgstr "Edit entry"
+
+#~ msgid "Entrée supprimée."
+#~ msgstr "Entry deleted."
+
+#~ msgid "Résumé financier"
+#~ msgstr "Financial summary"
+
+#~ msgid "Vaccination"
+#~ msgstr "Vaccination"
+
+#~ msgid "Traitement"
+#~ msgstr "Treatment"
+
+#~ msgid "Déparasitage"
+#~ msgstr "Deworming"
+
+#~ msgid "Inspection vétérinaire"
+#~ msgstr "Veterinary inspection"
+
+#~ msgid "Chirurgie"
+#~ msgstr "Surgery"
+
+#~ msgid "Aviculture (Volailles)"
+#~ msgstr "Poultry (Birds)"
+
+#~ msgid "Cuniculture (Lapins)"
+#~ msgstr "Cuniculture (Rabbits)"
+
+#~ msgid "Aquaculture (Poissons)"
+#~ msgstr "Aquaculture (Fish)"
+
+#~ msgid "Espèce / Unité"
+#~ msgstr "Species / Unit"
+
+#~ msgid "Lot / Bassin"
+#~ msgstr "Batch / Pond"
+
+#~ msgid "Type d'événement"
+#~ msgstr "Event type"
+
+#~ msgid "Produit utilisé"
+#~ msgstr "Product used"
+
+#~ msgid "Dose / Dosage"
+#~ msgstr "Dose / Dosage"
+
+#~ msgid "Administré par"
+#~ msgstr "Administered by"
+
+#~ msgid "Prochaine échéance"
+#~ msgstr "Next due date"
+
+#~ msgid "Coût (FCFA)"
+#~ msgstr "Cost (XAF)"
+
+#~ msgid "Santé animale"
+#~ msgstr "Animal health"
+
+#~ msgid "— aucun —"
+#~ msgstr "— none —"
+
+#~ msgid "Événement de santé enregistré."
+#~ msgstr "Health event recorded."
+
+#~ msgid "Nouvel événement de santé"
+#~ msgstr "New health event"
+
+#~ msgid "Événement mis à jour."
+#~ msgstr "Event updated."
+
+#~ msgid "Modifier l'événement"
+#~ msgstr "Edit event"
+
+#~ msgid "Événement supprimé."
+#~ msgstr "Event deleted."
+
+#~ msgid "IoT & Télémétrie"
+#~ msgstr "IoT & Telemetry"
+
+#~ msgid "Surveillance des capteurs environnementaux en temps réel"
+#~ msgstr "Real-time environmental sensor monitoring"
+
+#~ msgid "Planificateur de tâches"
+#~ msgstr "Task scheduler"
+
+#~ msgid "Tâche"
+#~ msgstr "Task"
+
+#~ msgid "Déclencheur"
+#~ msgstr "Trigger"
+
+#~ msgid "Prochaine exécution"
+#~ msgstr "Next run"
+
+#~ msgid "Aucune tâche planifiée."
+#~ msgstr "No scheduled tasks."
+
+#~ msgid ""
+#~ "Les lectures de capteurs ci-dessous "
+#~ "sont simulées (mode stub). Connectez vos"
+#~ " appareils ModBus TCP ou EtherNet/IP "
+#~ "et configurez"
+#~ msgstr ""
+#~ "The sensor readings below are simulated"
+#~ " (stub mode). Connect your ModBus TCP"
+#~ " or EtherNet/IP devices and configure"
+
+#~ msgid "dans votre fichier"
+#~ msgstr "in your"
+
+#~ msgid "pour activer la collecte réelle."
+#~ msgstr "to enable real data collection."
+
+#~ msgid "Bassins — capteurs aquatiques"
+#~ msgstr "Ponds — aquatic sensors"
+
+#~ msgid "Température"
+#~ msgstr "Temperature"
+
+#~ msgid "Aucune lecture disponible"
+#~ msgstr "No readings available"
+
+#~ msgid "Capteurs climatiques (volailles & lapins)"
+#~ msgstr "Climate sensors (poultry & rabbits)"
+
+#~ msgid "Humidité"
+#~ msgstr "Humidity"
+
+#~ msgid "Aucune entité active"
+#~ msgstr "No active entities"
+
+#~ msgid ""
+#~ "Créez des bassins, lots de volailles "
+#~ "ou lapins pour voir leurs données "
+#~ "de capteurs ici."
+#~ msgstr ""
+#~ "Create ponds, poultry flocks or rabbit"
+#~ " batches to see their sensor data "
+#~ "here."
+
+#~ msgid "Tableau de bord"
+#~ msgstr "Dashboard"
+
+#~ msgid "Bonjour,"
+#~ msgstr "Hello,"
+
+#~ msgid "Vue d'ensemble de votre plateforme"
+#~ msgstr "Platform overview"
+
+#~ msgid "Bassins actifs"
+#~ msgstr "Active ponds"
+
+#~ msgid "Lots de volailles"
+#~ msgstr "Poultry batches"
+
+#~ msgid "Lots de lapins"
+#~ msgstr "Rabbit batches"
+
+#~ msgid "Commandes totales"
+#~ msgstr "Total orders"
+
+#~ msgid "IoT — Capteurs"
+#~ msgstr "IoT — Sensors"
+
+#~ msgid "Voir tout →"
+#~ msgstr "See all →"
+
+#~ msgid "Planificateur"
+#~ msgstr "Scheduler"
+
+#~ msgid "Tâches planifiées"
+#~ msgstr "Scheduled tasks"
+
+#~ msgid "Bassins surveillés"
+#~ msgstr "Monitored ponds"
+
+#~ msgid "Lots surveillés"
+#~ msgstr "Monitored batches"
+
+#~ msgid "Commandes récentes"
+#~ msgstr "Recent orders"
+
+#~ msgid "en attente"
+#~ msgstr "pending"
+
+#~ msgid "Aucune commande pour le moment."
+#~ msgstr "No orders yet."
+
+#~ msgid "Blueprints actifs"
+#~ msgstr "Active blueprints"
+
+#~ msgid "Entités actives"
+#~ msgstr "Active entities"
+
+#~ msgid "Alertes commandes"
+#~ msgstr "Order alerts"
+
+#~ msgid "Accès rapide"
+#~ msgstr "Quick access"
+
+#~ msgid "bassin(s) actif(s)"
+#~ msgstr "active pond(s)"
+
+#~ msgid "lot(s) actif(s)"
+#~ msgstr "active batch(es)"
+
+#~ msgid "commande(s)"
+#~ msgstr "order(s)"
+
+#~ msgid "tâche(s) active(s)"
+#~ msgstr "active task(s)"
+
+#~ msgid "Planificateur inactif"
+#~ msgstr "Scheduler inactive"
+
+#~ msgid "Mes commandes"
+#~ msgstr "My orders"
+
+#~ msgid "Suivre vos commandes"
+#~ msgstr "Track your orders"
+
+#~ msgid "Stock disponible"
+#~ msgstr "Delivery available"
+
+#~ msgid "Photo du produit"
+#~ msgstr "Product photo"
+
+#~ msgid "JPG, PNG ou WebP uniquement (max 5 Mo)."
+#~ msgstr "JPG, PNG or WebP only (max 5 MB)."
+
+#~ msgid ""
+#~ "Facultatif — JPG/PNG/WebP, max 5 Mo. "
+#~ "L'image sera recadrée en 400×400 px."
+#~ msgstr ""
+#~ "Optional — JPG/PNG/WebP, max 5 MB. "
+#~ "The image will be cropped to "
+#~ "400×400 px."
+
+#~ msgid "Supprimer la photo actuelle"
+#~ msgstr "Remove current photo"
+
+#~ msgid "Mode de paiement"
+#~ msgstr "Payment method"
+
+#~ msgid "Instructions / Notes"
+#~ msgstr "Instructions"
+
+#~ msgid "Mettre à jour"
+#~ msgstr "Update"
+
+#~ msgid "Titre principal"
+#~ msgstr "Main title"
+
+#~ msgid "Sous-titre"
+#~ msgstr "Subtitle"
+
+#~ msgid "Phrase d'accroche visible sous le titre."
+#~ msgstr "Tagline visible below the title."
+
+#~ msgid "Texte du bouton"
+#~ msgstr "Button text"
+
+#~ msgid "Ex : Commander maintenant"
+#~ msgstr "Order now"
+
+#~ msgid "Lien du bouton"
+#~ msgstr "Button link"
+
+#~ msgid "URL de destination. Utilisez #products pour défiler vers le catalogue."
+#~ msgstr "Destination URL. Use #products to scroll to the catalog."
+
+#~ msgid "Ordre d'affichage"
+#~ msgstr "Display order"
+
+#~ msgid "Les valeurs les plus petites s'affichent en premier."
+#~ msgstr "Smaller values appear first."
+
+#~ msgid "Slide visible dans le carousel"
+#~ msgstr "Slide visible in the carousel"
+
+#~ msgid "Image de fond"
+#~ msgstr "Background image"
+
+#~ msgid "JPG, PNG ou WebP uniquement (max 8 Mo)."
+#~ msgstr "JPG, PNG or WebP only (max 5 MB)."
+
+#~ msgid "Recommandé : 1400 × 560 px, format paysage. Max 8 Mo."
+#~ msgstr "Recommended: 1400 × 560 px, landscape format. Max 8 MB."
+
+#~ msgid "Supprimer l'image actuelle"
+#~ msgstr "Remove current photo"
+
+#~ msgid "Mon panier"
+#~ msgstr "My cart"
+
+#~ msgid "Requête invalide."
+#~ msgstr "Invalid request."
+
+#~ msgid "Produit ajouté au panier."
+#~ msgstr "Product added to cart."
+
+#~ msgid "Produit indisponible."
+#~ msgstr "Product unavailable."
+
+#~ msgid "Article retiré du panier."
+#~ msgstr "Item removed from cart."
+
+#~ msgid "Panier mis à jour."
+#~ msgstr "Cart updated."
+
+#~ msgid "Votre panier est vide."
+#~ msgstr "Your cart is empty."
+
+#~ msgid "Votre panier est vide ou les produits ne sont plus disponibles."
+#~ msgstr "Your cart is empty or the products are no longer available."
+
+#~ msgid "Commande OmniFarm %(num)s"
+#~ msgstr "Order confirmed!"
+
+#~ msgid "Orange Money : %(msg)s"
+#~ msgstr "Orange Money: %(msg)s"
+
+#~ msgid "MTN MoMo : %(msg)s"
+#~ msgstr "MTN MoMo: %(msg)s"
+
+#~ msgid "Commande %(num)s confirmée avec succès !"
+#~ msgstr "Order %(num)s confirmed successfully!"
+
+#~ msgid "Finaliser la commande"
+#~ msgstr "Place order"
+
+#~ msgid "Confirmation de commande"
+#~ msgstr "Order confirmation"
+
+#~ msgid "Gestion des produits"
+#~ msgstr "Product management"
+
+#~ msgid "Nouveau produit"
+#~ msgstr "New product"
+
+#~ msgid "Produit « %(name)s » créé."
+#~ msgstr "Product \"%(name)s\" created."
+
+#~ msgid "Modifier le produit"
+#~ msgstr "Edit product"
+
+#~ msgid "Produit « %(name)s » mis à jour."
+#~ msgstr "Product \"%(name)s\" updated."
+
+#~ msgid "Produit « %(name)s » supprimé."
+#~ msgstr "Product \"%(name)s\" deleted."
+
+#~ msgid "Gestion des commandes"
+#~ msgstr "Order management"
+
+#~ msgid "Statut de la commande %(num)s mis à jour."
+#~ msgstr "Order %(num)s status updated."
+
+#~ msgid "Statut invalide."
+#~ msgstr "Invalid status."
+
+#~ msgid "Gestion du carousel"
+#~ msgstr "Carousel management"
+
+#~ msgid "Nouveau slide"
+#~ msgstr "New slide"
+
+#~ msgid "Slide « %(t)s » créé."
+#~ msgstr "Slide \"%(t)s\" created."
+
+#~ msgid "Modifier le slide"
+#~ msgstr "Edit slide"
+
+#~ msgid "Slide « %(t)s » mis à jour."
+#~ msgstr "Slide \"%(t)s\" updated."
+
+#~ msgid "Slide « %(t)s » supprimé."
+#~ msgstr "Slide \"%(t)s\" deleted."
+
+#~ msgid "activé"
+#~ msgstr "activated"
+
+#~ msgid "désactivé"
+#~ msgstr "deactivated"
+
+#~ msgid "Slide « %(t)s » %(s)s."
+#~ msgstr "Slide \"%(t)s\" %(s)s."
+
+#~ msgid "Panier"
+#~ msgstr "Cart"
+
+#~ msgid "article(s)"
+#~ msgstr "item(s)"
+
+#~ msgid "Marché — OmniFarm"
+#~ msgstr "Market — OmniFarm"
+
+#~ msgid "Retirer du panier"
+#~ msgstr "Remove from cart"
+
+#~ msgid "Récapitulatif"
+#~ msgstr "Summary"
+
+#~ msgid "Commander"
+#~ msgstr "Order"
+
+#~ msgid "Continuer mes achats"
+#~ msgstr "Continue shopping"
+
+#~ msgid "Paiement 100% sécurisé"
+#~ msgstr "100% secure payment"
+
+#~ msgid "Votre panier est vide"
+#~ msgstr "Your cart is empty"
+
+#~ msgid "Découvrez nos produits frais et ajoutez-les à votre panier."
+#~ msgstr "Discover our fresh products and add them to your cart."
+
+#~ msgid "Voir le catalogue"
+#~ msgstr "View catalog"
+
+#~ msgid "Commande"
+#~ msgstr "Order"
+
+#~ msgid "Infos"
+#~ msgstr "Info"
+
+#~ msgid "Paiement"
+#~ msgstr "Payment"
+
+#~ msgid "Confirmation"
+#~ msgstr "Confirmation"
+
+#~ msgid "Vos coordonnées"
+#~ msgstr "Your details"
+
+#~ msgid "Jean Dupont"
+#~ msgstr "John Doe"
+
+#~ msgid "Quartier, ville, point de repère..."
+#~ msgstr "Neighborhood, city, landmark..."
+
+#~ msgid "Paiement sécurisé"
+#~ msgstr "Payment pending"
+
+#~ msgid "Confirmez sur votre téléphone"
+#~ msgstr "Confirm on your phone"
+
+#~ msgid "À la livraison"
+#~ msgstr "Cash on delivery"
+
+#~ msgid "Payez à la réception"
+#~ msgstr "Pay on delivery"
+
+#~ msgid ""
+#~ "Entrez le numéro Mobile Money à "
+#~ "débiter. Laissez vide pour utiliser "
+#~ "votre numéro de contact."
+#~ msgstr ""
+#~ "Enter the Mobile Money number to "
+#~ "debit. Leave blank to use your "
+#~ "contact number."
+
+#~ msgid "Instructions"
+#~ msgstr "Instructions"
+
+#~ msgid "Instructions particulières pour la livraison..."
+#~ msgstr "Special delivery instructions..."
+
+#~ msgid "Votre commande"
+#~ msgstr "Your order"
+
+#~ msgid "Total à payer"
+#~ msgstr "Total to pay"
+
+#~ msgid "Entrez votre numéro Orange Money."
+#~ msgstr "Enter your Orange Money number."
+
+#~ msgid ""
+#~ "Entrez votre numéro MTN MoMo. Vous "
+#~ "recevrez une invite de paiement sur "
+#~ "votre téléphone."
+#~ msgstr ""
+#~ "Enter your MTN MoMo number. You "
+#~ "will receive a payment prompt on "
+#~ "your phone."
+
+#~ msgid "Traitement en cours..."
+#~ msgstr "Payment pending"
+
+#~ msgid "Boutique OmniFarm"
+#~ msgstr "OmniFarm Shop"
+
+#~ msgid "Bienvenue chez OmniFarm"
+#~ msgstr "Welcome to"
+
+#~ msgid ""
+#~ "Commandez directement depuis notre ferme "
+#~ ": poissons frais, volailles, lapins et"
+#~ " œufs livrés chez vous."
+#~ msgstr ""
+#~ "Order directly from our farm: fresh "
+#~ "fish, poultry, rabbits and eggs "
+#~ "delivered to your door."
+
+#~ msgid "Découvrir le catalogue"
+#~ msgstr "Explore the catalog"
+
+#~ msgid "Produits frais de qualité"
+#~ msgstr "Fresh products available"
+
+#~ msgid ""
+#~ "Élevage artisanal et contrôlé. Chaque "
+#~ "produit est tracé de la ferme à"
+#~ " votre table."
+#~ msgstr ""
+#~ "Artisanal and controlled farming. Every "
+#~ "product is traced from farm to "
+#~ "your table."
+
+#~ msgid "Commander maintenant"
+#~ msgstr "Order now"
+
+#~ msgid "Livraison directe à domicile"
+#~ msgstr "Delivery available"
+
+#~ msgid ""
+#~ "Créez votre compte et suivez vos "
+#~ "commandes en temps réel. Paiement Mobile"
+#~ " Money ou à la livraison."
+#~ msgstr ""
+#~ "Create your account and track your "
+#~ "orders in real time. Pay by Mobile"
+#~ " Money or cash on delivery."
+
+#~ msgid "Carousel de présentation"
+#~ msgstr "Showcase carousel"
+
+#~ msgid "Produits frais disponibles"
+#~ msgstr "Fresh products available"
+
+#~ msgid "Poisson"
+#~ msgstr "Fish"
+
+#~ msgid "Volaille"
+#~ msgstr "Poultry"
+
+#~ msgid "Lapin"
+#~ msgstr "Rabbit"
+
+#~ msgid "Œufs"
+#~ msgstr "Eggs"
+
+#~ msgid "Slide précédent"
+#~ msgstr "Previous slide"
+
+#~ msgid "Slide suivant"
+#~ msgstr "Survivors"
+
+#~ msgid "Aller au slide"
+#~ msgstr "Go to slide"
+
+#~ msgid "Gérer le carousel"
+#~ msgstr "Manage products"
+
+#~ msgid "Marché OmniFarm"
+#~ msgstr "OmniFarm Market"
+
+#~ msgid "Produits frais directement de la ferme"
+#~ msgstr "Fresh products straight from the farm"
+
+#~ msgid "Notre catalogue"
+#~ msgstr "Our catalog"
+
+#~ msgid "Rechercher des produits..."
+#~ msgstr "Search products..."
+
+#~ msgid "Effacer la recherche"
+#~ msgstr "Clear search"
+
+#~ msgid "Tous"
+#~ msgstr "All"
+
+#~ msgid "Aucun produit trouvé pour cette recherche."
+#~ msgstr "No products found for this search."
+
+#~ msgid "Épuisé"
+#~ msgstr "Out of stock"
+
+#~ msgid "Stock limité :"
+#~ msgstr "Limited stock:"
+
+#~ msgid "Ajouter au panier"
+#~ msgstr "Add to cart"
+
+#~ msgid "Mode administrateur"
+#~ msgstr "Administrator mode"
+
+#~ msgid "Produits"
+#~ msgstr "Products"
+
+#~ msgid "Commandes"
+#~ msgstr "Orders"
+
+#~ msgid "Carousel"
+#~ msgstr "Carousel"
+
+#~ msgid "Aucun produit disponible"
+#~ msgstr "No products available"
+
+#~ msgid "Le catalogue est vide pour le moment. Revenez bientôt !"
+#~ msgstr "The catalog is empty for now. Check back soon!"
+
+#~ msgid "Ajouter le premier produit"
+#~ msgstr "Add the first product"
+
+#~ msgid "Toutes"
+#~ msgstr "All"
+
+#~ msgid "En cours"
+#~ msgstr "In progress"
+
+#~ msgid "Terminées"
+#~ msgstr "Completed"
+
+#~ msgid "Annulées"
+#~ msgstr "Cancelled"
+
+#~ msgid "Voir les détails"
+#~ msgstr "View details"
+
+#~ msgid "Articles"
+#~ msgstr "item(s)"
+
+#~ msgid "Aucune commande dans cette catégorie."
+#~ msgstr "No orders in this category."
+
+#~ msgid "Aucune commande"
+#~ msgstr "No orders"
+
+#~ msgid "Vous n'avez pas encore passé de commande."
+#~ msgstr "You haven't placed any orders yet."
+
+#~ msgid "Commande confirmée"
+#~ msgstr "Order confirmed"
+
+#~ msgid "Paiement MTN en attente"
+#~ msgstr "Pending"
+
+#~ msgid "Vérifiez votre téléphone et approuvez le paiement Mobile Money."
+#~ msgstr "Check your phone and approve the Mobile Money payment."
+
+#~ msgid "Action requise sur votre téléphone"
+#~ msgstr "Action required on your phone"
+
+#~ msgid "Une demande de paiement MTN MoMo a été envoyée au numéro"
+#~ msgstr "An MTN MoMo payment request has been sent to the number"
+
+#~ msgid "Entrez votre PIN pour confirmer."
+#~ msgstr "Enter your PIN to confirm."
+
+#~ msgid "En attente de confirmation…"
+#~ msgstr "Confirmation"
+
+#~ msgid "Vérifier le paiement"
+#~ msgstr "Payment method"
+
+#~ msgid "Paiement Orange Money en cours"
+#~ msgstr "Payment pending"
+
+#~ msgid ""
+#~ "Votre commande est enregistrée. Le "
+#~ "statut sera mis à jour dès "
+#~ "confirmation du paiement."
+#~ msgstr ""
+#~ "Your order is registered. The status "
+#~ "will be updated once payment is "
+#~ "confirmed."
+
+#~ msgid "Commande confirmée !"
+#~ msgstr "Order confirmed!"
+
+#~ msgid "Paiement reçu. Merci pour votre achat !"
+#~ msgstr "Payment received. Thank you for your purchase!"
+
+#~ msgid "Merci pour votre achat. Nous vous contacterons pour la livraison."
+#~ msgstr "Thank you for your purchase. We will contact you for delivery."
+
+#~ msgid "Commande reçue !"
+#~ msgstr "Order →"
+
+#~ msgid "Merci pour votre achat. Voici le récapitulatif de votre commande."
+#~ msgstr "Thank you for your purchase. Here is your order summary."
+
+#~ msgid "N° de commande"
+#~ msgstr "Order No."
+
+#~ msgid "En attente"
+#~ msgstr "Pending"
+
+#~ msgid "Paiement en cours"
+#~ msgstr "Payment pending"
+
+#~ msgid "Payée"
+#~ msgstr "Paid"
+
+#~ msgid "En traitement"
+#~ msgstr "Processing"
+
+#~ msgid "Téléphone"
+#~ msgstr "Phone"
+
+#~ msgid "Adresse"
+#~ msgstr "Address"
+
+#~ msgid "Articles commandés"
+#~ msgstr "Ordered items"
+
+#~ msgid "Prochaines étapes"
+#~ msgstr "Next run"
+
+#~ msgid "Notre équipe vous contactera au %(phone)s pour confirmer la livraison."
+#~ msgstr "Our team will contact you at %(phone)s to confirm delivery."
+
+#~ msgid "Note :"
+#~ msgstr "Note:"
+
+#~ msgid "Paiement confirmé !"
+#~ msgstr "Payment pending"
+
+#~ msgid "Merci ! Votre paiement MTN MoMo a été reçu."
+#~ msgstr "Thank you! Your MTN MoMo payment has been received."
+
+#~ msgid "Paiement échoué"
+#~ msgstr "Payment pending"
+
+#~ msgid ""
+#~ "Le paiement MTN MoMo n'a pas "
+#~ "abouti. Veuillez nous contacter ou "
+#~ "passer une nouvelle commande."
+#~ msgstr ""
+#~ "The MTN MoMo payment did not go"
+#~ " through. Please contact us or place"
+#~ " a new order."
+
+#~ msgid "slide(s)"
+#~ msgstr "slide(s)"
+
+#~ msgid "actif(s)"
+#~ msgstr "Active"
+
+#~ msgid "Ajouter un slide"
+#~ msgstr "Add to cart"
+
+#~ msgid ""
+#~ "Les slides sont affichés dans l'ordre"
+#~ " croissant du champ « Ordre ». "
+#~ "Les slides inactifs ne sont pas "
+#~ "visibles sur le site. Format d'image "
+#~ "recommandé : 1400 × 560 px."
+#~ msgstr ""
+#~ "Slides are displayed in ascending order"
+#~ " of the \"Order\" field. Inactive "
+#~ "slides are not visible on the "
+#~ "site. Recommended image format: 1400 ×"
+#~ " 560 px."
+
+#~ msgid "Ordre :"
+#~ msgstr "Note:"
+
+#~ msgid "Désactiver"
+#~ msgstr "Active entities"
+
+#~ msgid "Activer"
+#~ msgstr "Active"
+
+#~ msgid "Supprimer ce slide ?"
+#~ msgstr "Delete this entry?"
+
+#~ msgid "Aucun slide créé"
+#~ msgstr "No users"
+
+#~ msgid ""
+#~ "Le carousel affichera des slides par "
+#~ "défaut jusqu'à ce que vous en "
+#~ "créiez."
+#~ msgstr "The carousel will display default slides until you create some."
+
+#~ msgid "Créer le premier slide"
+#~ msgstr "Create first user"
+
+#~ msgid "Prévisualiser la boutique"
+#~ msgstr "Preview the shop"
+
+#~ msgid "Carousel — Admin"
+#~ msgstr "Products — Admin"
+
+#~ msgid "Choisir une image…"
+#~ msgstr "Choose a photo…"
+
+#~ msgid "JPG · PNG · WebP — max 8 Mo"
+#~ msgstr "JPG · PNG · WebP — max 5 MB"
+
+#~ msgid "(ignoré si une nouvelle image est choisie)"
+#~ msgstr "(ignored if a new photo is selected)"
+
+#~ msgid ""
+#~ "L'image sera recadrée en 1400 × "
+#~ "560 px (format paysage, zoom centré)."
+#~ " Elle doit couvrir toute la largeur"
+#~ " du carousel."
+#~ msgstr ""
+#~ "The image will be cropped to 1400"
+#~ " × 560 px (landscape format, center"
+#~ " zoom). It must cover the full "
+#~ "width of the carousel."
+
+#~ msgid "Contenu du slide"
+#~ msgstr "Slide content"
+
+#~ msgid "Ex : Bienvenue chez OmniFarm"
+#~ msgstr "Welcome to"
+
+#~ msgid "Phrase d'accroche courte visible sous le titre…"
+#~ msgstr "Short tagline visible below the title…"
+
+#~ msgid "Bouton d'action (optionnel)"
+#~ msgstr "Action button (optional)"
+
+#~ msgid "Paramètres"
+#~ msgstr "Settings"
+
+#~ msgid "Les slides inactifs ne s'affichent pas dans le carousel."
+#~ msgstr "Inactive products are not visible in the catalog."
+
+#~ msgid "Fichier trop grand (max 8 Mo)"
+#~ msgstr "File too large (max 5 MB)"
+
+#~ msgid "Commandes — Admin"
+#~ msgstr "Orders — Admin"
+
+#~ msgid "Marché — Admin"
+#~ msgstr "Market — Admin"
+
+#~ msgid "Payées"
+#~ msgstr "Paid"
+
+#~ msgid "encaissés"
+#~ msgstr "collected"
+
+#~ msgid "Livraison"
+#~ msgstr "Delivery"
+
+#~ msgid "Statut :"
+#~ msgstr "Status:"
+
+#~ msgid "Livrée"
+#~ msgstr "Delivered"
+
+#~ msgid "Annulée"
+#~ msgstr "Cancelled"
+
+#~ msgid "commande(s) au total"
+#~ msgstr "order(s) total"
+
+#~ msgid "Aucune commande n'a encore été passée."
+#~ msgstr "No orders have been placed yet."
+
+#~ msgid "Produit"
+#~ msgstr "Product"
+
+#~ msgid "Choisir une photo…"
+#~ msgstr "Choose a photo…"
+
+#~ msgid "JPG · PNG · WebP — max 5 Mo"
+#~ msgstr "JPG · PNG · WebP — max 5 MB"
+
+#~ msgid "(ignoré si une nouvelle photo est choisie)"
+#~ msgstr "(ignored if a new photo is selected)"
+
+#~ msgid ""
+#~ "L'image sera automatiquement recadrée à "
+#~ "400×400 px (zoom centré). Formats "
+#~ "acceptés : JPG, PNG, WebP."
+#~ msgstr ""
+#~ "The image will be automatically cropped"
+#~ " to 400×400 px (centered zoom). "
+#~ "Accepted formats: JPG, PNG, WebP."
+
+#~ msgid "Informations du produit"
+#~ msgstr "Product information"
+
+#~ msgid "Ex : Tilapia frais"
+#~ msgstr "Ex: Fresh tilapia"
+
+#~ msgid "Description courte du produit..."
+#~ msgstr "Short product description..."
+
+#~ msgid "Prix & stock"
+#~ msgstr "Price & stock"
+
+#~ msgid "kg, pièce, douzaine..."
+#~ msgstr "kg, piece, dozen..."
+
+#~ msgid "Laisser vide = illimité"
+#~ msgstr "Leave empty = unlimited"
+
+#~ msgid "Disponibilité"
+#~ msgstr "Availability"
+
+#~ msgid "Les produits inactifs ne sont pas visibles dans le catalogue."
+#~ msgstr "Inactive products are not visible in the catalog."
+
+#~ msgid "Fichier trop grand (max 5 Mo)"
+#~ msgstr "File too large (max 5 MB)"
+
+#~ msgid "Produits — Admin"
+#~ msgstr "Products — Admin"
+
+#~ msgid "Stock limité"
+#~ msgstr "Low stock"
+
+#~ msgid "Prix"
+#~ msgstr "Price"
+
+#~ msgid "Supprimer ce produit ? Cette action est irréversible."
+#~ msgstr "Delete this product? This action cannot be undone."
+
+#~ msgid "produit(s) au total"
+#~ msgstr "product(s) total"
+
+#~ msgid "Aucun produit"
+#~ msgstr "No products"
+
+#~ msgid "Commencez par ajouter votre premier produit au catalogue."
+#~ msgstr "Start by adding your first product to the catalog."
+
+#~ msgid "Ajouter un produit"
+#~ msgstr "Add a product"
+
+#~ msgid "Expédiée"
+#~ msgstr "Shipped"
+
+#~ msgid "Réformé"
+#~ msgstr "Culled"
+
+#~ msgid "Laisser à 0 pour les lots chair"
+#~ msgstr "Leave blank to keep current password"
+
+#~ msgid "Nouveau lot de volailles"
+#~ msgstr "New poultry batch"
+
+#~ msgid "Mise en place :"
+#~ msgstr "Setup date:"
+
+#~ msgid "Œufs (total)"
+#~ msgstr "Eggs (total)"
+
+#~ msgid "Eau (L)"
+#~ msgstr "Water (L)"
+
+#~ msgid "T°C amb."
+#~ msgstr "Amb. temp."
+
+#~ msgid "HR (%)"
+#~ msgstr "RH (%)"
+
+#~ msgid "Aviculture — Gestion des lots"
+#~ msgstr "Poultry — Flock management"
+
+#~ msgid "Ex: Lot Poulet Mars-2026"
+#~ msgstr "Ex: Chicken Batch March-2026"
+
+#~ msgid "Ex: Poulet de chair"
+#~ msgstr "Ex: Broiler chicken"
+
+#~ msgid "Ex: Cobb 500"
+#~ msgstr "Ex: Cobb 500"
+
+#~ msgid "Ex: Bâtiment A"
+#~ msgstr "Ex: Building A"
+
+#~ msgid "Observations, source, programme vaccinal..."
+#~ msgstr "Observations, source, vaccination program..."
+
+#~ msgid "Gestion des lots de volailles et suivi de production"
+#~ msgstr "Poultry batch management and production tracking"
+
+#~ msgid "Jours"
+#~ msgstr "Days"
+
+#~ msgid "Bâtiment :"
+#~ msgstr "Building:"
+
+#~ msgid "Aucun lot de volailles"
+#~ msgstr "No poultry batches"
+
+#~ msgid "Commencez par enregistrer votre premier lot de volailles."
+#~ msgstr "Start by registering your first poultry batch."
+
+#~ msgid "Alimentation & eau"
+#~ msgstr "Feeding & water"
+
+#~ msgid "Croissance"
+#~ msgstr "Growth"
+
+#~ msgid "Production"
+#~ msgstr "Production"
+
+#~ msgid "Maladie de Newcastle, stress thermique..."
+#~ msgstr "Newcastle disease, heat stress..."
+
+#~ msgid "Observations particulières, traitements appliqués..."
+#~ msgstr "Special observations, applied treatments..."
+
+#~ msgid "Rapports"
+#~ msgstr "Reports"
+
+#~ msgid "Gestion agricole"
+#~ msgstr "Farm management"
+
+#~ msgid "Commerce"
+#~ msgstr "Commerce"
+
+#~ msgid "Gestion"
+#~ msgstr "Management"
+
+#~ msgid "Système"
+#~ msgstr "System"
+
+#~ msgid "Thème clair"
+#~ msgstr "Light theme"
+
+#~ msgid "Thème sombre"
+#~ msgstr "Dark theme"
+
+#~ msgid "Déconnexion"
+#~ msgstr "Sign out"
+
+#~ msgid "Tous droits réservés"
+#~ msgstr "All rights reserved"
+
+#~ msgid "Système opérationnel"
+#~ msgstr "System operational"
+
+#~ msgid "OmniFarm Boutique"
+#~ msgstr "OmniFarm Shop"
+
+#~ msgid "Boutique"
+#~ msgstr "Shop"
+
+#~ msgid "Navigation principale"
+#~ msgstr "Main navigation"
+
+#~ msgid "Accueil"
+#~ msgstr "Home"
+
+#~ msgid "Administration"
+#~ msgstr "Administration"
+
+#~ msgid "Dashboard"
+#~ msgstr "Dashboard"
+
+#~ msgid "Ouvrir le menu"
+#~ msgstr "Open menu"
+
+#~ msgid "Menu de navigation"
+#~ msgstr "Navigation menu"
+
+#~ msgid "Fermer le menu"
+#~ msgstr "Close menu"
+
+#~ msgid "Langue"
+#~ msgstr "Language"
+
+#~ msgid "Fermer"
+#~ msgstr "Close menu"
+
+#~ msgid "Produits frais et de qualité, directement de notre ferme à votre table."
+#~ msgstr "Fresh, quality products direct from our farm to your table."
+
+#~ msgid "Livraison disponible"
+#~ msgstr "Delivery available"
+
+#~ msgid "Catalogue"
+#~ msgstr "Catalog"
+
+#~ msgid "Compte"
+#~ msgstr "Account"
+
+#~ msgid "Plateforme gérée par"
+#~ msgstr "Platform managed by"
+
+#~ msgid "Accès refusé"
+#~ msgstr "Access denied"
+
+#~ msgid "Erreur"
+#~ msgstr "Error"
+
+#~ msgid ""
+#~ "Vous ne disposez pas des permissions "
+#~ "nécessaires pour accéder à cette "
+#~ "ressource."
+#~ msgstr "You do not have the necessary permissions to access this resource."
+
+#~ msgid "Retour au tableau de bord"
+#~ msgstr "Back to dashboard"
+
+#~ msgid "Page introuvable"
+#~ msgstr "Page not found"
+
+#~ msgid "La ressource demandée n'existe pas ou a été déplacée."
+#~ msgstr "The requested resource does not exist or has been moved."
+
+#~ msgid "Erreur serveur"
+#~ msgstr "Server error"
+
+#~ msgid "Erreur interne du serveur"
+#~ msgstr "Internal server error"
+
+#~ msgid ""
+#~ "Une erreur inattendue s'est produite. "
+#~ "L'équipe technique a été notifiée."
+#~ msgstr "An unexpected error occurred. The technical team has been notified."
+

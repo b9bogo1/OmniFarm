@@ -1,0 +1,84 @@
+﻿{% extends 'base.html' %}
+{% from 'macros.html' import render_field, breadcrumb %}
+{% block title %}{{ title }}{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
+
+{% block content %}
+{{ breadcrumb([
+  (url_for('auth.admin_users'), _('Utilisateurs')),
+  ('#', _('Modifier') if is_edit else _('Nouveau')),
+]) }}
+
+<div class="max-w-2xl">
+  <div class="flex items-center gap-4 mb-7">
+    <div class="w-12 h-12 rounded-2xl icon-bg-violet flex items-center justify-center text-2xl stat-icon-box">
+      {{ 'âœï¸' if is_edit else 'ðŸ‘¤' }}
+    </div>
+    <div>
+      <h1 class="text-xl font-extrabold text-slate-900">{{ title }}</h1>
+      <p class="text-sm text-slate-500 mt-0.5 font-medium">{{ _('Administration â€” OmniFarm Hub') }}</p>
+    </div>
+  </div>
+
+  <form method="POST" novalidate class="space-y-5">
+    {{ form.hidden_tag() }}
+
+    <div class="form-section">
+      <p class="form-section-title">{{ _('Informations du compte') }}</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        {{ render_field(form.username, placeholder='jean.dupont') }}
+        {{ render_field(form.email, placeholder='jean@example.com') }}
+      </div>
+    </div>
+
+    <div class="form-section">
+      <p class="form-section-title">{{ _('RÃ´le & accÃ¨s') }}</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        {{ render_field(form.role) }}
+      </div>
+      <div class="mt-4 flex items-center gap-4 py-3 px-4 rounded-xl bg-slate-50 border border-slate-200">
+        <div class="flex-1">
+          <p class="text-sm font-bold text-slate-700">{{ form.is_active.label.text }}</p>
+          <p class="text-xs text-slate-400 font-medium mt-0.5">{{ _('Un compte inactif ne peut pas se connecter.') }}</p>
+        </div>
+        <label class="relative inline-flex items-center cursor-pointer flex-shrink-0">
+          {{ form.is_active(class='sr-only peer') }}
+          <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
+        </label>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <p class="form-section-title">
+        {{ _('Mot de passe') }}
+        {% if is_edit %}
+        <span class="ml-2 text-[10px] font-normal normal-case text-slate-400">{{ _('Laisser vide pour ne pas modifier') }}</span>
+        {% endif %}
+      </p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        {{ render_field(form.new_password, placeholder='â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢') }}
+        {{ render_field(form.confirm_password, placeholder='â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢') }}
+      </div>
+    </div>
+
+    <div class="flex items-center gap-3 pt-1">
+      {{ form.submit(class='px-6 py-2.5 rounded-xl text-white font-bold text-sm cursor-pointer',
+         style='background: linear-gradient(135deg, #7c3aed 0%, #9333ea 100%); box-shadow: 0 2px 8px rgba(124,58,237,0.3);') }}
+      <a href="{{ url_for('auth.admin_users') }}"
+         class="px-6 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300 text-sm font-semibold transition-all">
+        {{ _('Annuler') }}
+      </a>
+      {% if is_edit and user and user.id != current_user.id %}
+      <form method="POST" action="{{ url_for('auth.admin_delete_user', user_id=user.id) }}" class="ml-auto"
+            onsubmit="return confirm('{{ _('Supprimer cet utilisateur ?') }}')">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <button type="submit"
+                class="px-4 py-2.5 rounded-xl border border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 text-sm font-semibold transition-all">
+          {{ _('Supprimer') }}
+        </button>
+      </form>
+      {% endif %}
+    </div>
+  </form>
+</div>
+{% endblock %}

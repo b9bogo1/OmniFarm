@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="{{ get_locale() }}" class="h-full {{ 'dark' if user_theme == 'dark' }}">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="csrf-token" content="{{ csrf_token() }}" />
+  <title>{% block title %}{{ _('OmniFarm Hub') }}{% endblock %} — OmniFarm Hub</title>
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/fonts.css') }}" />
+  <script src="{{ url_for('static', filename='js/tailwind.js') }}"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50:  '#f0fdf4',
+              100: '#dcfce7',
+              200: '#bbf7d0',
+              300: '#86efac',
+              500: '#22c55e',
+              600: '#16a34a',
+              700: '#15803d',
+              800: '#166534',
+              900: '#14532d',
+              950: '#052e16',
+            },
+            gold: {
+              300: '#fcd34d',
+              400: '#fbbf24',
+              500: '#f59e0b',
+              600: '#d97706',
+            }
+          },
+          fontFamily: {
+            sans: ['Ubuntu', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+          },
+          boxShadow: {
+            'card':    '0 1px 3px rgba(0,0,0,0.04), 0 6px 18px rgba(0,0,0,0.07), 0 0 0 1px rgba(0,0,0,0.035)',
+            'card-md': '0 4px 8px rgba(0,0,0,0.06), 0 18px 40px rgba(0,0,0,0.10), 0 0 0 1px rgba(0,0,0,0.045)',
+          }
+        }
+      }
+    }
+  </script>
+  {% block head %}{% endblock %}
+  <style>
+    /* ── Dark mode global overrides ─────────────────────────────────────── */
+    .dark body { background-color: #080e18; color: #e2e8f0; }
+    .dark .bg-white { background-color: #1a2535 !important; }
+    .dark .bg-slate-50 { background-color: #080e18 !important; }
+    .dark .bg-slate-100 { background-color: #1a2535 !important; }
+    .dark .border-slate-100 { border-color: rgba(255,255,255,0.06) !important; }
+    .dark .border-slate-200 { border-color: rgba(255,255,255,0.07) !important; }
+    .dark .border-slate-300 { border-color: #475569 !important; }
+    .dark .divide-slate-100 > * + * { border-color: rgba(255,255,255,0.06) !important; }
+    .dark .text-slate-900 { color: #f1f5f9 !important; }
+    .dark .text-slate-800 { color: #e2e8f0 !important; }
+    .dark .text-slate-700 { color: #cbd5e1 !important; }
+    .dark .text-slate-600 { color: #94a3b8 !important; }
+    .dark .text-slate-500 { color: #94a3b8 !important; }
+    .dark .text-slate-400 { color: #64748b !important; }
+    .dark .hover\:bg-slate-50:hover { background-color: #1a2535 !important; }
+    .dark .hover\:bg-slate-100:hover { background-color: #1e2d42 !important; }
+    /* Form controls */
+    .dark input:not([type=radio]):not([type=checkbox]),
+    .dark select,
+    .dark textarea {
+      background-color: #1a2535 !important;
+      color: #e2e8f0 !important;
+      border-color: #475569 !important;
+    }
+    .dark input::placeholder,
+    .dark textarea::placeholder { color: #64748b !important; }
+    /* Alert strips */
+    .dark .bg-amber-50  { background-color: #451a03 !important; }
+    .dark .bg-emerald-50 { background-color: #022c22 !important; }
+    .dark .bg-blue-50   { background-color: #0c1a2e !important; }
+    .dark .bg-red-50    { background-color: #2d0c0c !important; }
+    .dark .bg-indigo-50 { background-color: #1a1035 !important; }
+    .dark .bg-violet-50 { background-color: #1a1035 !important; }
+    /* Brand tones */
+    .dark .bg-brand-50  { background-color: #052e16 !important; }
+    .dark .bg-brand-100 { background-color: #14532d !important; }
+    .dark .text-brand-800 { color: #86efac !important; }
+    .dark .text-brand-700 { color: #4ade80 !important; }
+    /* Sidebar & topbar handled in premium.css */
+  </style>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/premium.css') }}" />
+</head>
+<body class="h-full font-sans antialiased text-slate-800">
+
+{% if current_user.is_authenticated %}
+
+{# ─── Sidebar overlay (mobile) ─── #}
+<div id="sidebar-overlay"
+     onclick="closeSidebar()"
+     class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 hidden lg:hidden transition-opacity"></div>
+
+{# ─── LEFT SIDEBAR ─── #}
+<aside id="sidebar"
+       class="fixed inset-y-0 left-0 z-50 w-60 flex flex-col
+              transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out">
+
+  {# Brand #}
+  <div class="flex items-center gap-3 px-5 py-5 border-b border-white/8 flex-shrink-0">
+    <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center shadow-lg flex-shrink-0">
+      <svg class="w-5 h-5 text-brand-950" fill="currentColor" viewBox="0 0 20 20">
+        <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"/>
+      </svg>
+    </div>
+    <div>
+      <p class="text-white font-bold text-sm leading-tight tracking-tight">OmniFarm Hub</p>
+      <p class="text-white/35 text-[10px] tracking-wide">{{ _('Gestion agricole') }}</p>
+    </div>
+  </div>
+
+  {# Navigation links #}
+  {% set ep = request.endpoint or '' %}
+  <nav class="flex-1 overflow-y-auto px-3 py-4 space-y-0.5">
+
+    {# Dashboard #}
+    {% set active = ep == 'main.dashboard' %}
+    <a href="{{ url_for('main.dashboard') }}"
+       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 relative
+              {{ 'bg-white/12 text-white shadow-sm' if active else 'text-white/55 hover:text-white hover:bg-white/7' }}">
+      {% if active %}<span class="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-6 bg-brand-400 rounded-r-full"></span>{% endif %}
+      <span class="text-base w-5 text-center flex-shrink-0">🏠</span>
+      <span>{{ _('Tableau de bord') }}</span>
+    </a>
+
+    {# Production modules #}
+    {% if current_user.is_admin or current_user.is_technician %}
+    <div class="pt-3.5 pb-1 px-3">
+      <p class="text-[10px] font-bold text-white/25 uppercase tracking-widest">{{ _('Production') }}</p>
+    </div>
+
+    {% set active = ep.startswith('aquaculture.') %}
+    <a href="{{ url_for('aquaculture.index') }}"
+       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 relative
+              {{ 'bg-white/12 text-white shadow-sm' if active else 'text-white/55 hover:text-white hover:bg-white/7' }}">
+      {% if active %}<span class="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-6 bg-brand-400 rounded-r-full"></span>{% endif %}
+      <span class="text-base w-5 text-center flex-shrink-0">🐟</span>
+      <span>{{ _('Aquaculture') }}</span>
+    </a>
+
+    {% set active = ep.startswith('poultry.') %}
+    <a href="{{ url_for('poultry.index') }}"
+       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 relative
+              {{ 'bg-white/12 text-white shadow-sm' if active else 'text-white/55 hover:text-white hover:bg-white/7' }}">
+      {% if active %}<span class="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-6 bg-brand-400 rounded-r-full"></span>{% endif %}
+      <span class="text-base w-5 text-center flex-shrink-0">🐔</span>
+      <span>{{ _('Aviculture') }}</span>
+    </a>
+
+    {% set active = ep.startswith('cuniculture.') %}
+    <a href="{{ url_for('cuniculture.index') }}"
+       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 relative
+              {{ 'bg-white/12 text-white shadow-sm' if active else 'text-white/55 hover:text-white hover:bg-white/7' }}">
+      {% if active %}<span class="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-6 bg-brand-400 rounded-r-full"></span>{% endif %}
+      <span class="text-base w-5 text-center flex-shrink-0">🐇</span>
+      <span>{{ _('Cuniculture') }}</span>
+    </a>
+    {% endif %}
+
+    {# Commerce #}
+    <div class="pt-3.5 pb-1 px-3">
+      <p class="text-[10px] font-bold text-white/25 uppercase tracking-widest">{{ _('Commerce') }}</p>
+    </div>
+
+    {% set active = ep.startswith('marketplace.') and ep not in ['marketplace.admin_orders','marketplace.admin_products','marketplace.admin_create_product','marketplace.admin_edit_product'] %}
+    <a href="{{ url_for('marketplace.index') }}"
+       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 relative
+              {{ 'bg-white/12 text-white shadow-sm' if active else 'text-white/55 hover:text-white hover:bg-white/7' }}">
+      {% if active %}<span class="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-6 bg-brand-400 rounded-r-full"></span>{% endif %}
+      <span class="text-base w-5 text-center flex-shrink-0">🛒</span>
+      <span>{{ _('Marché') }}</span>
+      {% if cart_count > 0 %}
+      <span class="ml-auto px-1.5 py-0.5 rounded-full bg-gradient-to-r from-gold-500 to-gold-400 text-brand-950 text-[10px] font-black leading-none shadow-sm">
+        {{ cart_count if cart_count < 10 else '9+' }}
+      </span>
+      {% endif %}
+    </a>
+
+    {% set active = ep == 'marketplace.my_orders' %}
+    <a href="{{ url_for('marketplace.my_orders') }}"
+       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 relative
+              {{ 'bg-white/12 text-white shadow-sm' if active else 'text-white/55 hover:text-white hover:bg-white/7' }}">
+      {% if active %}<span class="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-6 bg-brand-400 rounded-r-full"></span>{% endif %}
+      <span class="text-base w-5 text-center flex-shrink-0">📦</span>
+      <span>{{ _('Mes commandes') }}</span>
+    </a>
+
+    {% if current_user.is_admin or current_user.is_technician %}
+    {% set active = ep in ['marketplace.admin_orders','marketplace.admin_products','marketplace.admin_create_product','marketplace.admin_edit_product'] %}
+    <a href="{{ url_for('marketplace.admin_orders') }}"
+       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 relative
+              {{ 'bg-white/12 text-white shadow-sm' if active else 'text-white/55 hover:text-white hover:bg-white/7' }}">
+      {% if active %}<span class="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-6 bg-brand-400 rounded-r-full"></span>{% endif %}
+      <span class="text-base w-5 text-center flex-shrink-0">📋</span>
+      <span>{{ _('Commandes') }}</span>
+    </a>
+    {% endif %}
+
+    {# Gestion (Finance + Santé) #}
+    {% if current_user.is_admin or current_user.is_technician %}
+    <div class="pt-3.5 pb-1 px-3">
+      <p class="text-[10px] font-bold text-white/25 uppercase tracking-widest">{{ _('Gestion') }}</p>
+    </div>
+
+    {% set active = ep.startswith('finance.') %}
+    <a href="{{ url_for('finance.index') }}"
+       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 relative
+              {{ 'bg-white/12 text-white shadow-sm' if active else 'text-white/55 hover:text-white hover:bg-white/7' }}">
+      {% if active %}<span class="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-6 bg-brand-400 rounded-r-full"></span>{% endif %}
+      <span class="text-base w-5 text-center flex-shrink-0">💰</span>
+      <span>{{ _('Finances') }}</span>
+    </a>
+
+    {% set active = ep.startswith('health.') %}
+    <a href="{{ url_for('health.index') }}"
+       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 relative
+              {{ 'bg-white/12 text-white shadow-sm' if active else 'text-white/55 hover:text-white hover:bg-white/7' }}">
+      {% if active %}<span class="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-6 bg-brand-400 rounded-r-full"></span>{% endif %}
+      <span class="text-base w-5 text-center flex-shrink-0">🩺</span>
+      <span>{{ _('Santé animale') }}</span>
+    </a>
+
+    {% set active = ep.startswith('reports.') %}
+    <a href="{{ url_for('reports.index') }}"
+       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 relative
+              {{ 'bg-white/12 text-white shadow-sm' if active else 'text-white/55 hover:text-white hover:bg-white/7' }}">
+      {% if active %}<span class="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-6 bg-brand-400 rounded-r-full"></span>{% endif %}
+      <span class="text-base w-5 text-center flex-shrink-0">📊</span>
+      <span>{{ _('Rapports') }}</span>
+    </a>
+    {% endif %}
+
+    {# IoT & System #}
+    {% if current_user.is_admin or current_user.is_technician %}
+    <div class="pt-3.5 pb-1 px-3">
+      <p class="text-[10px] font-bold text-white/25 uppercase tracking-widest">{{ _('Système') }}</p>
+    </div>
+
+    {% set active = ep.startswith('iot.') %}
+    <a href="{{ url_for('iot.dashboard') }}"
+       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 relative
+              {{ 'bg-white/12 text-white shadow-sm' if active else 'text-white/55 hover:text-white hover:bg-white/7' }}">
+      {% if active %}<span class="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-6 bg-brand-400 rounded-r-full"></span>{% endif %}
+      <span class="text-base w-5 text-center flex-shrink-0">📡</span>
+      <span>{{ _('IoT & Capteurs') }}</span>
+    </a>
+    {% endif %}
+
+    {# Admin #}
+    {% if current_user.is_admin %}
+    <div class="pt-3.5 pb-1 px-3">
+      <p class="text-[10px] font-bold text-white/25 uppercase tracking-widest">{{ _('Admin') }}</p>
+    </div>
+
+    {% set active = ep.startswith('auth.admin_') %}
+    <a href="{{ url_for('auth.admin_users') }}"
+       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 relative
+              {{ 'bg-white/12 text-white shadow-sm' if active else 'text-white/55 hover:text-white hover:bg-white/7' }}">
+      {% if active %}<span class="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-6 bg-brand-400 rounded-r-full"></span>{% endif %}
+      <span class="text-base w-5 text-center flex-shrink-0">👥</span>
+      <span>{{ _('Utilisateurs') }}</span>
+    </a>
+    {% endif %}
+
+  </nav>
+
+  {# Bottom: language + theme + user #}
+  <div class="border-t border-white/8 px-3 py-4 space-y-3 flex-shrink-0">
+
+    {# Language + theme row #}
+    <div class="flex gap-2 mx-1">
+      <div class="lang-pill flex-1">
+        <a href="{{ url_for('auth.set_language', lang_code='fr') }}"
+           class="lang-btn-item flex-1 text-center {{ 'lang-active' if get_locale()|string == 'fr' }}">FR</a>
+        <a href="{{ url_for('auth.set_language', lang_code='en') }}"
+           class="lang-btn-item flex-1 text-center {{ 'lang-active' if get_locale()|string == 'en' }}">EN</a>
+      </div>
+      <button id="theme-btn"
+              onclick="toggleTheme()"
+              class="w-9 h-9 rounded-lg border border-white/12 flex items-center justify-center hover:bg-white/10 transition-all flex-shrink-0"
+              title="{{ _('Thème clair') if user_theme == 'dark' else _('Thème sombre') }}">
+        <span id="theme-icon">{{ '☀️' if user_theme == 'dark' else '🌙' }}</span>
+      </button>
+    </div>
+
+    {# User row #}
+    <div class="flex items-center gap-2.5 px-2">
+      <div class="w-8 h-8 rounded-full bg-gradient-to-br from-gold-400 to-gold-600 text-brand-950 font-black text-sm flex items-center justify-center uppercase flex-shrink-0 avatar-ring">
+        {{ current_user.username[0] }}
+      </div>
+      <div class="flex-1 min-w-0">
+        <p class="text-sm font-semibold text-white truncate leading-tight">{{ current_user.username }}</p>
+        <p class="text-[10px] text-white/35 truncate">{{ current_user.get_role_label() }}</p>
+      </div>
+      <a href="{{ url_for('auth.logout') }}"
+         class="w-7 h-7 rounded-lg flex items-center justify-center text-white/35 hover:text-white hover:bg-red-600/80 transition-all flex-shrink-0"
+         title="{{ _('Déconnexion') }}">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+
+</aside>
+
+{# ─── MAIN AREA ─── #}
+<div class="lg:ml-60 flex flex-col min-h-screen">
+
+  {# Desktop topbar #}
+  <header class="desktop-topbar hidden lg:flex items-center justify-between px-6 py-3.5 sticky top-0 z-30">
+    {# Left: page title / breadcrumb slot #}
+    <div class="flex items-center gap-2 min-w-0">
+      {% block page_title_bar %}
+      <div class="flex items-center gap-2">
+        <span class="text-sm font-bold text-slate-700">{% block page_title %}{{ _('OmniFarm Hub') }}{% endblock %}</span>
+      </div>
+      {% endblock %}
+    </div>
+    {# Right: actions #}
+    <div class="flex items-center gap-2 flex-shrink-0">
+      {# Notification bell — pending orders for admin/tech, upcoming health events #}
+      {% set notif_count = pending_orders|default(0) %}
+      <button class="relative w-9 h-9 rounded-xl topbar-btn flex items-center justify-center transition-all"
+              title="{{ _('Alertes') }}">
+        <svg class="w-4.5 h-4.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+        </svg>
+        {% if notif_count > 0 %}
+        <span class="notif-dot absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 text-white text-[9px] font-black flex items-center justify-center shadow-sm">
+          {{ notif_count if notif_count < 10 else '9+' }}
+        </span>
+        {% endif %}
+      </button>
+
+      {# Cart shortcut #}
+      {% if cart_count > 0 %}
+      <a href="{{ url_for('marketplace.cart_view') }}"
+         class="relative w-9 h-9 rounded-xl topbar-btn flex items-center justify-center transition-all"
+         title="{{ _('Panier') }}">
+        <svg class="w-4.5 h-4.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.4 6m0 0h9.8M17 19a1 1 0 100 2 1 1 0 000-2zm-9 0a1 1 0 100 2 1 1 0 000-2z"/>
+        </svg>
+        <span class="notif-dot absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-gradient-to-br from-brand-500 to-brand-600 text-white text-[9px] font-black flex items-center justify-center shadow-sm">
+          {{ cart_count }}
+        </span>
+      </a>
+      {% endif %}
+
+      {# Divider #}
+      <div class="w-px h-5 bg-slate-200 dark:bg-slate-700 mx-1"></div>
+
+      {# User avatar + quick info #}
+      <div class="flex items-center gap-2.5 px-2 py-1 rounded-xl topbar-btn cursor-default">
+        <div class="w-7 h-7 rounded-full bg-gradient-to-br from-gold-400 to-gold-600 text-brand-950 font-black text-xs flex items-center justify-center uppercase flex-shrink-0 shadow-sm">
+          {{ current_user.username[0] }}
+        </div>
+        <div class="leading-tight">
+          <p class="text-xs font-bold text-slate-700">{{ current_user.username }}</p>
+          <p class="text-[10px] text-slate-400 font-medium">{{ current_user.get_role_label() }}</p>
+        </div>
+      </div>
+
+      <a href="{{ url_for('auth.logout') }}"
+         class="w-9 h-9 rounded-xl topbar-btn flex items-center justify-center transition-all"
+         title="{{ _('Déconnexion') }}">
+        <svg class="w-4 h-4 text-slate-400 hover:text-red-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+        </svg>
+      </a>
+    </div>
+  </header>
+
+  {# Mobile top bar #}
+  <header class="mobile-topbar lg:hidden px-4 py-3 flex items-center gap-3 sticky top-0 z-30 shadow-md">
+    <button onclick="toggleSidebar()"
+            class="w-9 h-9 rounded-xl bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors flex-shrink-0">
+      <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+      </svg>
+    </button>
+    <div class="flex items-center gap-2 flex-1">
+      <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center flex-shrink-0 shadow-sm">
+        <svg class="w-4 h-4 text-brand-950" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"/>
+        </svg>
+      </div>
+      <span class="text-white font-bold text-sm tracking-tight">OmniFarm Hub</span>
+    </div>
+    {% if cart_count > 0 %}
+    <a href="{{ url_for('marketplace.cart_view') }}"
+       class="relative w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors">
+      🛒
+      <span class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-gradient-to-br from-gold-400 to-gold-600 text-brand-950 text-[10px] font-black flex items-center justify-center shadow-sm">
+        {{ cart_count if cart_count < 10 else '9+' }}
+      </span>
+    </a>
+    {% endif %}
+  </header>
+
+  {# Flash messages #}
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="px-4 sm:px-6 pt-4 space-y-2" id="flash-container">
+      {% for category, message in messages %}
+        {% if category == 'success' %}
+          {% set flash_cls = 'flash-success-p' %}{% set icon_cls = 'text-emerald-600' %}
+        {% elif category in ('danger', 'error') %}
+          {% set flash_cls = 'flash-danger-p' %}{% set icon_cls = 'text-red-500' %}
+        {% elif category == 'warning' %}
+          {% set flash_cls = 'flash-warning-p' %}{% set icon_cls = 'text-amber-500' %}
+        {% else %}
+          {% set flash_cls = 'flash-info-p' %}{% set icon_cls = 'text-blue-500' %}
+        {% endif %}
+        <div class="flex items-start gap-3 px-4 py-3.5 rounded-xl border-l-4 {{ flash_cls }}">
+          <svg class="w-4 h-4 mt-0.5 flex-shrink-0 {{ icon_cls }}" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+          </svg>
+          <p class="flex-1 text-sm font-medium">{{ message }}</p>
+          <button onclick="this.parentElement.remove()" class="flex-shrink-0 opacity-40 hover:opacity-100 transition-opacity">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
+            </svg>
+          </button>
+        </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  {% endwith %}
+
+  {# Page content #}
+  <main class="flex-1 px-4 sm:px-6 py-6 max-w-screen-xl mx-auto w-full">
+    {% block content %}{% endblock %}
+  </main>
+
+  {# Footer #}
+  <footer class="p-footer py-4 px-4 sm:px-6">
+    <div class="max-w-screen-xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-400">
+      <span>&copy; {{ now.year }} OmniFarm Hub &mdash; {{ _('Tous droits réservés') }}</span>
+      <span class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-sm"></span>
+        {{ _('Système opérationnel') }}
+      </span>
+    </div>
+  </footer>
+
+</div>{# end main area #}
+
+<script>
+  function toggleSidebar() {
+    const s = document.getElementById('sidebar');
+    const o = document.getElementById('sidebar-overlay');
+    s.classList.toggle('-translate-x-full');
+    o.classList.toggle('hidden');
+  }
+  function closeSidebar() {
+    document.getElementById('sidebar').classList.add('-translate-x-full');
+    document.getElementById('sidebar-overlay').classList.add('hidden');
+  }
+
+  function toggleTheme() {
+    const html  = document.documentElement;
+    const isDark = html.classList.toggle('dark');
+    const theme  = isDark ? 'dark' : 'light';
+    const icon = document.getElementById('theme-icon');
+    const btn  = document.getElementById('theme-btn');
+    if (icon) icon.textContent = isDark ? '☀️' : '🌙';
+    if (btn)  btn.title        = isDark ? '{{ _("Thème clair") }}' : '{{ _("Thème sombre") }}';
+    const url = isDark
+      ? '{{ url_for("auth.set_theme", theme="dark") }}'
+      : '{{ url_for("auth.set_theme", theme="light") }}';
+    fetch(url, { redirect: 'manual' }).catch(() => {});
+  }
+</script>
+
+{% else %}
+{{ self.content() }}
+{% endif %}
+
+{% block scripts %}{% endblock %}
+</body>
+</html>

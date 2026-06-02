@@ -1,0 +1,269 @@
+{% extends 'base.html' %}
+{% from 'macros.html' import empty_state %}
+{% block title %}{{ _('Finances') }}{% endblock %}
+{% block page_title %}{{ _('Finances') }}{% endblock %}
+
+{% block head %}
+<script src="{{ url_for('static', filename='js/chart.umd.min.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+
+  {# ── Page hero ── #}
+  <div class="page-hero px-6 py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-extrabold text-slate-900 flex items-center gap-2">
+        <span class="text-gradient-brand">💰</span> {{ _('Finances') }}
+      </h1>
+      <p class="text-sm text-slate-500 mt-0.5 font-medium">{{ _('Suivi des dépenses et revenus de l\'exploitation') }}</p>
+    </div>
+    <div class="flex items-center gap-2 flex-wrap">
+      <a href="{{ url_for('finance.summary') }}"
+         class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 text-sm font-semibold transition-all">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+        </svg>
+        {{ _('Résumé') }}
+      </a>
+      <a href="{{ url_for('finance.create_entry') }}"
+         class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-white text-sm font-bold btn-premium-primary shadow-sm">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+        </svg>
+        {{ _('Nouvelle entrée') }}
+      </a>
+    </div>
+  </div>
+
+  {# ── KPI strip — gradient stat cards ── #}
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <div class="bg-stat-brand rounded-2xl p-5 shadow-card border flex items-center gap-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-card-md">
+      <div class="w-12 h-12 rounded-xl icon-bg-brand flex items-center justify-center text-2xl flex-shrink-0 stat-icon-box">💹</div>
+      <div>
+        <p class="text-xs font-bold text-slate-500 uppercase tracking-wide mb-0.5">{{ _('Revenus') }}</p>
+        <p class="text-2xl font-extrabold text-emerald-700 leading-none">{{ '{:,.0f}'.format(total_revenue) }}</p>
+        <p class="text-[10px] text-slate-400 mt-0.5">FCFA{% if type_filter or scope_filter or month_filter %} · {{ _('filtrés') }}{% endif %}</p>
+      </div>
+    </div>
+    <div class="bg-stat-red rounded-2xl p-5 shadow-card border flex items-center gap-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-card-md">
+      <div class="w-12 h-12 rounded-xl icon-bg-red flex items-center justify-center text-2xl flex-shrink-0 stat-icon-box">📉</div>
+      <div>
+        <p class="text-xs font-bold text-slate-500 uppercase tracking-wide mb-0.5">{{ _('Dépenses') }}</p>
+        <p class="text-2xl font-extrabold text-red-600 leading-none">{{ '{:,.0f}'.format(total_expense) }}</p>
+        <p class="text-[10px] text-slate-400 mt-0.5">FCFA{% if type_filter or scope_filter or month_filter %} · {{ _('filtrés') }}{% endif %}</p>
+      </div>
+    </div>
+    <div class="bg-stat-{{ 'brand' if balance >= 0 else 'amber' }} rounded-2xl p-5 shadow-card border flex items-center gap-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-card-md">
+      <div class="w-12 h-12 rounded-xl {{ 'icon-bg-brand' if balance >= 0 else 'icon-bg-amber' }} flex items-center justify-center text-2xl flex-shrink-0 stat-icon-box">⚖️</div>
+      <div>
+        <p class="text-xs font-bold text-slate-500 uppercase tracking-wide mb-0.5">{{ _('Solde') }}</p>
+        <p class="text-2xl font-extrabold {{ 'text-brand-700' if balance >= 0 else 'text-amber-700' }} leading-none">{{ '{:,.0f}'.format(balance) }}</p>
+        <p class="text-[10px] text-slate-400 mt-0.5">FCFA</p>
+      </div>
+    </div>
+  </div>
+
+  {# ── Trend chart ── #}
+  <div class="bg-white rounded-2xl shadow-card border border-slate-100 card-inset p-5">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-sm font-bold text-slate-700 flex items-center gap-2">
+        <span class="w-7 h-7 rounded-lg bg-brand-50 flex items-center justify-center text-sm">📊</span>
+        {{ _('Évolution mensuelle — 6 mois') }}
+      </h2>
+      <span class="text-xs text-slate-400 font-medium">{{ _('Toutes périodes confondues') }}</span>
+    </div>
+    <div class="chart-container" style="height:200px;">
+      <canvas id="financeMonthlyChart"></canvas>
+    </div>
+  </div>
+
+  {# ── Filters ── #}
+  <form method="get" class="bg-white rounded-2xl shadow-card border border-slate-100 card-inset p-4 flex flex-wrap gap-3 items-end">
+    <div>
+      <label class="block text-xs font-bold text-slate-500 mb-1 uppercase tracking-wide">{{ _('Type') }}</label>
+      <select name="type" class="border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-brand-400 focus:border-brand-400 transition">
+        <option value="">{{ _('Tous') }}</option>
+        <option value="EXPENSE" {{ 'selected' if type_filter == 'EXPENSE' }}>{{ _('Dépenses') }}</option>
+        <option value="REVENUE" {{ 'selected' if type_filter == 'REVENUE' }}>{{ _('Revenus') }}</option>
+      </select>
+    </div>
+    <div>
+      <label class="block text-xs font-bold text-slate-500 mb-1 uppercase tracking-wide">{{ _('Unité') }}</label>
+      <select name="scope" class="border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-brand-400 focus:border-brand-400 transition">
+        <option value="">{{ _('Toutes') }}</option>
+        <option value="AQUACULTURE" {{ 'selected' if scope_filter == 'AQUACULTURE' }}>🐟 {{ _('Aquaculture') }}</option>
+        <option value="POULTRY"     {{ 'selected' if scope_filter == 'POULTRY' }}>🐔 {{ _('Aviculture') }}</option>
+        <option value="CUNICULTURE" {{ 'selected' if scope_filter == 'CUNICULTURE' }}>🐇 {{ _('Cuniculture') }}</option>
+        <option value="GENERAL"     {{ 'selected' if scope_filter == 'GENERAL' }}>{{ _('Général') }}</option>
+      </select>
+    </div>
+    <div>
+      <label class="block text-xs font-bold text-slate-500 mb-1 uppercase tracking-wide">{{ _('Mois') }}</label>
+      <input type="month" name="month" value="{{ month_filter }}"
+             class="border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-brand-400 focus:border-brand-400 transition">
+    </div>
+    <button type="submit"
+            class="px-4 py-2 rounded-xl text-white text-sm font-bold btn-premium-primary transition-all">
+      {{ _('Filtrer') }}
+    </button>
+    {% if type_filter or scope_filter or month_filter %}
+    <a href="{{ url_for('finance.index') }}"
+       class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-sm font-medium transition-colors">
+      × {{ _('Effacer') }}
+    </a>
+    {% endif %}
+  </form>
+
+  {# ── Table ── #}
+  <div class="bg-white rounded-2xl shadow-card border border-slate-100 card-inset overflow-hidden">
+    {% if entries %}
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm tbl-premium">
+        <thead>
+          <tr>
+            <th class="text-left">{{ _('Date') }}</th>
+            <th class="text-left">{{ _('Description') }}</th>
+            <th class="text-left">{{ _('Catégorie') }}</th>
+            <th class="text-left">{{ _('Unité') }}</th>
+            <th class="text-right">{{ _('Montant') }}</th>
+            <th class="text-right">{{ _('Actions') }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for e in entries %}
+          <tr>
+            <td class="text-slate-500 whitespace-nowrap font-medium">{{ e.entry_date.strftime('%d/%m/%Y') }}</td>
+            <td>
+              <span class="font-semibold text-slate-800">{{ e.description }}</span>
+              {% if e.reference_number %}
+              <span class="ml-2 text-xs text-slate-400 font-mono">#{{ e.reference_number }}</span>
+              {% endif %}
+            </td>
+            <td>
+              <span class="inline-flex items-center gap-1 text-slate-600 font-medium">
+                <span>{{ e.category_icon() }}</span>{{ e.category_label() }}
+              </span>
+            </td>
+            <td>
+              <span class="badge-p badge-inactive-p">{{ e.scope_label() }}</span>
+            </td>
+            <td class="text-right font-extrabold whitespace-nowrap
+                       {{ 'text-emerald-600' if e.entry_type.value == 'REVENUE' else 'text-red-500' }}">
+              <span class="inline-flex items-center gap-0.5">
+                {% if e.entry_type.value == 'REVENUE' %}
+                <span class="text-emerald-400 text-xs">▲</span>
+                {% else %}
+                <span class="text-red-400 text-xs">▼</span>
+                {% endif %}
+                {{ '{:,.0f}'.format(e.amount_float) }}
+              </span>
+            </td>
+            <td class="text-right">
+              <div class="flex items-center justify-end gap-2">
+                <a href="{{ url_for('finance.edit_entry', entry_id=e.id) }}"
+                   class="p-1.5 rounded-lg text-slate-400 hover:text-brand-600 hover:bg-brand-50 transition-colors"
+                   title="{{ _('Modifier') }}">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                  </svg>
+                </a>
+                <form method="post" action="{{ url_for('finance.delete_entry', entry_id=e.id) }}"
+                      onsubmit="return confirm('{{ _('Supprimer cette entrée ?') }}')">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                  <button type="submit"
+                          class="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                          title="{{ _('Supprimer') }}">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                    </svg>
+                  </button>
+                </form>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    {{ empty_state('💰', _('Aucune entrée financière'), _('Enregistrez vos dépenses et revenus pour suivre la santé financière de votre exploitation.'), url_for('finance.create_entry'), _('Ajouter la première entrée')) }}
+    {% endif %}
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function() {
+  const isDark    = document.documentElement.classList.contains('dark');
+  const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)';
+  const tickColor = isDark ? '#94a3b8' : '#94a3b8';
+  const tooltipBg = isDark ? '#1a2535' : '#fff';
+
+  const ctx = document.getElementById('financeMonthlyChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: {{ chart_labels|safe }},
+      datasets: [
+        {
+          label: '{{ _("Revenus") }}',
+          data: {{ chart_revenues|safe }},
+          backgroundColor: 'rgba(22,163,74,0.75)',
+          borderColor: '#16a34a',
+          borderWidth: 1.5,
+          borderRadius: 6,
+          borderSkipped: false,
+        },
+        {
+          label: '{{ _("Dépenses") }}',
+          data: {{ chart_expenses|safe }},
+          backgroundColor: 'rgba(239,68,68,0.65)',
+          borderColor: '#ef4444',
+          borderWidth: 1.5,
+          borderRadius: 6,
+          borderSkipped: false,
+        },
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: {
+          labels: {
+            boxWidth: 12, boxHeight: 12,
+            font: { family: 'Ubuntu', size: 11, weight: '600' },
+            color: tickColor,
+          }
+        },
+        tooltip: {
+          backgroundColor: tooltipBg,
+          borderColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)',
+          borderWidth: 1,
+          titleColor: isDark ? '#e2e8f0' : '#1e293b',
+          bodyColor: isDark ? '#94a3b8' : '#64748b',
+          padding: 12,
+          titleFont: { family: 'Ubuntu', weight: '700', size: 12 },
+          bodyFont: { family: 'Ubuntu', size: 11 },
+          callbacks: {
+            label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y.toLocaleString('fr-FR',{maximumFractionDigits:0})} FCFA`
+          }
+        }
+      },
+      scales: {
+        x: { grid: { color: gridColor }, ticks: { color: tickColor, font: { family: 'Ubuntu', size: 11, weight: '600' } }, border: { display: false } },
+        y: {
+          grid: { color: gridColor },
+          ticks: { color: tickColor, font: { family: 'Ubuntu', size: 11 }, callback: v => v.toLocaleString('fr-FR',{notation:'compact',maximumFractionDigits:0}) },
+          border: { display: false }
+        }
+      }
+    }
+  });
+})();
+</script>
+{% endblock %}

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="{{ get_locale() }}" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ _('Connexion') }} — OmniFarm Hub</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/fonts.css') }}" />
+  <script src="{{ url_for('static', filename='js/tailwind.js') }}"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: { 50:'#f0fdf4', 100:'#dcfce7', 400:'#4ade80', 500:'#22c55e', 600:'#16a34a', 700:'#15803d', 800:'#166534', 900:'#14532d', 950:'#052e16' },
+            gold:  { 300:'#fcd34d', 400:'#fbbf24', 500:'#f59e0b', 600:'#d97706' }
+          },
+          fontFamily: { sans: ['Ubuntu','ui-sans-serif','system-ui','sans-serif'] }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/premium.css') }}" />
+  <style>
+    body { background: #031510; font-family: 'Ubuntu', sans-serif; }
+  </style>
+</head>
+<body class="h-full antialiased">
+
+{# Language toggle #}
+<div class="absolute top-5 right-6 z-20 lang-pill">
+  <a href="{{ url_for('auth.set_language', lang_code='fr') }}"
+     class="lang-btn-item {{ 'lang-active' if get_locale()|string == 'fr' }}">FR</a>
+  <a href="{{ url_for('auth.set_language', lang_code='en') }}"
+     class="lang-btn-item {{ 'lang-active' if get_locale()|string == 'en' }}">EN</a>
+</div>
+
+<div class="min-h-full flex">
+
+  {# ───── LEFT PANEL — Brand illustration ───── #}
+  <div class="hidden lg:flex lg:w-1/2 xl:w-[58%] flex-col justify-between p-12 relative overflow-hidden"
+       style="background: linear-gradient(145deg, #021a0c 0%, #031f11 40%, #052e16 75%, #073620 100%);">
+
+    {# Animated orbs #}
+    <div class="auth-orb auth-orb-1" style="--orb-dur:12s;--orb-delay:0s; width:380px;height:380px; background:rgba(34,197,94,0.28); top:-80px;left:-60px;"></div>
+    <div class="auth-orb" style="--orb-dur:15s;--orb-delay:-4s; width:260px;height:260px; background:rgba(245,158,11,0.18); bottom:60px;right:-30px;"></div>
+    <div class="auth-orb" style="--orb-dur:9s;--orb-delay:-7s; width:180px;height:180px; background:rgba(22,163,74,0.2); top:38%;left:52%;"></div>
+
+    {# Geometric decoration #}
+    <div class="absolute inset-0 pointer-events-none overflow-hidden">
+      <div class="absolute top-1/3 left-1/2 w-64 h-64 rounded-full border border-white/4 -translate-x-1/2 -translate-y-1/2"></div>
+      <div class="absolute top-1/3 left-1/2 w-48 h-48 rounded-full border border-white/3 -translate-x-1/2 -translate-y-1/2"></div>
+      <div class="absolute bottom-0 left-0 w-72 h-72 rounded-full border border-white/3 -translate-x-1/3 translate-y-1/3"></div>
+    </div>
+
+    {# Header #}
+    <div class="relative fade-in-up">
+      <div class="flex items-center gap-3 mb-14">
+        <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center shadow-xl">
+          <svg class="w-6 h-6 text-brand-950" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"/>
+          </svg>
+        </div>
+        <span class="text-white font-bold text-xl tracking-tight">OmniFarm Hub</span>
+      </div>
+
+      <h1 class="text-4xl xl:text-5xl font-extrabold text-white leading-tight mb-5">
+        {{ _('Gérez votre ferme') }}<br/>
+        <span style="background:linear-gradient(135deg,#fbbf24,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
+          {{ _('en toute intelligence.') }}
+        </span>
+      </h1>
+      <p class="text-white/55 text-lg leading-relaxed max-w-md">
+        {{ _('Plateforme centralisée pour la gestion multi-espèces, le suivi des opérations agricoles et la commercialisation directe de vos produits.') }}
+      </p>
+    </div>
+
+    {# Module badges #}
+    <div class="relative fade-in-up-1">
+      <p class="text-white/30 text-[11px] font-bold uppercase tracking-widest mb-4">{{ _('Modules actifs') }}</p>
+      <div class="flex flex-wrap gap-2">
+        {% for label, icon in [(_('Aquaculture'), '🐟'), (_('Aviculture'), '🐔'), (_('Cuniculture'), '🐇'), (_('Marché'), '🛒'), (_('IoT & Capteurs'), '📡')] %}
+        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-white/65 text-xs font-semibold"
+              style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);">
+          <span>{{ icon }}</span> {{ label }}
+        </span>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  {# ───── RIGHT PANEL — Login form ───── #}
+  <div class="flex-1 flex flex-col items-center justify-center px-6 py-12"
+       style="background: linear-gradient(160deg, #f4f7fb 0%, #eef2f8 100%);">
+    <div class="w-full max-w-sm fade-in-up">
+
+      {# Mobile logo #}
+      <div class="lg:hidden flex items-center gap-2.5 mb-8">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-700 to-brand-900 flex items-center justify-center shadow-md">
+          <svg class="w-5 h-5 text-gold-400" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"/>
+          </svg>
+        </div>
+        <span class="text-brand-900 font-bold text-lg tracking-tight">OmniFarm Hub</span>
+      </div>
+
+      {# Form card #}
+      <div class="auth-card p-8">
+
+        <div class="mb-7">
+          <h2 class="text-2xl font-extrabold text-slate-900 leading-tight">{{ _('Bienvenue') }}</h2>
+          <p class="mt-1.5 text-sm text-slate-500 font-medium">{{ _('Connectez-vous à votre espace de gestion.') }}</p>
+        </div>
+
+        {# Flash messages #}
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+          <div class="mb-6 space-y-2">
+            {% for category, message in messages %}
+              {% if category in ('danger','error') %}{% set flash_cls='flash-danger-p'%}{% set icon_cls='text-red-500' %}
+              {% elif category=='success' %}{% set flash_cls='flash-success-p'%}{% set icon_cls='text-emerald-600' %}
+              {% elif category=='warning' %}{% set flash_cls='flash-warning-p'%}{% set icon_cls='text-amber-500' %}
+              {% else %}{% set flash_cls='flash-info-p'%}{% set icon_cls='text-blue-500' %}{% endif %}
+              <div class="flex items-center gap-2 text-sm px-3 py-2.5 rounded-xl border-l-4 {{ flash_cls }}">
+                <svg class="w-4 h-4 flex-shrink-0 {{ icon_cls }}" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
+                {{ message }}
+              </div>
+            {% endfor %}
+          </div>
+          {% endif %}
+        {% endwith %}
+
+        {# Login form #}
+        <form method="POST" action="{{ url_for('auth.login') }}" novalidate class="space-y-5">
+          {{ form.hidden_tag() }}
+
+          {# Username #}
+          <div class="space-y-1.5">
+            <label for="{{ form.username.id }}" class="block text-sm font-semibold text-slate-700">
+              {{ form.username.label.text }}
+            </label>
+            {{ form.username(
+                class="w-full px-4 py-2.5 rounded-xl border text-sm text-slate-800 bg-white/70 placeholder-slate-400 transition focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 " + ("border-red-400" if form.username.errors else "border-slate-200"),
+                placeholder=_('admin ou admin@omnifarm.local'),
+                autocomplete="username",
+                autofocus=true
+            ) }}
+            {% for error in form.username.errors %}
+              <p class="mt-1 text-xs text-red-600 font-medium">{{ error }}</p>
+            {% endfor %}
+          </div>
+
+          {# Password #}
+          <div class="space-y-1.5">
+            <label for="{{ form.password.id }}" class="block text-sm font-semibold text-slate-700">
+              {{ form.password.label.text }}
+            </label>
+            {{ form.password(
+                class="w-full px-4 py-2.5 rounded-xl border text-sm text-slate-800 bg-white/70 placeholder-slate-400 transition focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 " + ("border-red-400" if form.password.errors else "border-slate-200"),
+                placeholder="••••••••",
+                autocomplete="current-password"
+            ) }}
+            {% for error in form.password.errors %}
+              <p class="mt-1 text-xs text-red-600 font-medium">{{ error }}</p>
+            {% endfor %}
+          </div>
+
+          {# Remember me #}
+          <div class="flex items-center gap-2">
+            {{ form.remember_me(class="w-4 h-4 rounded border-slate-300 text-brand-600 focus:ring-brand-500 cursor-pointer") }}
+            <label for="{{ form.remember_me.id }}" class="text-sm text-slate-600 cursor-pointer select-none font-medium">
+              {{ form.remember_me.label.text }}
+            </label>
+          </div>
+
+          {# Submit #}
+          {{ form.submit(
+              class="w-full py-2.5 px-4 rounded-xl text-white font-bold text-sm cursor-pointer btn-premium-primary"
+          ) }}
+        </form>
+      </div>
+
+      {# Register link #}
+      <p class="mt-5 text-center text-sm text-slate-500 font-medium">
+        {{ _('Pas encore de compte ?') }}
+        <a href="{{ url_for('auth.register') }}" class="text-brand-700 font-bold hover:text-brand-800 transition-colors ml-1">
+          {{ _('Créer un compte gratuit') }}
+        </a>
+      </p>
+
+      <p class="mt-4 text-center text-xs text-slate-400 font-medium">
+        &copy; {{ now.year }} OmniFarm Hub
+      </p>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

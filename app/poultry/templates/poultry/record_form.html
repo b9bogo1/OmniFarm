@@ -1,0 +1,75 @@
+﻿{% extends 'base.html' %}
+{% from 'macros.html' import render_field, breadcrumb %}
+{% block title %}{{ title }}{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
+
+{% block content %}
+{{ breadcrumb([
+  (url_for('poultry.index'), _('Aviculture')),
+  (url_for('poultry.flock_detail', flock_id=flock.id), flock.name),
+  ('#', _('Modifier saisie') if is_edit else _('Nouvelle saisie')),
+]) }}
+
+<div class="max-w-3xl">
+  <div class="flex items-center gap-4 mb-7">
+    <div class="w-12 h-12 rounded-2xl icon-bg-amber flex items-center justify-center text-2xl stat-icon-box">ðŸ“‹</div>
+    <div>
+      <h1 class="text-xl font-extrabold text-slate-900">{{ title }}</h1>
+      <p class="text-sm text-slate-500 mt-0.5 font-medium">{{ _('Lot :') }} <span class="font-bold text-slate-700">{{ flock.name }}</span></p>
+    </div>
+  </div>
+
+  <form method="POST" novalidate class="space-y-5">
+    {{ form.hidden_tag() }}
+
+    <div class="form-section">
+      <p class="form-section-title">{{ _('Date de saisie') }}</p>
+      <div class="max-w-xs">{{ render_field(form.record_date) }}</div>
+    </div>
+
+    <div class="form-section">
+      <p class="form-section-title">{{ _('Alimentation & eau') }}</p>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+        {{ render_field(form.feed_quantity_kg, placeholder='45.0') }}
+        {{ render_field(form.feed_type, placeholder=_('Croissance')) }}
+        {{ render_field(form.water_consumed_l, placeholder='120.0') }}
+      </div>
+    </div>
+
+    <div class="form-section">
+      <p class="form-section-title">{{ _('Production') }}</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        {{ render_field(form.eggs_collected, placeholder='0') }}
+        {{ render_field(form.avg_weight_g, placeholder='1800.0') }}
+      </div>
+    </div>
+
+    <div class="form-section">
+      <p class="form-section-title">{{ _('MortalitÃ©') }}</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        {{ render_field(form.mortality_count, placeholder='0') }}
+        {{ render_field(form.mortality_cause, placeholder=_('Maladie de Newcastle, stress thermique...')) }}
+      </div>
+    </div>
+
+    <div class="form-section">
+      <p class="form-section-title">ðŸŒ¡ï¸ {{ _('Environnement') }} <span class="ml-2 text-[10px] font-normal normal-case text-slate-400">{{ _('IoT-ready') }}</span></p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        {{ render_field(form.ambient_temp_c, placeholder='28.5') }}
+        {{ render_field(form.humidity_pct, placeholder='65.0') }}
+      </div>
+    </div>
+
+    <div class="form-section">
+      <p class="form-section-title">{{ _('Notes') }}</p>
+      {{ render_field(form.notes, placeholder=_('Observations particuliÃ¨res, traitements appliquÃ©s...')) }}
+    </div>
+
+    <div class="flex items-center gap-3">
+      {{ form.submit(class='px-6 py-2.5 rounded-xl text-white font-bold text-sm cursor-pointer btn-premium-primary') }}
+      <a href="{{ url_for('poultry.flock_detail', flock_id=flock.id) }}"
+         class="px-6 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300 text-sm font-semibold transition-all">{{ _('Annuler') }}</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

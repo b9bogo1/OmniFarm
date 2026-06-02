@@ -1,0 +1,227 @@
+{% extends 'base.html' %}
+{% from 'macros.html' import empty_state %}
+{% block title %}{{ _('Santé animale') }}{% endblock %}
+{% block page_title %}{{ _('Santé animale') }}{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+
+  {# ── Page hero ── #}
+  <div class="page-hero px-6 py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-extrabold text-slate-900">🩺 {{ _('Santé animale') }}</h1>
+      <p class="text-sm text-slate-500 mt-0.5 font-medium">{{ _('Vaccinations, traitements et inspections vétérinaires') }}</p>
+    </div>
+    <a href="{{ url_for('health.create_event') }}"
+       class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-white text-sm font-bold btn-premium-primary shadow-sm self-start">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+      </svg>
+      {{ _('Nouvel événement') }}
+    </a>
+  </div>
+
+  {# ── Event type stat strip ── #}
+  {% if type_counts %}
+  {% set type_cfg = [
+    ('VACCINATION', '💉', 'bg-stat-indigo', _('Vaccinations')),
+    ('TREATMENT',   '🩺', 'bg-stat-brand',  _('Traitements')),
+    ('DEWORMING',   '🔬', 'bg-stat-cyan',   _('Déparasitages')),
+    ('INSPECTION',  '🔍', 'bg-stat-amber',  _('Inspections')),
+    ('SURGERY',     '⚕️', 'bg-stat-red',    _('Chirurgies')),
+  ] %}
+  <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+    {% for key, icon, cls, label in type_cfg %}
+    <div class="{{ cls }} rounded-2xl p-4 shadow-card border flex items-center gap-3 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-card-md">
+      <span class="text-xl flex-shrink-0">{{ icon }}</span>
+      <div>
+        <p class="text-xl font-extrabold text-slate-800 leading-none">{{ type_counts.get(key, 0) }}</p>
+        <p class="text-[10px] text-slate-500 mt-0.5 font-semibold">{{ label }}</p>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {# ── Upcoming reminders — premium card ── #}
+  {% if upcoming %}
+  <div class="bg-white rounded-2xl shadow-card border border-amber-200/60 card-inset overflow-hidden">
+    <div class="px-5 py-3.5 border-b border-amber-100 flex items-center justify-between"
+         style="background:linear-gradient(135deg,#fffbeb,#fef3c7);">
+      <h2 class="text-sm font-bold text-amber-800 flex items-center gap-2">
+        <span class="w-6 h-6 rounded-lg bg-amber-400/20 flex items-center justify-center text-sm">⏰</span>
+        {{ _('Échéances à venir') }}
+        <span class="px-2 py-0.5 rounded-full bg-amber-400 text-amber-950 text-[10px] font-black">{{ upcoming|length }}</span>
+      </h2>
+      <a href="{{ url_for('health.create_event') }}"
+         class="text-xs text-amber-700 hover:text-amber-900 font-bold transition-colors">
+        + {{ _('Planifier') }}
+      </a>
+    </div>
+    <div class="divide-y divide-amber-50">
+      {% for ev in upcoming %}
+      {% set days_left = (ev.next_due_date - today).days %}
+      <div class="flex items-center justify-between px-5 py-3 hover:bg-amber-50/50 transition-colors">
+        <div class="flex items-center gap-3 min-w-0">
+          <span class="text-lg flex-shrink-0">{{ ev.event_type_icon() }}</span>
+          <div class="min-w-0">
+            <p class="text-sm font-bold text-slate-800 truncate">
+              {{ ev.unit_icon() }} {{ ev.unit_name }}
+            </p>
+            <p class="text-xs text-slate-500 font-medium">
+              {{ ev.event_type_label() }}{% if ev.product_used %} · {{ ev.product_used }}{% endif %}
+            </p>
+          </div>
+        </div>
+        <div class="flex items-center gap-3 flex-shrink-0 ml-3">
+          <span class="text-sm font-bold text-slate-600">{{ ev.next_due_date.strftime('%d/%m/%Y') }}</span>
+          {% if days_left <= 3 %}
+          <span class="badge-p badge-culled-p">{{ days_left }}j</span>
+          {% elif days_left <= 7 %}
+          <span class="badge-p badge-maint-p">{{ days_left }}j</span>
+          {% else %}
+          <span class="badge-p badge-inactive-p">{{ days_left }}j</span>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  {# ── Filters ── #}
+  <form method="get" class="bg-white rounded-2xl shadow-card border border-slate-100 card-inset p-4 flex flex-wrap gap-3 items-end">
+    <div>
+      <label class="block text-xs font-bold text-slate-500 mb-1 uppercase tracking-wide">{{ _('Espèce') }}</label>
+      <select name="unit" class="border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-brand-400 focus:border-brand-400 transition">
+        <option value="">{{ _('Toutes') }}</option>
+        <option value="POULTRY"     {{ 'selected' if unit_filter == 'POULTRY' }}>🐔 {{ _('Volailles') }}</option>
+        <option value="CUNICULTURE" {{ 'selected' if unit_filter == 'CUNICULTURE' }}>🐇 {{ _('Lapins') }}</option>
+        <option value="AQUACULTURE" {{ 'selected' if unit_filter == 'AQUACULTURE' }}>🐟 {{ _('Poissons') }}</option>
+      </select>
+    </div>
+    <div>
+      <label class="block text-xs font-bold text-slate-500 mb-1 uppercase tracking-wide">{{ _('Type') }}</label>
+      <select name="type" class="border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-brand-400 focus:border-brand-400 transition">
+        <option value="">{{ _('Tous') }}</option>
+        <option value="VACCINATION" {{ 'selected' if type_filter == 'VACCINATION' }}>💉 {{ _('Vaccination') }}</option>
+        <option value="TREATMENT"   {{ 'selected' if type_filter == 'TREATMENT' }}>🩺 {{ _('Traitement') }}</option>
+        <option value="DEWORMING"   {{ 'selected' if type_filter == 'DEWORMING' }}>🔬 {{ _('Déparasitage') }}</option>
+        <option value="INSPECTION"  {{ 'selected' if type_filter == 'INSPECTION' }}>🔍 {{ _('Inspection') }}</option>
+        <option value="SURGERY"     {{ 'selected' if type_filter == 'SURGERY' }}>⚕️ {{ _('Chirurgie') }}</option>
+      </select>
+    </div>
+    <button type="submit"
+            class="px-4 py-2 rounded-xl text-white text-sm font-bold btn-premium-primary transition-all">
+      {{ _('Filtrer') }}
+    </button>
+    {% if unit_filter or type_filter %}
+    <a href="{{ url_for('health.index') }}"
+       class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-sm font-medium transition-colors">
+      × {{ _('Effacer') }}
+    </a>
+    {% endif %}
+  </form>
+
+  {# ── Events table ── #}
+  <div class="bg-white rounded-2xl shadow-card border border-slate-100 card-inset overflow-hidden">
+    {% if events %}
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm tbl-premium">
+        <thead>
+          <tr>
+            <th class="text-left">{{ _('Date') }}</th>
+            <th class="text-left">{{ _('Espèce / Lot') }}</th>
+            <th class="text-left">{{ _('Événement') }}</th>
+            <th class="text-left">{{ _('Produit / Dose') }}</th>
+            <th class="text-left">{{ _('Prochaine') }}</th>
+            <th class="text-right">{{ _('Coût') }}</th>
+            <th class="text-right">{{ _('Actions') }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for ev in events %}
+          <tr>
+            <td class="text-slate-500 whitespace-nowrap font-medium">{{ ev.event_date.strftime('%d/%m/%Y') }}</td>
+            <td>
+              <span class="font-bold text-slate-800">{{ ev.unit_icon() }} {{ ev.unit_name }}</span>
+              <span class="ml-1.5 text-[10px] text-slate-400 font-semibold uppercase tracking-wide">{{ ev.unit_label() }}</span>
+            </td>
+            <td>
+              {% set ev_val = ev.event_type.value if ev.event_type.value is defined else ev.event_type|string %}
+              {% if 'VACCINATION' in ev_val %}
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-200/60">
+                {{ ev.event_type_icon() }} {{ ev.event_type_label() }}
+              </span>
+              {% elif 'TREATMENT' in ev_val %}
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-brand-50 text-brand-700 border border-brand-200/60">
+                {{ ev.event_type_icon() }} {{ ev.event_type_label() }}
+              </span>
+              {% elif 'DEWORMING' in ev_val %}
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-cyan-50 text-cyan-700 border border-cyan-200/60">
+                {{ ev.event_type_icon() }} {{ ev.event_type_label() }}
+              </span>
+              {% elif 'INSPECTION' in ev_val %}
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200/60">
+                {{ ev.event_type_icon() }} {{ ev.event_type_label() }}
+              </span>
+              {% else %}
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-red-50 text-red-700 border border-red-200/60">
+                {{ ev.event_type_icon() }} {{ ev.event_type_label() }}
+              </span>
+              {% endif %}
+            </td>
+            <td class="text-slate-600 font-medium">
+              {{ ev.product_used or '—' }}
+              {% if ev.dose %}
+              <span class="text-xs text-slate-400"> · {{ ev.dose }}</span>
+              {% endif %}
+            </td>
+            <td class="text-slate-600 whitespace-nowrap">
+              {% if ev.next_due_date %}
+              {% set days = (ev.next_due_date - today).days %}
+              <span class="{{ 'text-red-600 font-extrabold' if days <= 3 else ('text-amber-600 font-bold' if days <= 7 else 'text-slate-500 font-medium') }}">
+                {{ ev.next_due_date.strftime('%d/%m/%Y') }}
+              </span>
+              {% if days <= 7 and days >= 0 %}
+              <span class="ml-1 text-[10px] {{ 'text-red-500' if days <= 3 else 'text-amber-500' }} font-bold">({{ days }}j)</span>
+              {% endif %}
+              {% else %}—{% endif %}
+            </td>
+            <td class="text-right font-semibold text-slate-700 whitespace-nowrap">
+              {% if ev.cost_xaf %}{{ '{:,.0f}'.format(ev.cost_float) }}{% else %}<span class="text-slate-300">—</span>{% endif %}
+            </td>
+            <td class="text-right">
+              <div class="flex items-center justify-end gap-2">
+                <a href="{{ url_for('health.edit_event', event_id=ev.id) }}"
+                   class="p-1.5 rounded-lg text-slate-400 hover:text-brand-600 hover:bg-brand-50 transition-colors"
+                   title="{{ _('Modifier') }}">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                  </svg>
+                </a>
+                <form method="post" action="{{ url_for('health.delete_event', event_id=ev.id) }}"
+                      onsubmit="return confirm('{{ _('Supprimer cet événement ?') }}')">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                  <button type="submit"
+                          class="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                          title="{{ _('Supprimer') }}">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                    </svg>
+                  </button>
+                </form>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    {{ empty_state('🩺', _('Aucun événement de santé'), _('Enregistrez vaccinations, traitements et inspections vétérinaires pour chaque espèce.'), url_for('health.create_event'), _('Enregistrer le premier événement')) }}
+    {% endif %}
+  </div>
+
+</div>
+{% endblock %}

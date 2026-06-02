@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% from 'macros.html' import status_badge, empty_state, stat_card %}
+{% block title %}{{ _('Cuniculture') }}{% endblock %}
+{% block page_title %}{{ _('Cuniculture') }}{% endblock %}
+
+{% block content %}
+
+{# ── Page header ── #}
+<div class="page-hero px-6 py-5 mb-7 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+  <div class="flex items-center gap-4">
+    <div class="w-13 h-13 rounded-2xl icon-bg-orange flex items-center justify-center text-2xl shadow-card stat-icon-box flex-shrink-0">🐇</div>
+    <div>
+      <h1 class="text-2xl font-extrabold text-slate-900">{{ _('Cuniculture') }}</h1>
+      <p class="text-sm text-slate-500 mt-0.5 font-medium">{{ _('Gestion des lapins et suivi de production') }}</p>
+    </div>
+  </div>
+  <a href="{{ url_for('cuniculture.create_batch') }}"
+     class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-white text-sm font-bold btn-premium-primary">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
+    </svg>
+    {{ _('Nouveau lot') }}
+  </a>
+</div>
+
+{% if batches %}
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-7">
+  {{ stat_card(_('Lots'), batches|length, '🏠', 'bg-stat-orange') }}
+  {{ stat_card(_('Actifs'), batches|selectattr('status.value', 'equalto', 'active')|list|length, '✅', 'bg-stat-brand') }}
+  {{ stat_card(_('Total saisies'), batches|sum(attribute='record_count'), '📋', 'bg-stat-slate') }}
+  {{ stat_card(_('Lapereaux nés'), batches|sum(attribute='total_kits_born'), '🐣', 'bg-stat-orange') }}
+</div>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+  {% for batch in batches %}
+  <div class="bg-white rounded-2xl shadow-card border border-slate-100 card-inset hover:shadow-card-md hover-glow-orange transition-all duration-250 flex flex-col">
+    <div class="p-6 flex-1">
+      <div class="flex items-start justify-between mb-4">
+        <div class="flex-1 min-w-0 mr-3">
+          <h3 class="text-base font-bold text-slate-800 truncate">{{ batch.name }}</h3>
+          <p class="text-xs text-slate-500 mt-0.5 font-medium">{{ batch.breed or _('Race non précisée') }}</p>
+        </div>
+        {% if batch.status.value == 'active' %}{{ status_badge('active', _('Actif')) }}
+        {% elif batch.status.value == 'sold' %}{{ status_badge('sold', _('Vendu')) }}
+        {% else %}{{ status_badge('deceased', _('Décédé')) }}{% endif %}
+      </div>
+
+      <div class="grid grid-cols-3 gap-2 mb-4">
+        <div class="swatch-slate text-center p-2.5 rounded-xl border border-slate-100">
+          <p class="text-lg font-extrabold text-slate-700">{{ batch.initial_count }}</p>
+          <p class="text-[10px] text-slate-400 leading-tight font-semibold">{{ _('Initial') }}</p>
+        </div>
+        <div class="swatch-orange text-center p-2.5 rounded-xl border border-orange-100 dark:border-orange-900/40">
+          <p class="text-lg font-extrabold text-orange-600 dark:text-orange-400">{{ batch.total_kits_born }}</p>
+          <p class="text-[10px] text-slate-400 leading-tight font-semibold">{{ _('Lapereaux') }}</p>
+        </div>
+        <div class="swatch-red text-center p-2.5 rounded-xl border border-red-100 dark:border-red-900/40">
+          <p class="text-lg font-extrabold text-red-600 dark:text-red-400">{{ batch.total_mortality }}</p>
+          <p class="text-[10px] text-slate-400 leading-tight font-semibold">{{ _('Morts') }}</p>
+        </div>
+      </div>
+
+      <p class="text-xs text-slate-400 font-medium">
+        ♀ {{ batch.female_count }} · ♂ {{ batch.male_count }}
+        {% if batch.age_days is not none %} · {{ batch.age_days }} {{ _('jours') }}{% endif %}
+      </p>
+      {% if batch.latest_record %}
+      <p class="text-xs text-slate-400 mt-0.5 font-medium">{{ _('Dernière saisie :') }} <span class="font-bold text-slate-600">{{ batch.latest_record.record_date.strftime('%d/%m/%Y') }}</span></p>
+      {% else %}
+      <p class="text-xs text-slate-400 italic mt-0.5 font-medium">{{ _('Aucune saisie') }}</p>
+      {% endif %}
+    </div>
+    <div class="px-6 py-4 border-t border-slate-100 flex items-center gap-3">
+      <a href="{{ url_for('cuniculture.batch_detail', batch_id=batch.id) }}"
+         class="flex-1 text-center text-xs font-bold text-brand-700 hover:text-brand-900 transition-colors">{{ _('Détails & saisies') }}</a>
+      <span class="w-px h-4 bg-slate-200"></span>
+      <a href="{{ url_for('cuniculture.add_record', batch_id=batch.id) }}"
+         class="flex-1 text-center text-xs font-bold text-orange-600 hover:text-orange-800 transition-colors">+ {{ _('Saisie') }}</a>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% else %}
+{{ empty_state('🐇', _('Aucun lot de lapins'),
+   _('Commencez par enregistrer votre premier lot de lapins.'),
+   url_for('cuniculture.create_batch'), _('Créer un lot')) }}
+{% endif %}
+{% endblock %}
