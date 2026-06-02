@@ -78,8 +78,8 @@
 
       {# Thumbnail #}
       <div class="w-36 sm:w-48 flex-shrink-0 relative overflow-hidden bg-slate-100" style="min-height:96px;">
-        {% if slide.image_filename %}
-        <img src="{{ url_for('static', filename='uploads/carousel/' + slide.image_filename) }}"
+        {% if slide.image_id %}
+        <img src="{{ url_for('marketplace.serve_image', file_id=slide.image_id) }}"
              alt="{{ slide.title }}"
              class="w-full h-full object-cover absolute inset-0">
         {% else %}

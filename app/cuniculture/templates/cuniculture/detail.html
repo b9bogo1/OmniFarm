@@ -24,7 +24,7 @@
         </div>
         <p class="text-sm text-slate-500 font-medium">{{ batch.breed or _('Race non précisée') }}</p>
         <p class="text-xs text-slate-400 mt-0.5 font-medium">
-          {{ _('Acquis le :') }} {{ batch.acquisition_date.strftime('%d/%m/%Y') }}
+          {{ _('Acquis le :') }} {{ batch.acquisition_date.strftime('%d/%m/%Y') if batch.acquisition_date else '—' }}
           · ♀ {{ batch.female_count }} ♂ {{ batch.male_count }}
         </p>
       </div>

@@ -1,7 +1,9 @@
 import logging
 from datetime import datetime, timezone, timedelta
 
-from flask import render_template, redirect, url_for, flash, request, abort, jsonify
+import gridfs
+from bson import ObjectId
+from flask import render_template, redirect, url_for, flash, request, abort, jsonify, Response
 from flask_login import current_user, login_required
 from flask_babel import gettext as _
 
@@ -24,6 +26,23 @@ from .gateways import (
 )
 
 logger = logging.getLogger(__name__)
+
+
+# ── GridFS image serving ─────────────────────────────────────────────────────
+
+@marketplace_bp.route('/images/<file_id>')
+def serve_image(file_id):
+    from app.extensions import mongo
+    try:
+        fs = gridfs.GridFS(mongo.db)
+        grid_out = fs.get(ObjectId(file_id))
+        return Response(
+            grid_out.read(),
+            mimetype=grid_out.content_type or 'image/jpeg',
+            headers={'Cache-Control': 'public, max-age=86400'},
+        )
+    except Exception:
+        abort(404)
 
 
 # ── Public product catalog ───────────────────────────────────────────────────
@@ -278,10 +297,10 @@ def admin_products():
 def admin_create_product():
     form = ProductForm()
     if form.validate_on_submit():
-        image_filename = None
+        image_id = None
         if form.image.data and form.image.data.filename:
             try:
-                image_filename = save_product_image(form.image.data)
+                image_id = save_product_image(form.image.data)
             except ValueError as exc:
                 flash(str(exc), 'danger')
                 return render_template('marketplace/admin/product_form.html',
@@ -294,7 +313,7 @@ def admin_create_product():
             unit=form.unit.data.strip(),
             stock_quantity=form.stock_quantity.data or 0.0,
             is_available=form.is_available.data,
-            image_filename=image_filename,
+            image_id=image_id,
             created_by_id=current_user.id,
         )
         product.save()
@@ -312,8 +331,8 @@ def admin_edit_product(product_id):
     if form.validate_on_submit():
         if form.image.data and form.image.data.filename:
             try:
-                product.image_filename = save_product_image(
-                    form.image.data, old_filename=product.image_filename
+                product.image_id = save_product_image(
+                    form.image.data, old_file_id=product.image_id
                 )
             except ValueError as exc:
                 flash(str(exc), 'danger')
@@ -321,9 +340,9 @@ def admin_edit_product(product_id):
                 return render_template('marketplace/admin/product_form.html',
                                        form=form, product=product,
                                        title=_('Modifier le produit'), is_edit=True)
-        elif form.remove_image.data and product.image_filename:
-            delete_product_image(product.image_filename)
-            product.image_filename = None
+        elif form.remove_image.data and product.image_id:
+            delete_product_image(product.image_id)
+            product.image_id = None
 
         product.name           = form.name.data.strip()
         product.description    = form.description.data or None
@@ -345,7 +364,7 @@ def admin_edit_product(product_id):
 def admin_delete_product(product_id):
     product = Product.get_by_id(product_id) or abort(404)
     name    = product.name
-    delete_product_image(product.image_filename)
+    delete_product_image(product.image_id)
     product.delete()
     flash(_('Produit « %(name)s » supprimé.', name=name), 'success')
     return redirect(url_for('marketplace.admin_products'))
@@ -425,10 +444,10 @@ def admin_carousel():
 def admin_create_slide():
     form = CarouselSlideForm()
     if form.validate_on_submit():
-        image_filename = None
+        image_id = None
         if form.image.data and form.image.data.filename:
             try:
-                image_filename = save_carousel_image(form.image.data)
+                image_id = save_carousel_image(form.image.data)
             except ValueError as exc:
                 flash(str(exc), 'danger')
                 return render_template('marketplace/admin/carousel_form.html',
@@ -440,7 +459,7 @@ def admin_create_slide():
             cta_url=form.cta_url.data or '#products',
             is_active=form.is_active.data,
             sort_order=form.sort_order.data or 0,
-            image_filename=image_filename,
+            image_id=image_id,
             created_by_id=current_user.id,
         )
         slide.save()
@@ -458,16 +477,16 @@ def admin_edit_slide(slide_id):
     if form.validate_on_submit():
         if form.image.data and form.image.data.filename:
             try:
-                slide.image_filename = save_carousel_image(
-                    form.image.data, old_filename=slide.image_filename
+                slide.image_id = save_carousel_image(
+                    form.image.data, old_file_id=slide.image_id
                 )
             except ValueError as exc:
                 flash(str(exc), 'danger')
                 return render_template('marketplace/admin/carousel_form.html',
                                        form=form, slide=slide, title=_('Modifier le slide'))
-        elif form.remove_image.data and slide.image_filename:
-            delete_carousel_image(slide.image_filename)
-            slide.image_filename = None
+        elif form.remove_image.data and slide.image_id:
+            delete_carousel_image(slide.image_id)
+            slide.image_id = None
 
         slide.title      = form.title.data.strip()
         slide.subtitle   = form.subtitle.data or None
@@ -487,7 +506,7 @@ def admin_edit_slide(slide_id):
 def admin_delete_slide(slide_id):
     slide = CarouselSlide.get_by_id(slide_id) or abort(404)
     title = slide.title
-    delete_carousel_image(slide.image_filename)
+    delete_carousel_image(slide.image_id)
     slide.delete()
     flash(_('Slide « %(t)s » supprimé.', t=title), 'success')
     return redirect(url_for('marketplace.admin_carousel'))
@@ -651,8 +670,8 @@ def search():
             'price_xaf':      float(p.price_xaf),
             'unit':           p.unit,
             'stock_quantity': p.stock_quantity,
-            'image_url':      url_for('static', filename=f'uploads/products/{p.image_filename}')
-                              if p.image_filename else None,
+            'image_url':      url_for('marketplace.serve_image', file_id=str(p.image_id))
+                              if p.image_id else None,
             'add_cart_url':   url_for('marketplace.cart_add'),
             'detail_url':     url_for('marketplace.product_detail', product_id=p.id),
         }

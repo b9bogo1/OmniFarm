@@ -18,7 +18,7 @@ class Pond:
         self.species           = doc.get('species', '')
         self.capacity_m3       = doc.get('capacity_m3')
         _s = doc.get('status', PondStatus.ACTIVE.value)
-        self.status = PondStatus(_s) if isinstance(_s, str) else _s
+        self.status = PondStatus(_s.lower()) if isinstance(_s, str) else _s
         self.installation_date = dt_to_date(doc.get('installation_date'))
         self.notes             = doc.get('notes')
         self.created_at        = doc.get('created_at', datetime.now(timezone.utc))

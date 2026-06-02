@@ -20,7 +20,7 @@ class Flock:
         self.initial_count  = doc.get('initial_count', 0)
         self.house_number   = doc.get('house_number')
         _s = doc.get('status', FlockStatus.ACTIVE.value)
-        self.status = FlockStatus(_s) if isinstance(_s, str) else _s
+        self.status = FlockStatus(_s.lower()) if isinstance(_s, str) else _s
         self.notes          = doc.get('notes')
         self.created_at     = doc.get('created_at', datetime.now(timezone.utc))
         self._record_count   = None

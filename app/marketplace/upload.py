@@ -1,12 +1,14 @@
 """
-Product image upload helper.
+Product and carousel image upload helper.
 
-Handles validation, Pillow resize (cover-crop to PRODUCT_IMAGE_SIZE),
-and disk I/O for the product photo feature.
+Images are stored in MongoDB GridFS (default 'fs' bucket).
+Save functions return a GridFS file ID (str of ObjectId).
+Delete functions accept that same ID string.
 """
-import os
-import uuid
+import io
+from bson import ObjectId
 
+import gridfs
 from PIL import Image, ImageOps
 from flask import current_app
 
@@ -18,27 +20,29 @@ def _allowed(filename: str) -> bool:
     return ext in ALLOWED_EXTENSIONS
 
 
-def save_product_image(file_storage, old_filename: str | None = None) -> str:
+def _get_fs():
+    from app.extensions import mongo
+    return gridfs.GridFS(mongo.db)
+
+
+def save_product_image(file_storage, old_file_id: str | None = None) -> str:
     """
-    Validate, resize, and persist an uploaded image file.
+    Validate, resize, and store a product image in GridFS.
 
     - Enforces ALLOWED_EXTENSIONS and PRODUCT_IMAGE_MAX_BYTES.
     - Crops the image to PRODUCT_IMAGE_SIZE (cover strategy, no distortion).
-    - Saves as JPEG quality=85 with a UUID-based filename.
-    - Deletes old_filename from disk when replacing an existing image.
+    - Saves as JPEG quality=85.
+    - Deletes old_file_id from GridFS when replacing an existing image.
 
-    Returns the new filename (basename only).
+    Returns the new GridFS file ID as a string.
     Raises ValueError with a user-facing message on any validation error.
     """
     if not file_storage or not getattr(file_storage, 'filename', ''):
         raise ValueError('Aucun fichier sélectionné.')
 
     if not _allowed(file_storage.filename):
-        raise ValueError(
-            'Format non supporté. Utilisez JPG, PNG ou WebP.'
-        )
+        raise ValueError('Format non supporté. Utilisez JPG, PNG ou WebP.')
 
-    # Check file size before fully reading the stream
     file_storage.seek(0, 2)
     size_bytes = file_storage.tell()
     file_storage.seek(0)
@@ -50,7 +54,6 @@ def save_product_image(file_storage, old_filename: str | None = None) -> str:
             f"Image trop volumineuse (max {max_mb} Mo, reçu {size_bytes // 1024} Ko)."
         )
 
-    # Open, convert to RGB (handles PNG/WebP transparency), cover-crop
     target = current_app.config.get('PRODUCT_IMAGE_SIZE', (400, 400))
     try:
         img = Image.open(file_storage.stream)
@@ -59,28 +62,22 @@ def save_product_image(file_storage, old_filename: str | None = None) -> str:
     except Exception:
         raise ValueError('Impossible de lire le fichier image. Vérifiez que le fichier est valide.')
 
-    # Persist with unique name
-    new_filename = f"{uuid.uuid4().hex}.jpg"
-    upload_folder = current_app.config['UPLOAD_FOLDER']
-    os.makedirs(upload_folder, exist_ok=True)
-    img.save(
-        os.path.join(upload_folder, new_filename),
-        'JPEG',
-        quality=85,
-        optimize=True,
-    )
+    buf = io.BytesIO()
+    img.save(buf, 'JPEG', quality=85, optimize=True)
+    buf.seek(0)
 
-    # Remove the old image file if we're replacing it
-    if old_filename:
-        _delete_file(old_filename, upload_folder)
+    fs = _get_fs()
+    if old_file_id:
+        _delete_from_gridfs(old_file_id, fs)
 
-    return new_filename
+    file_id = fs.put(buf, content_type='image/jpeg', metadata={'type': 'product'})
+    return str(file_id)
 
 
-def save_carousel_image(file_storage, old_filename: str | None = None) -> str:
+def save_carousel_image(file_storage, old_file_id: str | None = None) -> str:
     """
-    Validate, resize (1400×700 landscape cover-crop), and persist a carousel image.
-    Returns the new filename. Raises ValueError on validation error.
+    Validate, resize (1400×700 landscape cover-crop), and store in GridFS.
+    Returns the new file ID. Raises ValueError on validation error.
     """
     if not file_storage or not getattr(file_storage, 'filename', ''):
         raise ValueError('Aucun fichier sélectionné.')
@@ -105,37 +102,34 @@ def save_carousel_image(file_storage, old_filename: str | None = None) -> str:
     except Exception:
         raise ValueError('Impossible de lire le fichier image. Vérifiez que le fichier est valide.')
 
-    new_filename = f"carousel_{uuid.uuid4().hex}.jpg"
-    upload_folder = current_app.config['CAROUSEL_UPLOAD_FOLDER']
-    os.makedirs(upload_folder, exist_ok=True)
-    img.save(os.path.join(upload_folder, new_filename), 'JPEG', quality=88, optimize=True)
+    buf = io.BytesIO()
+    img.save(buf, 'JPEG', quality=88, optimize=True)
+    buf.seek(0)
 
-    if old_filename:
-        _delete_file(old_filename, upload_folder)
+    fs = _get_fs()
+    if old_file_id:
+        _delete_from_gridfs(old_file_id, fs)
 
-    return new_filename
+    file_id = fs.put(buf, content_type='image/jpeg', metadata={'type': 'carousel'})
+    return str(file_id)
 
 
-def delete_carousel_image(filename: str | None) -> None:
-    """Remove a carousel image from disk. Silently ignores missing files."""
-    if not filename:
+def delete_product_image(file_id: str | None) -> None:
+    """Remove a product image from GridFS. Silently ignores missing files."""
+    if not file_id:
         return
-    folder = current_app.config.get('CAROUSEL_UPLOAD_FOLDER', '')
-    _delete_file(filename, folder)
+    _delete_from_gridfs(file_id, _get_fs())
 
 
-def delete_product_image(filename: str | None) -> None:
-    """Remove a product image from disk. Silently ignores missing files."""
-    if not filename:
+def delete_carousel_image(file_id: str | None) -> None:
+    """Remove a carousel image from GridFS. Silently ignores missing files."""
+    if not file_id:
         return
-    upload_folder = current_app.config.get('UPLOAD_FOLDER', '')
-    _delete_file(filename, upload_folder)
+    _delete_from_gridfs(file_id, _get_fs())
 
 
-def _delete_file(filename: str, folder: str) -> None:
+def _delete_from_gridfs(file_id: str, fs) -> None:
     try:
-        path = os.path.join(folder, filename)
-        if os.path.isfile(path):
-            os.remove(path)
-    except OSError:
+        fs.delete(ObjectId(file_id))
+    except Exception:
         pass

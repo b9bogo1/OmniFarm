@@ -43,12 +43,12 @@ class Product:
         self.name           = doc.get('name', '')
         self.description    = doc.get('description')
         _c = doc.get('category', ProductCategory.OTHER.value)
-        self.category = ProductCategory(_c) if isinstance(_c, str) else _c
+        self.category = ProductCategory(_c.lower()) if isinstance(_c, str) else _c
         self.price_xaf      = float(doc.get('price_xaf', 0))
         self.unit           = doc.get('unit', 'kg')
         self.stock_quantity = float(doc.get('stock_quantity', 0.0))
         self.is_available   = doc.get('is_available', True)
-        self.image_filename = doc.get('image_filename')
+        self.image_id       = doc.get('image_id')
         self.created_at     = doc.get('created_at', datetime.now(timezone.utc))
         self.created_by_id  = doc.get('created_by_id')
 
@@ -104,7 +104,7 @@ class Product:
             'unit':           self.unit,
             'stock_quantity': float(self.stock_quantity),
             'is_available':   self.is_available,
-            'image_filename': self.image_filename,
+            'image_id':       self.image_id,
             'created_at':     self.created_at,
             'created_by_id':  self.created_by_id,
         }
@@ -171,11 +171,11 @@ class Payment:
     def __init__(self, doc=None, **kw):
         doc = {**(doc or {}), **kw}
         _m = doc.get('method', PaymentMethod.CASH_ON_DELIVERY.value)
-        self.method = PaymentMethod(_m) if isinstance(_m, str) else _m
+        self.method = PaymentMethod(_m.lower()) if isinstance(_m, str) else _m
         self.phone_number = doc.get('phone_number')
         self.amount_xaf   = float(doc.get('amount_xaf', 0))
         _ps = doc.get('status', PaymentStatus.PENDING.value)
-        self.status = PaymentStatus(_ps) if isinstance(_ps, str) else _ps
+        self.status = PaymentStatus(_ps.lower()) if isinstance(_ps, str) else _ps
         self.gateway_reference = doc.get('gateway_reference')
         self.gateway_response  = doc.get('gateway_response')
         self.initiated_at      = doc.get('initiated_at', datetime.now(timezone.utc))
@@ -241,9 +241,9 @@ class Order:
         self.customer_phone  = doc.get('customer_phone', '')
         self.customer_address = doc.get('customer_address')
         _s = doc.get('status', OrderStatus.PENDING.value)
-        self.status = OrderStatus(_s) if isinstance(_s, str) else _s
+        self.status = OrderStatus(_s.lower()) if isinstance(_s, str) else _s
         _pm = doc.get('payment_method')
-        self.payment_method = PaymentMethod(_pm) if isinstance(_pm, str) and _pm else _pm
+        self.payment_method = PaymentMethod(_pm.lower()) if isinstance(_pm, str) and _pm else _pm
         self.total_xaf       = float(doc.get('total_xaf', 0))
         self.notes           = doc.get('notes')
         self.created_at      = doc.get('created_at', datetime.now(timezone.utc))
@@ -389,7 +389,7 @@ class CarouselSlide:
         object.__setattr__(self, '_id', doc.get('_id'))
         self.title          = doc.get('title', '')
         self.subtitle       = doc.get('subtitle')
-        self.image_filename = doc.get('image_filename')
+        self.image_id       = doc.get('image_id')
         self.cta_text       = doc.get('cta_text')
         self.cta_url        = doc.get('cta_url', '#products')
         self.is_active      = doc.get('is_active', True)
@@ -419,7 +419,7 @@ class CarouselSlide:
         return {
             'title':          self.title,
             'subtitle':       self.subtitle,
-            'image_filename': self.image_filename,
+            'image_id':       self.image_id,
             'cta_text':       self.cta_text,
             'cta_url':        self.cta_url,
             'is_active':      self.is_active,

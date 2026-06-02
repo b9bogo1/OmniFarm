@@ -133,7 +133,7 @@
         <tbody>
           {% for e in entries %}
           <tr>
-            <td class="text-slate-500 whitespace-nowrap font-medium">{{ e.entry_date.strftime('%d/%m/%Y') }}</td>
+            <td class="text-slate-500 whitespace-nowrap font-medium">{{ e.entry_date.strftime('%d/%m/%Y') if e.entry_date else '—' }}</td>
             <td>
               <span class="font-semibold text-slate-800">{{ e.description }}</span>
               {% if e.reference_number %}

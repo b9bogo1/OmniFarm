@@ -66,8 +66,8 @@
     <div class="c-slide absolute inset-0 {{ 'c-active' if loop.first else '' }}"
          data-index="{{ loop.index0 }}" aria-hidden="{{ 'false' if loop.first else 'true' }}">
 
-      {% if s.image_filename %}
-      <img src="{{ url_for('static', filename='uploads/carousel/' + s.image_filename) }}"
+      {% if s.image_id %}
+      <img src="{{ url_for('marketplace.serve_image', file_id=s.image_id) }}"
            alt="{{ s.title }}"
            class="absolute inset-0 w-full h-full object-cover"
            loading="{{ 'eager' if loop.first else 'lazy' }}" />
@@ -376,8 +376,8 @@
        data-desc="{{ (product.description or '') | lower }}">
 
     <div class="h-52 relative overflow-hidden flex-shrink-0">
-      {% if product.image_filename %}
-      <img src="{{ url_for('static', filename='uploads/products/' + product.image_filename) }}"
+      {% if product.image_id %}
+      <img src="{{ url_for('marketplace.serve_image', file_id=product.image_id) }}"
            alt="{{ product.name }}"
            loading="lazy"
            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">

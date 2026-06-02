@@ -24,7 +24,7 @@
         </div>
         <p class="text-sm text-slate-500 font-medium">{{ flock.species }}{% if flock.breed %} · {{ flock.breed }}{% endif %}</p>
         <p class="text-xs text-slate-400 mt-0.5 font-medium">
-          {{ _('Mise en place :') }} {{ flock.placement_date.strftime('%d/%m/%Y') }}
+          {{ _('Mise en place :') }} {{ flock.placement_date.strftime('%d/%m/%Y') if flock.placement_date else '—' }}
           {% if flock.house_number %} · {{ flock.house_number }}{% endif %}
         </p>
       </div>

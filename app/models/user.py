@@ -20,7 +20,7 @@ class User(UserMixin):
         self.email      = doc.get('email', '')
         self.password_hash = doc.get('password_hash', '')
         _role = doc.get('role', UserRole.CLIENT.value)
-        self.role = UserRole(_role) if isinstance(_role, str) else _role
+        self.role = UserRole(_role.lower()) if isinstance(_role, str) else _role
         self._is_active = doc.get('is_active', True)
         self.language   = doc.get('language', 'fr')
         self.theme      = doc.get('theme', 'light')

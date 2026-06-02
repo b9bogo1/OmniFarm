@@ -64,9 +64,9 @@
         <div class="flex-shrink-0">
           <div id="img-preview-wrap"
                class="w-48 h-24 rounded-xl border-2 border-slate-200 overflow-hidden bg-slate-50 flex items-center justify-center relative">
-            {% if slide and slide.image_filename %}
+            {% if slide and slide.image_id %}
             <img id="img-preview"
-                 src="{{ url_for('static', filename='uploads/carousel/' + slide.image_filename) }}"
+                 src="{{ url_for('marketplace.serve_image', file_id=slide.image_id) }}"
                  alt="{{ slide.title }}"
                  class="w-full h-full object-cover">
             {% else %}
@@ -108,7 +108,7 @@
             {% endfor %}
           </div>
 
-          {% if slide and slide.image_filename %}
+          {% if slide and slide.image_id %}
           <div class="flex items-center gap-2 p-3 rounded-xl border border-amber-200 bg-amber-50">
             <label class="flex items-center gap-2 cursor-pointer select-none">
               {{ form.remove_image(class='w-4 h-4 rounded accent-amber-500') }}

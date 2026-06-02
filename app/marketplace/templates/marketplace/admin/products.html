@@ -89,8 +89,8 @@
         <td class="px-5 py-4">
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0 bg-slate-100 border border-slate-200">
-              {% if product.image_filename %}
-              <img src="{{ url_for('static', filename='uploads/products/' + product.image_filename) }}"
+              {% if product.image_id %}
+              <img src="{{ url_for('marketplace.serve_image', file_id=product.image_id) }}"
                    alt="{{ product.name }}"
                    class="w-full h-full object-cover">
               {% else %}

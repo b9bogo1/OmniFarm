@@ -20,7 +20,7 @@ class RabbitBatch:
         self.female_count     = doc.get('female_count', 0)
         self.male_count       = doc.get('male_count', 0)
         _s = doc.get('status', RabbitStatus.ACTIVE.value)
-        self.status = RabbitStatus(_s) if isinstance(_s, str) else _s
+        self.status = RabbitStatus(_s.lower()) if isinstance(_s, str) else _s
         self.notes            = doc.get('notes')
         self.created_at       = doc.get('created_at', datetime.now(timezone.utc))
         self._record_count    = None

@@ -890,6 +890,10 @@ msgstr "No account yet?"
 msgid "Créer un compte gratuit"
 msgstr "Create a free account"
 
+#: app/auth/templates/auth/login.html:196
+msgid "Parcourir la boutique"
+msgstr "Browse the shop"
+
 #: app/auth/templates/auth/register.html:69
 msgid "Rejoignez"
 msgstr "Join"

@@ -47,7 +47,7 @@ def _product_dict(p: Product) -> dict:
         'unit':           p.unit,
         'stock_quantity': p.stock_quantity,
         'is_available':   p.is_available,
-        'image_url':      f'/static/uploads/products/{p.image_filename}' if p.image_filename else None,
+        'image_url':      f'/marketplace/images/{p.image_id}' if p.image_id else None,
         'created_at':     p.created_at.isoformat() if p.created_at else None,
     }
 

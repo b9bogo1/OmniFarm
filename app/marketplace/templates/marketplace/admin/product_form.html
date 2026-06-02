@@ -58,9 +58,9 @@
         <div class="flex-shrink-0">
           <div id="img-preview-wrap"
                class="w-32 h-32 rounded-2xl border-2 border-slate-200 overflow-hidden bg-slate-50 flex items-center justify-center relative">
-            {% if product and product.image_filename %}
+            {% if product and product.image_id %}
             <img id="img-preview"
-                 src="{{ url_for('static', filename='uploads/products/' + product.image_filename) }}"
+                 src="{{ url_for('marketplace.serve_image', file_id=product.image_id) }}"
                  alt="{{ product.name }}"
                  class="w-full h-full object-cover">
             {% else %}
@@ -106,7 +106,7 @@
           </div>
 
           {# Remove current image (edit mode only) #}
-          {% if product and product.image_filename %}
+          {% if product and product.image_id %}
           <div class="flex items-center gap-2 p-3 rounded-xl border border-amber-200 bg-amber-50">
             <label class="flex items-center gap-2 cursor-pointer select-none">
               {{ form.remove_image(class='w-4 h-4 rounded accent-amber-500', id='remove_image_cb') }}
