@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{{ _('Connexion') }} — OmniFarm Hub</title>
+  <title>{{ _('Connexion') }} — {% if origin == 'shop' %}OmniFarm Boutique{% else %}OmniFarm Hub{% endif %}</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/fonts.css') }}" />
   <script src="{{ url_for('static', filename='js/tailwind.js') }}"></script>
   <script>
@@ -25,6 +25,7 @@
   </style>
 </head>
 <body class="h-full antialiased">
+{% set from_shop = origin == 'shop' %}
 
 {# Language toggle #}
 <div class="absolute top-5 right-6 z-20 lang-pill">
@@ -64,26 +65,48 @@
       </div>
 
       <h1 class="text-4xl xl:text-5xl font-extrabold text-white leading-tight mb-5">
-        {{ _('Gérez votre ferme') }}<br/>
-        <span style="background:linear-gradient(135deg,#fbbf24,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
-          {{ _('en toute intelligence.') }}
-        </span>
+        {% if from_shop %}
+          {{ _('Vos produits frais,') }}<br/>
+          <span style="background:linear-gradient(135deg,#fbbf24,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
+            {{ _('livrés chez vous.') }}
+          </span>
+        {% else %}
+          {{ _('Gérez votre ferme') }}<br/>
+          <span style="background:linear-gradient(135deg,#fbbf24,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
+            {{ _('en toute intelligence.') }}
+          </span>
+        {% endif %}
       </h1>
       <p class="text-white/55 text-lg leading-relaxed max-w-md">
-        {{ _('Plateforme centralisée pour la gestion multi-espèces, le suivi des opérations agricoles et la commercialisation directe de vos produits.') }}
+        {% if from_shop %}
+          {{ _('Poissons frais, volailles, lapins et œufs directement de notre ferme. Commandez facilement et payez par Mobile Money ou à la livraison.') }}
+        {% else %}
+          {{ _('Plateforme centralisée pour la gestion multi-espèces, le suivi des opérations agricoles et la commercialisation directe de vos produits.') }}
+        {% endif %}
       </p>
     </div>
 
     {# Module badges #}
     <div class="relative fade-in-up-1">
-      <p class="text-white/30 text-[11px] font-bold uppercase tracking-widest mb-4">{{ _('Modules actifs') }}</p>
+      <p class="text-white/30 text-[11px] font-bold uppercase tracking-widest mb-4">
+        {% if from_shop %}{{ _('Nos produits') }}{% else %}{{ _('Modules actifs') }}{% endif %}
+      </p>
       <div class="flex flex-wrap gap-2">
-        {% for label, icon in [(_('Aquaculture'), '🐟'), (_('Aviculture'), '🐔'), (_('Cuniculture'), '🐇'), (_('Marché'), '🛒'), (_('IoT & Capteurs'), '📡')] %}
-        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-white/65 text-xs font-semibold"
-              style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);">
-          <span>{{ icon }}</span> {{ label }}
-        </span>
-        {% endfor %}
+        {% if from_shop %}
+          {% for label, icon in [(_('Poisson frais'), '🐟'), (_('Volaille'), '🐔'), (_('Lapin'), '🐇'), (_('Œufs frais'), '🥚'), (_('Livraison rapide'), '🚚')] %}
+          <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-white/65 text-xs font-semibold"
+                style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);">
+            <span>{{ icon }}</span> {{ label }}
+          </span>
+          {% endfor %}
+        {% else %}
+          {% for label, icon in [(_('Aquaculture'), '🐟'), (_('Aviculture'), '🐔'), (_('Cuniculture'), '🐇'), (_('Marché'), '🛒'), (_('IoT & Capteurs'), '📡')] %}
+          <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-white/65 text-xs font-semibold"
+                style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);">
+            <span>{{ icon }}</span> {{ label }}
+          </span>
+          {% endfor %}
+        {% endif %}
       </div>
     </div>
   </div>
@@ -108,7 +131,9 @@
 
         <div class="mb-7">
           <h2 class="text-2xl font-extrabold text-slate-900 leading-tight">{{ _('Bienvenue') }}</h2>
-          <p class="mt-1.5 text-sm text-slate-500 font-medium">{{ _('Connectez-vous à votre espace de gestion.') }}</p>
+          <p class="mt-1.5 text-sm text-slate-500 font-medium">
+            {% if from_shop %}{{ _('Connectez-vous pour commander et suivre vos livraisons.') }}{% else %}{{ _('Connectez-vous à votre espace de gestion.') }}{% endif %}
+          </p>
         </div>
 
         {# Flash messages #}
@@ -132,6 +157,8 @@
         {# Login form #}
         <form method="POST" action="{{ url_for('auth.login') }}" novalidate class="space-y-5">
           {{ form.hidden_tag() }}
+          {% if origin %}<input type="hidden" name="origin" value="{{ origin }}">{% endif %}
+          {% if request.args.get('next') %}<input type="hidden" name="next" value="{{ request.args.get('next') }}">{% endif %}
 
           {# Username #}
           <div class="space-y-1.5">
@@ -140,7 +167,7 @@
             </label>
             {{ form.username(
                 class="w-full px-4 py-2.5 rounded-xl border text-sm text-slate-800 bg-white/70 placeholder-slate-400 transition focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 " + ("border-red-400" if form.username.errors else "border-slate-200"),
-                placeholder=_('admin ou admin@omnifarm.local'),
+                placeholder=_('Votre email ou nom d\'utilisateur') if from_shop else _('admin ou admin@omnifarm.local'),
                 autocomplete="username",
                 autofocus=true
             ) }}
@@ -198,7 +225,7 @@
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
         </svg>
-        {{ _('Parcourir la boutique') }}
+        {% if from_shop %}{{ _('Continuer sans connexion') }}{% else %}{{ _('Parcourir la boutique') }}{% endif %}
       </a>
 
       <p class="mt-4 text-center text-xs text-slate-400 font-medium">

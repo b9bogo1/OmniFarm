@@ -17,6 +17,8 @@ def login():
         return redirect(url_for('main.dashboard'))
 
     form = LoginForm()
+    origin = request.values.get('origin', '')
+
     if form.validate_on_submit():
         identifier = form.username.data.strip()
         user = User.find_by_username_or_email(identifier)
@@ -24,12 +26,14 @@ def login():
         if user and user.is_active and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
             user.touch_last_login()
-            next_page = request.args.get('next')
-            return redirect(next_page or url_for('main.dashboard'))
+            next_page = request.args.get('next') or request.form.get('next')
+            if not next_page:
+                next_page = url_for('marketplace.index') if origin == 'shop' else url_for('main.dashboard')
+            return redirect(next_page)
 
         flash(_('Identifiants incorrects ou compte désactivé. Veuillez réessayer.'), 'danger')
 
-    return render_template('auth/login.html', form=form, title=_('Connexion'))
+    return render_template('auth/login.html', form=form, title=_('Connexion'), origin=origin)
 
 
 @auth_bp.route('/register', methods=['GET', 'POST'])

@@ -42,10 +42,25 @@
 
 {% set n_slides = slides | length if has_db_slides else fb | length %}
 
+{% set _cat_pill_style = {
+  'fish':    'background:linear-gradient(135deg,#0891b2,#22d3ee);box-shadow:0 2px 10px rgba(34,211,238,0.40);',
+  'poultry': 'background:linear-gradient(135deg,#d97706,#fbbf24);box-shadow:0 2px 10px rgba(251,191,36,0.40);',
+  'rabbit':  'background:linear-gradient(135deg,#7c3aed,#a78bfa);box-shadow:0 2px 10px rgba(167,139,250,0.40);',
+  'eggs':    'background:linear-gradient(135deg,#ea580c,#fb923c);box-shadow:0 2px 10px rgba(251,146,60,0.40);',
+  'other':   'background:linear-gradient(135deg,#059669,#34d399);box-shadow:0 2px 10px rgba(52,211,153,0.40);',
+} %}
+{% set _cat_glow = {
+  'fish':    'rgba(34,211,238,0.20)',
+  'poultry': 'rgba(251,191,36,0.20)',
+  'rabbit':  'rgba(167,139,250,0.20)',
+  'eggs':    'rgba(251,146,60,0.20)',
+  'other':   'rgba(52,211,153,0.18)',
+} %}
+
 {# ══ HERO CAROUSEL ════════════════════════════════════════════════════════ #}
 <div id="hero-carousel"
-     class="relative mb-10 rounded-3xl overflow-hidden select-none"
-     style="height:clamp(520px,62vw,680px);"
+     class="relative mb-10 overflow-hidden select-none {% if current_user.is_authenticated %}c-wrap-auth{% else %}c-wrap-public{% endif %}"
+     style="height:{% if current_user.is_authenticated %}clamp(520px,62vw,680px){% else %}clamp(520px,52vw,780px){% endif %};"
      role="region" aria-label="{{ _('Carousel de présentation') }}">
 
   {# Admin badge — top-left #}
@@ -305,13 +320,15 @@
     <div class="flex items-center gap-2 flex-wrap">
       <a href="{{ url_for('marketplace.index') }}"
          class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold transition-all
-                {{ 'text-white btn-premium-primary shadow-sm' if not active_cat else 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
+                {{ 'text-white shadow-sm' if not active_cat else 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}"
+         style="{{ 'background:linear-gradient(135deg,#059669,#10b981);box-shadow:0 2px 10px rgba(16,185,129,0.40);' if not active_cat else '' }}">
         {{ _('Tous') }}
       </a>
       {% for cat in categories %}
       <a href="{{ url_for('marketplace.index', cat=cat.value) }}"
          class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold transition-all
-                {{ 'text-white btn-premium-primary shadow-sm' if active_cat == cat.value else 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
+                {{ 'text-white shadow-sm' if active_cat == cat.value else 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}"
+         style="{{ _cat_pill_style.get(cat.value, '') if active_cat == cat.value else '' }}">
         {% if cat.value == 'fish' %}🐟{% elif cat.value == 'poultry' %}🐔{% elif cat.value == 'rabbit' %}🐇{% elif cat.value == 'eggs' %}🥚{% else %}🌿{% endif %}
         {% if cat.value == 'fish' %}{{ _('Poisson') }}{% elif cat.value == 'poultry' %}{{ _('Volaille') }}{% elif cat.value == 'rabbit' %}{{ _('Lapin') }}{% elif cat.value == 'eggs' %}{{ _('Œufs') }}{% else %}{{ _('Autre') }}{% endif %}
       </a>
@@ -324,33 +341,35 @@
 </div>
 
 {# ── Trust strip ─────────────────────────────────────────────────────────── #}
-<div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
-  <div class="flex items-center gap-3 bg-white rounded-2xl shadow-card border border-slate-100 card-inset px-4 py-3.5">
-    <span class="text-xl flex-shrink-0">🌿</span>
-    <div>
-      <p class="text-xs font-extrabold text-slate-800">{{ _('Élevage artisanal') }}</p>
-      <p class="text-[10px] text-slate-400 font-medium mt-0.5">{{ _('Sans additifs') }}</p>
+<div class="rounded-2xl overflow-hidden mb-6" style="background:linear-gradient(135deg,#f0fdf4 0%,#ecfdf5 40%,#eff6ff 100%);border:1px solid #d1fae5;">
+  <div class="grid grid-cols-2 sm:grid-cols-4">
+    <div class="flex items-center gap-3 px-5 py-4 border-r border-b sm:border-b-0 border-emerald-100">
+      <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-lg" style="background:linear-gradient(135deg,#bbf7d0,#86efac);">🌿</div>
+      <div>
+        <p class="text-xs font-extrabold text-slate-800">{{ _('Élevage artisanal') }}</p>
+        <p class="text-[10px] text-slate-500 font-medium mt-0.5">{{ _('Sans additifs') }}</p>
+      </div>
     </div>
-  </div>
-  <div class="flex items-center gap-3 bg-white rounded-2xl shadow-card border border-slate-100 card-inset px-4 py-3.5">
-    <span class="text-xl flex-shrink-0">🚚</span>
-    <div>
-      <p class="text-xs font-extrabold text-slate-800">{{ _('Livraison rapide') }}</p>
-      <p class="text-[10px] text-slate-400 font-medium mt-0.5">{{ _('Chez vous en 24 h') }}</p>
+    <div class="flex items-center gap-3 px-5 py-4 border-b sm:border-b-0 sm:border-r border-emerald-100">
+      <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-lg" style="background:linear-gradient(135deg,#bfdbfe,#93c5fd);">🚚</div>
+      <div>
+        <p class="text-xs font-extrabold text-slate-800">{{ _('Livraison rapide') }}</p>
+        <p class="text-[10px] text-slate-500 font-medium mt-0.5">{{ _('Chez vous en 24 h') }}</p>
+      </div>
     </div>
-  </div>
-  <div class="flex items-center gap-3 bg-white rounded-2xl shadow-card border border-slate-100 card-inset px-4 py-3.5">
-    <span class="text-xl flex-shrink-0">💳</span>
-    <div>
-      <p class="text-xs font-extrabold text-slate-800">{{ _('Mobile Money') }}</p>
-      <p class="text-[10px] text-slate-400 font-medium mt-0.5">{{ _('Orange & MTN') }}</p>
+    <div class="flex items-center gap-3 px-5 py-4 border-r border-emerald-100">
+      <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-lg" style="background:linear-gradient(135deg,#ede9fe,#ddd6fe);">💳</div>
+      <div>
+        <p class="text-xs font-extrabold text-slate-800">{{ _('Mobile Money') }}</p>
+        <p class="text-[10px] text-slate-500 font-medium mt-0.5">{{ _('Orange & MTN') }}</p>
+      </div>
     </div>
-  </div>
-  <div class="flex items-center gap-3 bg-white rounded-2xl shadow-card border border-slate-100 card-inset px-4 py-3.5">
-    <span class="text-xl flex-shrink-0">✅</span>
-    <div>
-      <p class="text-xs font-extrabold text-slate-800">{{ _('Qualité garantie') }}</p>
-      <p class="text-[10px] text-slate-400 font-medium mt-0.5">{{ _('Traçabilité totale') }}</p>
+    <div class="flex items-center gap-3 px-5 py-4">
+      <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-lg" style="background:linear-gradient(135deg,#d1fae5,#a7f3d0);">✅</div>
+      <div>
+        <p class="text-xs font-extrabold text-slate-800">{{ _('Qualité garantie') }}</p>
+        <p class="text-[10px] text-slate-500 font-medium mt-0.5">{{ _('Traçabilité totale') }}</p>
+      </div>
     </div>
   </div>
 </div>
@@ -370,12 +389,12 @@
 
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5" id="product-grid">
   {% for product in products %}
-  <div class="product-card bg-white rounded-2xl shadow-card border border-slate-100 card-inset hover:shadow-card-md hover:-translate-y-1 transition-all duration-200 flex flex-col overflow-hidden group"
-       style="border-top: 3px solid {{ _cat_accent.get(product.category.value, '#34d399') }};"
+  <div class="product-card bg-white rounded-2xl shadow-card border border-slate-100 card-inset hover:-translate-y-1 transition-all duration-200 flex flex-col overflow-hidden group"
+       style="border-top: 3px solid {{ _cat_accent.get(product.category.value, '#34d399') }};--card-glow:{{ _cat_glow.get(product.category.value, 'rgba(52,211,153,0.18)') }};"
        data-name="{{ product.name | lower }}"
        data-desc="{{ (product.description or '') | lower }}">
 
-    <div class="h-52 relative overflow-hidden flex-shrink-0">
+    <div class="h-60 relative overflow-hidden flex-shrink-0">
       {% if product.image_id %}
       <img src="{{ url_for('marketplace.serve_image', file_id=product.image_id) }}"
            alt="{{ product.name }}"
@@ -416,31 +435,32 @@
       {% endif %}
 
       <div class="mt-auto border-t border-slate-50 pt-3">
-        <div class="flex items-baseline gap-1 mb-3">
-          <span class="text-xl font-extrabold text-brand-700">{{ '{:,.0f}'.format(product.price_float) }}</span>
-          <span class="text-xs text-slate-400 font-medium">FCFA / {{ product.unit }}</span>
-        </div>
-
-        <form method="POST" action="{{ url_for('marketplace.cart_add') }}" class="flex gap-2 items-center">
+        <form method="POST" action="{{ url_for('marketplace.cart_add') }}" class="flex flex-col gap-2">
           <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
           <input type="hidden" name="product_id" value="{{ product.id }}" />
 
-          <div class="flex items-center rounded-xl border border-slate-200 overflow-hidden bg-slate-50 flex-shrink-0">
-            <button type="button" onclick="stepQty(this,-0.5)"
-                    class="w-7 h-8 flex items-center justify-center text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors font-bold text-base">−</button>
-            <input type="number" name="quantity" value="1" min="0.1" step="0.5"
-                   class="w-10 h-8 text-center text-xs font-bold text-slate-800 bg-transparent border-0 focus:outline-none focus:ring-0" />
-            <button type="button" onclick="stepQty(this,0.5)"
-                    class="w-7 h-8 flex items-center justify-center text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors font-bold text-base">+</button>
+          <div class="flex items-center justify-between">
+            <div class="flex items-baseline gap-1">
+              <span class="text-xl font-extrabold text-brand-700">{{ '{:,.0f}'.format(product.price_float) }}</span>
+              <span class="text-xs text-slate-400 font-medium">FCFA / {{ product.unit }}</span>
+            </div>
+            <div class="flex items-center rounded-xl border border-slate-200 overflow-hidden bg-slate-50">
+              <button type="button" onclick="stepQty(this,-0.5)"
+                      class="w-7 h-8 flex items-center justify-center text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors font-bold text-base">−</button>
+              <input type="number" name="quantity" value="1" min="0.1" step="0.5"
+                     class="w-10 h-8 text-center text-xs font-bold text-slate-800 bg-transparent border-0 focus:outline-none focus:ring-0" />
+              <button type="button" onclick="stepQty(this,0.5)"
+                      class="w-7 h-8 flex items-center justify-center text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors font-bold text-base">+</button>
+            </div>
           </div>
 
           <button type="submit"
                   onclick="return cartFeedback(this)"
-                  class="flex-1 py-2 px-2 rounded-xl text-white text-xs font-bold cursor-pointer btn-premium-primary flex items-center justify-center gap-1">
-            <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
+                  class="w-full py-2.5 rounded-xl text-white text-sm font-bold cursor-pointer btn-premium-primary flex items-center justify-center gap-2">
+            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.4 6m0 0h9.8M17 19a1 1 0 100 2 1 1 0 000-2zm-9 0a1 1 0 100 2 1 1 0 000-2z"/>
             </svg>
-            {{ _('Ajouter') }}
+            {{ _('Ajouter au panier') }}
           </button>
         </form>
       </div>
@@ -556,6 +576,35 @@
   transition: opacity 0.2s ease, background 0.18s ease;
 }
 .c-arrow:hover { opacity: 1; }
+/* ── Product card category glow ─────────────────────────────────────── */
+.product-card:hover {
+  box-shadow: 0 8px 32px var(--card-glow, rgba(52,211,153,0.18)), 0 2px 8px rgba(0,0,0,0.05);
+}
+/* ── Full-bleed carousel ─────────────────────────────────────────────── */
+{% if not current_user.is_authenticated %}body { overflow-x: hidden; }{% endif %}
+/* Public shop: calc(50% - 50vw) cancels px padding + mx-auto centering → true 100vw */
+.c-wrap-public {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  margin-top: -1.5rem;
+  border-radius: 0;
+}
+/* Authenticated: sidebar prevents 100vw; just remove the px-4/px-6 padding gap */
+.c-wrap-auth {
+  border-radius: 1.5rem;
+  margin-left: -1rem;
+  margin-right: -1rem;
+  width: calc(100% + 2rem);
+}
+@media (min-width: 640px) {
+  .c-wrap-auth {
+    border-radius: 1.5rem;
+    margin-left: -1.5rem;
+    margin-right: -1.5rem;
+    width: calc(100% + 3rem);
+  }
+}
 </style>
 {% endblock %}
 
@@ -706,9 +755,11 @@ async function _doSearch() {
 
 const _CAT_COLORS = {fish:'#22d3ee', poultry:'#fbbf24', rabbit:'#a78bfa', eggs:'#fb923c', other:'#34d399'};
 const _CAT_ICONS  = {fish:'🐟', poultry:'🐔', rabbit:'🐇', eggs:'🥚', other:'🌿'};
+const _CAT_GLOW   = {fish:'rgba(34,211,238,0.20)', poultry:'rgba(251,191,36,0.20)', rabbit:'rgba(167,139,250,0.20)', eggs:'rgba(251,146,60,0.20)', other:'rgba(52,211,153,0.18)'};
 
 function _renderCard(p) {
   const accentColor = _CAT_COLORS[p.category] || '#34d399';
+  const glowColor   = _CAT_GLOW[p.category]   || 'rgba(52,211,153,0.18)';
   const catIcon     = _CAT_ICONS[p.category]  || '🌿';
 
   const img = p.image_url
@@ -727,34 +778,38 @@ function _renderCard(p) {
   const desc = p.description
     ? `<p class="text-xs text-slate-400 leading-relaxed mb-3 line-clamp-2 font-medium">${_h(p.description)}</p>` : '';
 
+  const priceHtml = `<div class="flex items-baseline gap-1">
+    <span class="text-xl font-extrabold text-brand-700">${p.price_xaf.toLocaleString('fr-FR',{maximumFractionDigits:0})}</span>
+    <span class="text-xs text-slate-400 font-medium">FCFA / ${_h(p.unit)}</span>
+  </div>`;
+
   const action = p.stock_quantity !== null && p.stock_quantity <= 0
-    ? `<button disabled class="w-full py-2 px-4 rounded-xl text-sm font-bold bg-slate-100 text-slate-400 cursor-not-allowed">{{ _('Épuisé') }}</button>`
-    : `<form method="POST" action="${p.add_cart_url}" class="flex gap-2 items-center">
+    ? `${priceHtml}<button disabled class="w-full mt-2 py-2.5 rounded-xl text-sm font-bold bg-slate-100 text-slate-400 cursor-not-allowed">{{ _('Épuisé') }}</button>`
+    : `<form method="POST" action="${p.add_cart_url}" class="flex flex-col gap-2">
         <input type="hidden" name="csrf_token" value="${_CSRF_TOKEN}">
         <input type="hidden" name="product_id" value="${p.id}">
-        <div class="flex items-center rounded-xl border border-slate-200 overflow-hidden bg-slate-50 flex-shrink-0">
-          <button type="button" onclick="stepQty(this,-0.5)" class="w-7 h-8 flex items-center justify-center text-slate-500 hover:bg-slate-100 font-bold">−</button>
-          <input type="number" name="quantity" value="1" min="0.1" step="0.5" class="w-10 h-8 text-center text-xs font-bold bg-transparent border-0 focus:outline-none">
-          <button type="button" onclick="stepQty(this,0.5)" class="w-7 h-8 flex items-center justify-center text-slate-500 hover:bg-slate-100 font-bold">+</button>
+        <div class="flex items-center justify-between">
+          ${priceHtml}
+          <div class="flex items-center rounded-xl border border-slate-200 overflow-hidden bg-slate-50">
+            <button type="button" onclick="stepQty(this,-0.5)" class="w-7 h-8 flex items-center justify-center text-slate-500 hover:bg-slate-100 font-bold">−</button>
+            <input type="number" name="quantity" value="1" min="0.1" step="0.5" class="w-10 h-8 text-center text-xs font-bold bg-transparent border-0 focus:outline-none">
+            <button type="button" onclick="stepQty(this,0.5)" class="w-7 h-8 flex items-center justify-center text-slate-500 hover:bg-slate-100 font-bold">+</button>
+          </div>
         </div>
-        <button type="submit" onclick="return cartFeedback(this)" class="flex-1 py-2 px-2 rounded-xl text-white text-xs font-bold btn-premium-primary flex items-center justify-center gap-1">
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
-          {{ _('Ajouter') }}
+        <button type="submit" onclick="return cartFeedback(this)" class="w-full py-2.5 rounded-xl text-white text-sm font-bold btn-premium-primary flex items-center justify-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.4 6m0 0h9.8M17 19a1 1 0 100 2 1 1 0 000-2zm-9 0a1 1 0 100 2 1 1 0 000-2z"/></svg>
+          {{ _('Ajouter au panier') }}
         </button>
       </form>`;
 
-  return `<div class="product-card bg-white rounded-2xl shadow-card border border-slate-100 card-inset hover:shadow-card-md hover:-translate-y-1 transition-all duration-200 flex flex-col overflow-hidden group"
-    style="border-top: 3px solid ${accentColor};"
+  return `<div class="product-card bg-white rounded-2xl shadow-card border border-slate-100 card-inset hover:-translate-y-1 transition-all duration-200 flex flex-col overflow-hidden group"
+    style="border-top: 3px solid ${accentColor}; --card-glow: ${glowColor};"
     data-name="${p.name.toLowerCase()}" data-desc="${(p.description||'').toLowerCase()}">
-    <div class="h-52 relative overflow-hidden flex-shrink-0">${img}${catBadge}${stockBadge}</div>
+    <div class="h-60 relative overflow-hidden flex-shrink-0">${img}${catBadge}${stockBadge}</div>
     <div class="p-4 flex-1 flex flex-col">
       <h3 class="text-sm font-extrabold text-slate-800 leading-snug mb-1">${_h(p.name)}</h3>
       ${desc}
       <div class="mt-auto border-t border-slate-50 pt-3">
-        <div class="flex items-baseline gap-1 mb-3">
-          <span class="text-xl font-extrabold text-brand-700">${p.price_xaf.toLocaleString('fr-FR',{maximumFractionDigits:0})}</span>
-          <span class="text-xs text-slate-400 font-medium">FCFA / ${_h(p.unit)}</span>
-        </div>
         ${action}
       </div>
     </div>
