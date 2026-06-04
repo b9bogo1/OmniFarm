@@ -7,7 +7,7 @@ from __future__ import annotations
 import logging
 from datetime import datetime, timezone
 
-from flask import jsonify, request
+from flask import jsonify, request, render_template
 from flask_jwt_extended import (
     create_access_token, create_refresh_token,
     get_jwt_identity, jwt_required,
@@ -21,6 +21,7 @@ from app.models.marketplace import (
     generate_order_number,
 )
 from app.marketplace.gateways import initiate_orange_money, initiate_mtn_mobile_money
+from app.marketplace.txn import checkout_transact, InsufficientStockError
 from app.email import send_order_confirmation
 from . import api_bp
 
@@ -85,6 +86,17 @@ def _order_dict(o: Order, include_items: bool = False) -> dict:
     return d
 
 
+@api_bp.route('/openapi.json')
+def openapi_json():
+    from .openapi_spec import get_spec
+    return jsonify(get_spec())
+
+
+@api_bp.route('/docs')
+def docs():
+    return render_template('api/docs.html')
+
+
 @api_bp.route('/status')
 def status():
     return _ok({'status': 'ok', 'version': 'v1',
@@ -135,10 +147,12 @@ def auth_refresh():
 
 @api_bp.route('/products')
 def products_list():
-    q        = request.args.get('q', '').strip()
-    category = request.args.get('category', '').strip()
-    page     = max(1, request.args.get('page', 1, type=int))
-    per_page = min(100, max(1, request.args.get('per_page', 20, type=int)))
+    q         = request.args.get('q', '').strip()
+    category  = request.args.get('category', '').strip()
+    page      = max(1, request.args.get('page', 1, type=int))
+    per_page  = min(100, max(1, request.args.get('per_page', 20, type=int)))
+    min_price = request.args.get('min_price', None, type=float)
+    max_price = request.args.get('max_price', None, type=float)
 
     cat_enum = None
     if category:
@@ -147,7 +161,10 @@ def products_list():
         except ValueError:
             return _err(f'Unknown category: {category}. Valid: {[c.value for c in ProductCategory]}', 400)
 
-    pagination = Product.paginate_available(page, per_page, category=cat_enum, q=q)
+    pagination = Product.paginate_available(
+        page, per_page, category=cat_enum, q=q,
+        min_price=min_price, max_price=max_price,
+    )
     return _ok({
         'products': [_product_dict(p) for p in pagination.items],
         'total':    pagination.total,
@@ -279,7 +296,16 @@ def orders_create():
         order.status = OrderStatus.PROCESSING
 
     order.payment = payment
-    order.save()
+
+    try:
+        checkout_transact(order, [(product, qty) for product, qty, _ in resolved_items])
+    except InsufficientStockError as exc:
+        return _err(
+            f'Stock insuffisant pour « {exc.product_name} » '
+            f'(disponible : {exc.available}, demandé : {exc.requested}).',
+            409,
+        )
+
     send_order_confirmation(order)
 
     logger.info('[API] Order created: %s user=%s method=%s total=%s',

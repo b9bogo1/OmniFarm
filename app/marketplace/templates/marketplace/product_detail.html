@@ -1,0 +1,366 @@
+{% extends 'base.html' if current_user.is_authenticated else 'base_shop.html' %}
+{% from 'macros.html' import breadcrumb %}
+{% block title %}{{ product.name }}{% endblock %}
+{% block page_title %}{{ product.name }}{% endblock %}
+
+{% block head %}
+<style>
+.img-zoom { overflow: hidden; }
+.img-zoom img { transition: transform 0.45s cubic-bezier(0.4,0,0.2,1); }
+.img-zoom:hover img { transform: scale(1.06); }
+.detail-stat { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
+</style>
+{% endblock %}
+
+{% block content %}
+{{ breadcrumb([
+  (url_for('marketplace.index'), _('Marché')),
+  (url_for('marketplace.index', cat=product.category.value), product.category_label()),
+  ('#', product.name),
+]) }}
+
+{# ══ Main product section ══════════════════════════════════════════════════ #}
+<div class="bg-white rounded-2xl shadow-card border border-slate-100 card-inset overflow-hidden mb-8">
+  <div class="grid grid-cols-1 lg:grid-cols-2">
+
+    {# ── Image panel ── #}
+    <div class="relative img-zoom bg-slate-50 flex items-center justify-center"
+         style="min-height:360px;">
+
+      {% if product.image_id %}
+      <img src="{{ url_for('marketplace.serve_image', file_id=product.image_id) }}"
+           alt="{{ product.name }}"
+           class="w-full h-full object-cover absolute inset-0"
+           style="max-height:520px;" />
+      {% else %}
+      <div class="flex items-center justify-center w-full" style="min-height:360px;">
+        <span class="text-[120px]" style="filter:drop-shadow(0 8px 32px rgba(0,0,0,0.12));">{{ product.category_icon() }}</span>
+      </div>
+      {% endif %}
+
+      {# Category badge #}
+      <span class="absolute top-4 left-4 z-10 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-white backdrop-blur-sm"
+            style="background:rgba(0,0,0,0.42);border:1px solid rgba(255,255,255,0.14);">
+        {{ product.category_icon() }} {{ product.category_label() }}
+      </span>
+
+      {# Availability badge #}
+      {% if not product.is_available or product.stock_quantity <= 0 %}
+      <span class="absolute top-4 right-4 z-10 px-3 py-1.5 rounded-full text-xs font-bold bg-red-500 text-white shadow-md">
+        {{ _('Indisponible') }}
+      </span>
+      {% elif product.stock_quantity <= 5 %}
+      <span class="absolute top-4 right-4 z-10 px-3 py-1.5 rounded-full text-xs font-bold bg-amber-500 text-white shadow-md">
+        {{ _('Stock limité') }}
+      </span>
+      {% else %}
+      <span class="absolute top-4 right-4 z-10 inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold bg-emerald-500 text-white shadow-md">
+        <span class="w-1.5 h-1.5 rounded-full bg-white/70 animate-pulse"></span>{{ _('Disponible') }}
+      </span>
+      {% endif %}
+    </div>
+
+    {# ── Info panel ── #}
+    <div class="p-7 flex flex-col justify-between">
+      <div>
+        {# Name + share #}
+        <div class="flex items-start justify-between gap-4 mb-3">
+          <h1 class="text-2xl font-extrabold text-slate-900 leading-tight">{{ product.name }}</h1>
+          <button onclick="shareProduct()" title="{{ _('Partager') }}"
+                  class="flex-shrink-0 w-9 h-9 rounded-xl border border-slate-200 flex items-center justify-center text-slate-400 hover:text-brand-600 hover:border-brand-300 transition-all">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+            </svg>
+          </button>
+        </div>
+
+        {# Price #}
+        <div class="flex items-baseline gap-2 mb-5">
+          <span class="text-4xl font-extrabold text-brand-700">{{ '{:,.0f}'.format(product.price_float) }}</span>
+          <span class="text-base text-slate-400 font-medium">FCFA / {{ product.unit }}</span>
+        </div>
+
+        {# Stat row #}
+        <div class="grid grid-cols-3 gap-3 mb-5">
+          <div class="swatch-brand rounded-xl p-3 detail-stat text-center">
+            <p class="text-base font-extrabold text-brand-700">
+              {% if product.stock_quantity > 0 %}{{ product.stock_quantity | int }}{% else %}0{% endif %}
+            </p>
+            <p class="text-[10px] text-slate-500 font-semibold uppercase tracking-wide">{{ _('En stock') }}</p>
+          </div>
+          <div class="swatch-cyan rounded-xl p-3 detail-stat text-center">
+            <p class="text-base font-extrabold text-cyan-700">{{ product.unit }}</p>
+            <p class="text-[10px] text-slate-500 font-semibold uppercase tracking-wide">{{ _('Unité') }}</p>
+          </div>
+          <div class="swatch-amber rounded-xl p-3 detail-stat text-center">
+            <p class="text-base font-extrabold text-amber-700">{{ product.category_icon() }}</p>
+            <p class="text-[10px] text-slate-500 font-semibold uppercase tracking-wide">{{ product.category_label() }}</p>
+          </div>
+        </div>
+
+        {# Stock progress bar #}
+        {% if product.stock_quantity is not none and product.stock_quantity > 0 %}
+        {% set stock_pct = [product.stock_quantity / 50 * 100, 100] | min %}
+        <div class="mb-5">
+          <div class="flex justify-between text-[10px] font-bold text-slate-500 mb-1">
+            <span>{{ _('Disponibilité') }}</span>
+            <span class="{{ 'text-emerald-600' if stock_pct > 40 else ('text-amber-600' if stock_pct > 10 else 'text-red-500') }}">
+              {{ product.stock_quantity }} {{ product.unit }} {{ _('restant(s)') }}
+            </span>
+          </div>
+          <div class="h-2 rounded-full bg-slate-100 overflow-hidden">
+            <div class="h-full rounded-full transition-all duration-500
+                        {{ 'bg-emerald-500' if stock_pct > 40 else ('bg-amber-400' if stock_pct > 10 else 'bg-red-400') }}"
+                 style="width: {{ stock_pct | round(1) }}%"></div>
+          </div>
+        </div>
+        {% endif %}
+
+        {# Description #}
+        {% if product.description %}
+        <div class="mb-5">
+          <p class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">{{ _('Description') }}</p>
+          <p class="text-sm text-slate-600 leading-relaxed font-medium">{{ product.description }}</p>
+        </div>
+        {% endif %}
+
+        {# Trust chips #}
+        <div class="flex flex-wrap gap-2 mb-5">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-bold border border-emerald-100">
+            🌿 {{ _('Élevage artisanal') }}
+          </span>
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-[10px] font-bold border border-blue-100">
+            🚚 {{ _('Livraison rapide') }}
+          </span>
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-50 text-violet-700 text-[10px] font-bold border border-violet-100">
+            ✅ {{ _('Qualité garantie') }}
+          </span>
+        </div>
+      </div>
+
+      {# ── Add to cart / CTA ── #}
+      {% if product.is_available and product.stock_quantity > 0 %}
+      <form method="POST" action="{{ url_for('marketplace.cart_add') }}" class="flex flex-col gap-3">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <input type="hidden" name="product_id" value="{{ product.id }}" />
+
+        <div class="flex items-center gap-3">
+          <label class="text-xs font-bold text-slate-600 whitespace-nowrap">{{ _('Quantité') }}</label>
+          <div class="flex items-center rounded-xl border border-slate-200 overflow-hidden bg-slate-50 flex-1 max-w-[140px]">
+            <button type="button" onclick="stepQty(this,-0.5)"
+                    class="w-10 h-11 flex items-center justify-center text-slate-500 hover:bg-slate-100 hover:text-slate-800 font-bold text-lg transition-colors">−</button>
+            <input type="number" id="detail-qty" name="quantity" value="1" min="0.5" step="0.5"
+                   max="{{ product.stock_quantity }}"
+                   class="flex-1 h-11 text-center text-sm font-extrabold text-slate-800 bg-transparent border-0 focus:outline-none focus:ring-0" />
+            <button type="button" onclick="stepQty(this,0.5)"
+                    class="w-10 h-11 flex items-center justify-center text-slate-500 hover:bg-slate-100 hover:text-slate-800 font-bold text-lg transition-colors">+</button>
+          </div>
+          <span id="detail-subtotal"
+                class="text-sm font-extrabold text-brand-700 whitespace-nowrap tabular-nums">
+            {{ '{:,.0f}'.format(product.price_float) }} FCFA
+          </span>
+        </div>
+
+        <button type="submit"
+                onclick="return cartFeedback(this)"
+                class="w-full py-3.5 rounded-xl text-white font-bold text-sm btn-premium-primary flex items-center justify-center gap-2 shadow-md">
+          <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                  d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.4 6m0 0h9.8M17 19a1 1 0 100 2 1 1 0 000-2zm-9 0a1 1 0 100 2 1 1 0 000-2z"/>
+          </svg>
+          {{ _('Ajouter au panier') }}
+        </button>
+      </form>
+
+      {% else %}
+      <div class="w-full py-3.5 rounded-xl text-sm font-bold bg-slate-100 text-slate-400 text-center">
+        {{ _('Produit actuellement indisponible') }}
+      </div>
+      {% endif %}
+
+      {# Back link #}
+      <a href="{{ url_for('marketplace.index') }}"
+         class="mt-3 inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-brand-600 font-semibold transition-colors self-start">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+        </svg>
+        {{ _('Retour au marché') }}
+      </a>
+    </div>
+
+  </div>{# /grid #}
+</div>{# /main card #}
+
+{# ══ Product details accordion ═════════════════════════════════════════════ #}
+<div class="bg-white rounded-2xl shadow-card border border-slate-100 card-inset mb-8 overflow-hidden">
+  <div class="divide-y divide-slate-50">
+
+    {# Row: Freshness & traceability #}
+    <details class="group/det" open>
+      <summary class="flex items-center justify-between px-6 py-4 cursor-pointer list-none select-none hover:bg-slate-50 transition-colors">
+        <span class="text-sm font-bold text-slate-700 flex items-center gap-2">
+          <span class="text-base">🌿</span> {{ _('Fraîcheur & Traçabilité') }}
+        </span>
+        <svg class="w-4 h-4 text-slate-400 transition-transform group-open/det:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+        </svg>
+      </summary>
+      <div class="px-6 pb-5 pt-1">
+        <ul class="space-y-2 text-sm text-slate-500 font-medium">
+          <li class="flex items-start gap-2"><span class="text-emerald-500 font-bold mt-0.5">✓</span> {{ _('Produits issus de notre propre élevage à N\'Djamena') }}</li>
+          <li class="flex items-start gap-2"><span class="text-emerald-500 font-bold mt-0.5">✓</span> {{ _('Sans antibiotiques ni additifs chimiques') }}</li>
+          <li class="flex items-start gap-2"><span class="text-emerald-500 font-bold mt-0.5">✓</span> {{ _('Numéro de lot traçable de la ferme à la livraison') }}</li>
+          <li class="flex items-start gap-2"><span class="text-emerald-500 font-bold mt-0.5">✓</span> {{ _('Contrôles sanitaires réguliers') }}</li>
+        </ul>
+      </div>
+    </details>
+
+    {# Row: Delivery #}
+    <details class="group/det2">
+      <summary class="flex items-center justify-between px-6 py-4 cursor-pointer list-none select-none hover:bg-slate-50 transition-colors">
+        <span class="text-sm font-bold text-slate-700 flex items-center gap-2">
+          <span class="text-base">🚚</span> {{ _('Livraison & Paiement') }}
+        </span>
+        <svg class="w-4 h-4 text-slate-400 transition-transform group-open/det2:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+        </svg>
+      </summary>
+      <div class="px-6 pb-5 pt-1">
+        <ul class="space-y-2 text-sm text-slate-500 font-medium">
+          <li class="flex items-start gap-2"><span class="text-blue-500 font-bold mt-0.5">→</span> {{ _('Livraison à domicile à N\'Djamena sous 24 h') }}</li>
+          <li class="flex items-start gap-2"><span class="text-blue-500 font-bold mt-0.5">→</span> {{ _('Paiement Mobile Money (Orange, MTN) ou à la livraison') }}</li>
+          <li class="flex items-start gap-2"><span class="text-blue-500 font-bold mt-0.5">→</span> {{ _('Commande minimum : 0,5 ') }}{{ product.unit }}</li>
+          <li class="flex items-start gap-2"><span class="text-blue-500 font-bold mt-0.5">→</span> {{ _('Confirmation par SMS dès la validation') }}</li>
+        </ul>
+      </div>
+    </details>
+
+    {# Row: Product specs #}
+    <details class="group/det3">
+      <summary class="flex items-center justify-between px-6 py-4 cursor-pointer list-none select-none hover:bg-slate-50 transition-colors">
+        <span class="text-sm font-bold text-slate-700 flex items-center gap-2">
+          <span class="text-base">📋</span> {{ _('Caractéristiques') }}
+        </span>
+        <svg class="w-4 h-4 text-slate-400 transition-transform group-open/det3:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+        </svg>
+      </summary>
+      <div class="px-6 pb-5 pt-1">
+        <table class="w-full text-sm text-slate-600">
+          <tbody class="divide-y divide-slate-50">
+            <tr><td class="py-2 font-bold text-slate-500 w-40">{{ _('Catégorie') }}</td><td class="py-2">{{ product.category_icon() }} {{ product.category_label() }}</td></tr>
+            <tr><td class="py-2 font-bold text-slate-500">{{ _('Prix unitaire') }}</td><td class="py-2 font-extrabold text-brand-700">{{ '{:,.0f}'.format(product.price_float) }} FCFA / {{ product.unit }}</td></tr>
+            <tr><td class="py-2 font-bold text-slate-500">{{ _('Stock disponible') }}</td><td class="py-2">{{ product.stock_quantity }} {{ product.unit }}</td></tr>
+            <tr><td class="py-2 font-bold text-slate-500">{{ _('Disponibilité') }}</td>
+                <td class="py-2">
+                  {% if product.is_available and product.stock_quantity > 0 %}
+                  <span class="text-emerald-600 font-bold">{{ _('En vente') }}</span>
+                  {% else %}
+                  <span class="text-red-500 font-bold">{{ _('Indisponible') }}</span>
+                  {% endif %}
+                </td>
+            </tr>
+            {% if product.created_at %}
+            <tr><td class="py-2 font-bold text-slate-500">{{ _('Mis en vente') }}</td><td class="py-2 text-slate-400">{{ product.created_at.strftime('%d/%m/%Y') }}</td></tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </details>
+
+  </div>
+</div>
+
+{# ══ Related products ══════════════════════════════════════════════════════ #}
+{% if related %}
+<div class="mb-8">
+  <div class="flex items-center justify-between mb-4">
+    <h2 class="text-sm font-bold text-slate-700 flex items-center gap-2">
+      <span class="w-8 h-8 rounded-lg bg-brand-50 flex items-center justify-center text-base">{{ product.category_icon() }}</span>
+      {{ _('Autres produits') }} — {{ product.category_label() }}
+    </h2>
+    <a href="{{ url_for('marketplace.index', cat=product.category.value) }}"
+       class="text-xs text-brand-600 hover:text-brand-800 font-bold transition-colors">
+      {{ _('Voir tout →') }}
+    </a>
+  </div>
+
+  {% set _cat_accent = {'fish':'#22d3ee','poultry':'#fbbf24','rabbit':'#a78bfa','eggs':'#fb923c','other':'#34d399'} %}
+  {% set _cat_glow   = {'fish':'rgba(34,211,238,0.20)','poultry':'rgba(251,191,36,0.20)','rabbit':'rgba(167,139,250,0.20)','eggs':'rgba(251,146,60,0.20)','other':'rgba(52,211,153,0.18)'} %}
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    {% for rel in related %}
+    <a href="{{ url_for('marketplace.product_detail', product_id=rel.id) }}"
+       class="group bg-white rounded-2xl shadow-card border border-slate-100 card-inset hover:-translate-y-1 transition-all duration-200 flex flex-col overflow-hidden"
+       style="border-top:3px solid {{ _cat_accent.get(rel.category.value, '#34d399') }};--card-glow:{{ _cat_glow.get(rel.category.value,'rgba(52,211,153,0.18)') }};">
+      <div class="h-40 relative overflow-hidden flex-shrink-0 img-zoom">
+        {% if rel.image_id %}
+        <img src="{{ url_for('marketplace.serve_image', file_id=rel.image_id) }}"
+             alt="{{ rel.name }}"
+             loading="lazy"
+             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+        {% else %}
+        <div class="icon-bg-brand w-full h-full flex items-center justify-center text-5xl">{{ rel.category_icon() }}</div>
+        {% endif %}
+      </div>
+      <div class="p-3 flex-1 flex flex-col">
+        <p class="text-xs font-extrabold text-slate-800 group-hover:text-brand-700 transition-colors leading-snug mb-1">{{ rel.name }}</p>
+        <div class="mt-auto flex items-baseline gap-1">
+          <span class="text-base font-extrabold text-brand-700">{{ '{:,.0f}'.format(rel.price_float) }}</span>
+          <span class="text-[10px] text-slate-400">FCFA / {{ rel.unit }}</span>
+        </div>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+const _UNIT_PRICE = {{ product.price_float | tojson }};
+
+function stepQty(btn, delta) {
+  const inp = btn.parentElement.querySelector('input[type=number]');
+  const max = parseFloat(inp.max) || Infinity;
+  const newVal = Math.max(0.5, Math.min(max, Math.round(((parseFloat(inp.value) || 1) + delta) * 2) / 2));
+  inp.value = newVal;
+  updateSubtotal(newVal);
+}
+
+document.getElementById('detail-qty')?.addEventListener('input', function() {
+  updateSubtotal(parseFloat(this.value) || 1);
+});
+
+function updateSubtotal(qty) {
+  const el = document.getElementById('detail-subtotal');
+  if (!el) return;
+  el.textContent = (qty * _UNIT_PRICE).toLocaleString('fr-FR', { maximumFractionDigits: 0 }) + ' FCFA';
+}
+
+function cartFeedback(btn) {
+  if (btn.dataset.busy) return false;
+  btn.dataset.busy = '1';
+  const origHtml = btn.innerHTML;
+  btn.innerHTML = '<svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg> {{ _("Ajouté !") }}';
+  btn.style.background = 'linear-gradient(135deg,#059669 0%,#10b981 100%)';
+  setTimeout(() => { btn.closest('form').submit(); }, 650);
+  return false;
+}
+
+function shareProduct() {
+  if (navigator.share) {
+    navigator.share({ title: '{{ product.name | e }}', url: window.location.href });
+  } else {
+    navigator.clipboard?.writeText(window.location.href).then(() => {
+      const btn = document.querySelector('[onclick="shareProduct()"]');
+      if (!btn) return;
+      btn.title = '{{ _("Lien copié !") }}';
+      setTimeout(() => { btn.title = '{{ _("Partager") }}'; }, 2000);
+    });
+  }
+}
+</script>
+{% endblock %}

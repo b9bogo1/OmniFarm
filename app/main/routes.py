@@ -1,12 +1,14 @@
 import json
+import os
 from datetime import date, timedelta, datetime, timezone
 
-from flask import render_template, redirect, url_for
+from flask import render_template, redirect, url_for, current_app
 from flask_login import login_required, current_user
 from flask_babel import gettext as _
 
 from . import main_bp
 from app.db import get_col
+from app.auth.decorators import admin_required
 from app.models.user import User
 from app.models.aquaculture import Pond, PondStatus
 from app.models.poultry import Flock, FlockStatus
@@ -82,6 +84,27 @@ def dashboard():
         ctx['total_expense_all'] = total_exp
         ctx['net_balance_all']   = total_rev - total_exp
 
+        # ── Order-status donut ────────────────────────────────────────────
+        _status_label_map = {
+            'pending':         _('En attente'),
+            'payment_pending': _('Paiement'),
+            'paid':            _('Payée'),
+            'processing':      _('Traitement'),
+            'shipped':         _('Expédiée'),
+            'delivered':       _('Livrée'),
+            'cancelled':       _('Annulée'),
+        }
+        order_status_labels, order_status_data = [], []
+        for sv, count in status_counts.items():
+            order_status_labels.append(_status_label_map.get(sv, sv))
+            order_status_data.append(count)
+        ctx['order_status_labels'] = json.dumps(order_status_labels)
+        ctx['order_status_data']   = json.dumps(order_status_data)
+
+        # ── Species / production donut ────────────────────────────────────
+        ctx['species_labels'] = json.dumps([_('Bassins'), _('Volailles'), _('Lapins')])
+        ctx['species_data']   = json.dumps([ctx['pond_count'], ctx['flock_count'], ctx['batch_count']])
+
         # ── Recent activity feed ──────────────────────────────────────────
         activity = []
 
@@ -132,3 +155,81 @@ def dashboard():
 @main_bp.route('/health')
 def health():
     return {'status': 'ok', 'app': 'OmniFarm Hub'}, 200
+
+
+@main_bp.route('/admin/monitor')
+@login_required
+@admin_required
+def admin_monitor():
+    from app.iot.scheduler import get_scheduler
+    from app.extensions import mongo
+
+    # ── MongoDB health ────────────────────────────────────────────────────
+    try:
+        mongo.cx.admin.command('ping')
+        mongo_ok = True
+        rs_status = mongo.cx.admin.command('replSetGetStatus')
+        rs_members = [
+            {
+                'name':   m.get('name'),
+                'state':  m.get('stateStr'),
+                'health': m.get('health'),
+            }
+            for m in rs_status.get('members', [])
+        ]
+    except Exception as exc:
+        mongo_ok = False
+        rs_members = []
+
+    # ── Scheduler ─────────────────────────────────────────────────────────
+    scheduler = get_scheduler()
+    jobs = []
+    if scheduler and scheduler.running:
+        jobs = [
+            {
+                'id':       j.id,
+                'name':     j.name,
+                'next_run': j.next_run_time,
+                'trigger':  str(j.trigger),
+            }
+            for j in scheduler.get_jobs()
+        ]
+
+    # ── Log tail ──────────────────────────────────────────────────────────
+    log_lines = []
+    log_file  = current_app.config.get('LOG_FILE', 'logs/omnifarm.log')
+    try:
+        if os.path.exists(log_file):
+            with open(log_file, encoding='utf-8', errors='replace') as fh:
+                all_lines = fh.readlines()
+            log_lines = all_lines[-200:]
+            log_lines.reverse()
+    except Exception:
+        pass
+
+    # ── DB stats ──────────────────────────────────────────────────────────
+    try:
+        stats = {
+            'users':         get_col('users').count_documents({}),
+            'orders':        get_col('orders').count_documents({}),
+            'products':      get_col('products').count_documents({}),
+            'finance':       get_col('finance_entries').count_documents({}),
+            'health_events': get_col('health_events').count_documents({}),
+        }
+    except Exception:
+        stats = {}
+
+    # ── Error count (lines with ERROR in last 200) ────────────────────────
+    error_count = sum(1 for ln in log_lines if ' ERROR ' in ln or ' CRITICAL ' in ln)
+
+    return render_template(
+        'main/admin_monitor.html',
+        title=_('Monitoring système'),
+        mongo_ok=mongo_ok,
+        rs_members=rs_members,
+        scheduler_running=scheduler.running if scheduler else False,
+        jobs=jobs,
+        log_lines=log_lines,
+        db_stats=stats,
+        error_count=error_count,
+    )

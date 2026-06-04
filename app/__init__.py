@@ -11,7 +11,7 @@ from logging.handlers import RotatingFileHandler
 
 from flask import Flask, session, request, g, render_template
 from config import Config
-from .extensions import csrf, babel, login_manager, bcrypt, mail, limiter, jwt, mongo
+from .extensions import csrf, babel, login_manager, bcrypt, mail, limiter, jwt, mongo, assets, _assets_available
 
 
 def create_app(config_class=Config) -> Flask:
@@ -43,6 +43,22 @@ def create_app(config_class=Config) -> Flask:
     # No application-level primary tracking or polling is needed.
     mongo.init_app(app)
     app.logger.info('[MongoDB] Flask-PyMongo initialised (RS discovery active)')
+
+    # --- Flask-Assets: CSS bundle (fonts + premium → dist/app.css) --------
+    if _assets_available and assets is not None:
+        try:
+            from flask_assets import Bundle
+            assets.init_app(app)
+            css_bundle = Bundle(
+                'css/fonts.css',
+                'css/premium.css',
+                filters='cssmin',
+                output='dist/app.css',
+            )
+            assets.register('css_all', css_bundle)
+            app.logger.info('[Assets] CSS bundle registered (dist/app.css)')
+        except Exception as _ae:
+            app.logger.warning('[Assets] Bundle registration failed: %s', _ae)
 
     # --- Sentry error tracking (only when DSN is set and not a placeholder) ---
     sentry_dsn = app.config.get('SENTRY_DSN', '')
@@ -122,11 +138,12 @@ def create_app(config_class=Config) -> Flask:
             theme = 'light'
 
         return {
-            'now':        datetime.now(timezone.utc),
-            'app_name':   'OmniFarm Hub',
-            'cart_count': get_cart_count(),
-            'user_theme': theme,
-            'get_locale': get_locale,
+            'now':               datetime.now(timezone.utc),
+            'app_name':          'OmniFarm Hub',
+            'cart_count':        get_cart_count(),
+            'user_theme':        theme,
+            'get_locale':        get_locale,
+            'use_assets_bundle': _assets_available,
         }
 
     # --- Register Blueprints ---

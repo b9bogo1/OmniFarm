@@ -77,7 +77,7 @@
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
   {% for pond in ponds %}
   {% set rec = latest_aqua.get(pond.id) %}
-  <div class="bg-white rounded-2xl shadow-card border border-slate-100 card-inset p-5 hover:-translate-y-0.5 hover:shadow-card-md transition-all">
+  <div class="bg-white rounded-2xl shadow-card border border-slate-100 card-inset p-5 hover:-translate-y-0.5 hover:shadow-card-md transition-all" data-pond-id="{{ pond.id }}">
     <div class="flex items-center justify-between mb-3">
       <p class="font-bold text-slate-800 text-sm">{{ pond.name }}</p>
       <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-cyan-100 text-cyan-700 text-xs font-bold">
@@ -87,23 +87,23 @@
     {% if rec %}
     <div class="grid grid-cols-2 gap-2">
       <div class="swatch-cyan rounded-xl p-2.5 text-center">
-        <p class="text-lg font-extrabold text-cyan-700 dark:text-cyan-300">{{ rec.water_temp_c or '—' }}°C</p>
+        <p class="text-lg font-extrabold text-cyan-700 dark:text-cyan-300" data-field="temp">{{ rec.water_temp_c or '—' }}°C</p>
         <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wide mt-0.5">{{ _('Température') }}</p>
       </div>
       <div class="swatch-green rounded-xl p-2.5 text-center">
-        <p class="text-lg font-extrabold text-brand-700 dark:text-brand-300">{{ rec.ph or '—' }}</p>
+        <p class="text-lg font-extrabold text-brand-700 dark:text-brand-300" data-field="ph">{{ rec.ph or '—' }}</p>
         <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wide mt-0.5">pH</p>
       </div>
       <div class="swatch-blue rounded-xl p-2.5 text-center">
-        <p class="text-lg font-extrabold text-blue-700 dark:text-blue-300">{{ rec.dissolved_oxygen_mgl or '—' }}</p>
+        <p class="text-lg font-extrabold text-blue-700 dark:text-blue-300" data-field="o2">{{ rec.dissolved_oxygen_mgl or '—' }}</p>
         <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wide mt-0.5">O₂ mg/L</p>
       </div>
       <div class="swatch-amber rounded-xl p-2.5 text-center">
-        <p class="text-lg font-extrabold text-amber-700 dark:text-amber-300">{{ rec.turbidity_ntu or '—' }}</p>
+        <p class="text-lg font-extrabold text-amber-700 dark:text-amber-300" data-field="turbidity">{{ rec.turbidity_ntu or '—' }}</p>
         <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wide mt-0.5">NTU</p>
       </div>
     </div>
-    <p class="text-[10px] text-slate-400 mt-2 text-right font-medium">{{ rec.date.strftime('%d/%m/%Y') }}</p>
+    <p class="text-[10px] text-slate-400 mt-2 text-right font-medium" data-field="date">{{ rec.date.strftime('%d/%m/%Y') }}</p>
     {% else %}
     <div class="text-center py-6 text-slate-400 text-xs font-medium">{{ _('Aucune lecture disponible') }}</div>
     {% endif %}
@@ -121,7 +121,7 @@
 
   {% for flock in flocks %}
   {% set rec = latest_poultry.get(flock.id) %}
-  <div class="bg-white rounded-2xl shadow-card border border-slate-100 card-inset p-5 hover:-translate-y-0.5 hover:shadow-card-md transition-all">
+  <div class="bg-white rounded-2xl shadow-card border border-slate-100 card-inset p-5 hover:-translate-y-0.5 hover:shadow-card-md transition-all" data-flock-id="{{ flock.id }}">
     <div class="flex items-center justify-between mb-3">
       <p class="font-bold text-slate-800 text-sm">🐔 {{ flock.name }}</p>
       <span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 text-xs font-bold">{{ flock.breed }}</span>
@@ -129,11 +129,11 @@
     {% if rec and (rec.ambient_temp_c or rec.humidity_pct) %}
     <div class="grid grid-cols-2 gap-2">
       <div class="swatch-amber rounded-xl p-2.5 text-center">
-        <p class="text-lg font-extrabold text-amber-700 dark:text-amber-300">{{ rec.ambient_temp_c or '—' }}°C</p>
+        <p class="text-lg font-extrabold text-amber-700 dark:text-amber-300" data-field="temp">{{ rec.ambient_temp_c or '—' }}°C</p>
         <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wide mt-0.5">{{ _('Température') }}</p>
       </div>
       <div class="swatch-blue rounded-xl p-2.5 text-center">
-        <p class="text-lg font-extrabold text-blue-700 dark:text-blue-300">{{ rec.humidity_pct or '—' }}%</p>
+        <p class="text-lg font-extrabold text-blue-700 dark:text-blue-300" data-field="humidity">{{ rec.humidity_pct or '—' }}%</p>
         <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wide mt-0.5">{{ _('Humidité') }}</p>
       </div>
     </div>
@@ -146,7 +146,7 @@
 
   {% for batch in batches %}
   {% set rec = latest_cuniculture.get(batch.id) %}
-  <div class="bg-white rounded-2xl shadow-card border border-slate-100 card-inset p-5 hover:-translate-y-0.5 hover:shadow-card-md transition-all">
+  <div class="bg-white rounded-2xl shadow-card border border-slate-100 card-inset p-5 hover:-translate-y-0.5 hover:shadow-card-md transition-all" data-batch-id="{{ batch.id }}">
     <div class="flex items-center justify-between mb-3">
       <p class="font-bold text-slate-800 text-sm">🐇 {{ batch.name }}</p>
       <span class="px-2 py-0.5 rounded-full bg-orange-100 text-orange-700 text-xs font-bold">{{ batch.breed }}</span>
@@ -154,7 +154,7 @@
     {% if rec and rec.ambient_temp_c %}
     <div class="grid grid-cols-2 gap-2">
       <div class="swatch-orange rounded-xl p-2.5 text-center">
-        <p class="text-lg font-extrabold text-orange-700 dark:text-orange-300">{{ rec.ambient_temp_c or '—' }}°C</p>
+        <p class="text-lg font-extrabold text-orange-700 dark:text-orange-300" data-field="temp">{{ rec.ambient_temp_c or '—' }}°C</p>
         <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wide mt-0.5">{{ _('Température') }}</p>
       </div>
       <div class="swatch-slate rounded-xl p-2.5 text-center">
@@ -180,4 +180,92 @@
 </div>
 {% endif %}
 
+{# ── SSE live-refresh indicator ── #}
+<div id="sse-bar"
+     class="fixed bottom-4 right-4 z-50 inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold shadow-lg
+            bg-indigo-100 text-indigo-700 border border-indigo-200 opacity-0 transition-opacity duration-500">
+  <span id="sse-dot" class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
+  <span id="sse-label">{{ _('En direct') }}</span>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function () {
+  const SSE_URL = '{{ url_for("iot.stream") }}';
+
+  function val(v, unit) {
+    return v !== null && v !== undefined ? `${v}${unit}` : '—';
+  }
+
+  function updateAqua(items) {
+    items.forEach(item => {
+      const card = document.querySelector(`[data-pond-id="${item.pond_id}"]`);
+      if (!card) return;
+      card.querySelector('[data-field="temp"]')?.replaceChildren(document.createTextNode(val(item.temp, '°C')));
+      card.querySelector('[data-field="ph"]')?.replaceChildren(document.createTextNode(val(item.ph, '')));
+      card.querySelector('[data-field="o2"]')?.replaceChildren(document.createTextNode(val(item.o2, '')));
+      card.querySelector('[data-field="turbidity"]')?.replaceChildren(document.createTextNode(val(item.turbidity, '')));
+      if (item.date) {
+        const dateEl = card.querySelector('[data-field="date"]');
+        if (dateEl) dateEl.textContent = item.date;
+      }
+    });
+  }
+
+  function updatePoultry(items) {
+    items.forEach(item => {
+      const card = document.querySelector(`[data-flock-id="${item.flock_id}"]`);
+      if (!card) return;
+      card.querySelector('[data-field="temp"]')?.replaceChildren(document.createTextNode(val(item.temp, '°C')));
+      card.querySelector('[data-field="humidity"]')?.replaceChildren(document.createTextNode(val(item.humidity, '%')));
+    });
+  }
+
+  function updateCuniculture(items) {
+    items.forEach(item => {
+      const card = document.querySelector(`[data-batch-id="${item.batch_id}"]`);
+      if (!card) return;
+      card.querySelector('[data-field="temp"]')?.replaceChildren(document.createTextNode(val(item.temp, '°C')));
+    });
+  }
+
+  function showLive(ok) {
+    const bar = document.getElementById('sse-bar');
+    const dot = document.getElementById('sse-dot');
+    if (!bar) return;
+    bar.classList.toggle('opacity-0', false);
+    bar.classList.toggle('bg-indigo-100', ok);
+    bar.classList.toggle('text-indigo-700', ok);
+    bar.classList.toggle('border-indigo-200', ok);
+    bar.classList.toggle('bg-red-100', !ok);
+    bar.classList.toggle('text-red-700', !ok);
+    bar.classList.toggle('border-red-200', !ok);
+    dot.className = `w-2 h-2 rounded-full ${ok ? 'bg-indigo-500 animate-pulse' : 'bg-red-400'}`;
+    document.getElementById('sse-label').textContent = ok ? '{{ _("En direct") }}' : '{{ _("Reconnexion…") }}';
+  }
+
+  function connect() {
+    const es = new EventSource(SSE_URL);
+    es.onmessage = (e) => {
+      try {
+        const d = JSON.parse(e.data);
+        if (!d || !Object.keys(d).length) return;
+        showLive(true);
+        if (d.aqua)        updateAqua(d.aqua);
+        if (d.poultry)     updatePoultry(d.poultry);
+        if (d.cuniculture) updateCuniculture(d.cuniculture);
+      } catch { /* ignore parse errors */ }
+    };
+    es.onerror = () => {
+      showLive(false);
+      es.close();
+      setTimeout(connect, 10000);
+    };
+  }
+
+  document.addEventListener('DOMContentLoaded', connect);
+})();
+</script>
 {% endblock %}

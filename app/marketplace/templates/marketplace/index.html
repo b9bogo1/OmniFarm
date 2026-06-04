@@ -60,7 +60,7 @@
 {# ══ HERO CAROUSEL ════════════════════════════════════════════════════════ #}
 <div id="hero-carousel"
      class="relative mb-10 overflow-hidden select-none {% if current_user.is_authenticated %}c-wrap-auth{% else %}c-wrap-public{% endif %}"
-     style="height:{% if current_user.is_authenticated %}clamp(520px,62vw,680px){% else %}clamp(520px,52vw,780px){% endif %};"
+     style="height:{% if current_user.is_authenticated %}clamp(380px,62vw,680px){% else %}clamp(380px,52vw,780px){% endif %};"
      role="region" aria-label="{{ _('Carousel de présentation') }}">
 
   {# Admin badge — top-left #}
@@ -270,7 +270,7 @@
 {# ── END CAROUSEL ───────────────────────────────────────────────────────── #}
 
 {# ══ UNIFIED TOOLBAR ══════════════════════════════════════════════════════ #}
-<div id="products" class="mb-6 sticky top-14 lg:top-0 z-20 bg-white/95 backdrop-blur-sm rounded-2xl shadow-card border border-slate-100 card-inset p-4 transition-shadow">
+<div id="products" class="mb-6 sticky top-16 z-20 bg-white/95 backdrop-blur-sm rounded-2xl shadow-card border border-slate-100 card-inset p-4 transition-shadow">
 
   {# Top row: search + action buttons #}
   <div class="flex flex-col sm:flex-row sm:items-center gap-3 mb-4">
@@ -313,6 +313,23 @@
       </a>
     </div>
     {% endif %}
+  </div>
+
+  {# Price range filter #}
+  <div class="flex items-center gap-2 mb-3">
+    <span class="text-xs font-bold text-slate-500 whitespace-nowrap">{{ _('Prix (FCFA)') }}</span>
+    <input type="number" id="price-min" min="0" step="100" placeholder="{{ _('Min') }}"
+           oninput="filterProducts()"
+           class="w-24 px-2 py-1.5 rounded-lg border border-slate-200 bg-slate-50 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-400 focus:border-brand-400 transition" />
+    <span class="text-xs text-slate-400">—</span>
+    <input type="number" id="price-max" min="0" step="100" placeholder="{{ _('Max') }}"
+           oninput="filterProducts()"
+           class="w-24 px-2 py-1.5 rounded-lg border border-slate-200 bg-slate-50 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-400 focus:border-brand-400 transition" />
+    <button type="button" onclick="clearPriceFilter()"
+            id="price-clear"
+            class="hidden text-xs text-slate-400 hover:text-slate-600 font-semibold transition-colors">
+      ✕ {{ _('Effacer') }}
+    </button>
   </div>
 
   {# Bottom row: category filter pills + product count #}
@@ -394,7 +411,10 @@
        data-name="{{ product.name | lower }}"
        data-desc="{{ (product.description or '') | lower }}">
 
-    <div class="h-60 relative overflow-hidden flex-shrink-0">
+    {# ── Clickable image area ── #}
+    <a href="{{ url_for('marketplace.product_detail', product_id=product.id) }}"
+       class="block h-60 relative overflow-hidden flex-shrink-0"
+       tabindex="-1" aria-hidden="true">
       {% if product.image_id %}
       <img src="{{ url_for('marketplace.serve_image', file_id=product.image_id) }}"
            alt="{{ product.name }}"
@@ -406,14 +426,14 @@
       </div>
       {% endif %}
 
-      {# Category badge — dark glass, top-left #}
+      {# Category badge #}
       <span class="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-full text-[10px] font-bold backdrop-blur-sm"
             style="background:rgba(0,0,0,0.45);color:rgba(255,255,255,0.88);border:1px solid rgba(255,255,255,0.12);">
         {% if product.category.value == 'fish' %}🐟{% elif product.category.value == 'poultry' %}🐔{% elif product.category.value == 'rabbit' %}🐇{% elif product.category.value == 'eggs' %}🥚{% else %}🌿{% endif %}
         {{ product.category_label() }}
       </span>
 
-      {# Stock badge — top-right #}
+      {# Stock badge #}
       {% if product.stock_quantity is not none %}
         {% if product.stock_quantity <= 0 %}
         <span class="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-100 text-red-600 border border-red-200 shadow-sm">
@@ -425,14 +445,35 @@
         </span>
         {% endif %}
       {% endif %}
-    </div>
+
+      {# "View details" hover overlay #}
+      <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center">
+        <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-200 px-4 py-2 rounded-xl text-xs font-bold text-white"
+              style="background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);">
+          {{ _('Voir les détails') }} →
+        </span>
+      </div>
+    </a>
 
     <div class="p-4 flex-1 flex flex-col">
-      <h3 class="text-sm font-extrabold text-slate-800 leading-snug mb-1">{{ product.name }}</h3>
+      {# Clickable product name #}
+      <a href="{{ url_for('marketplace.product_detail', product_id=product.id) }}"
+         class="group/name mb-1 block">
+        <h3 class="text-sm font-extrabold text-slate-800 leading-snug group-hover/name:text-brand-700 transition-colors">{{ product.name }}</h3>
+      </a>
 
       {% if product.description %}
-      <p class="text-xs text-slate-400 leading-relaxed mb-3 line-clamp-2 font-medium">{{ product.description }}</p>
+      <p class="text-xs text-slate-400 leading-relaxed mb-2 line-clamp-2 font-medium">{{ product.description }}</p>
       {% endif %}
+
+      {# Detail link row #}
+      <a href="{{ url_for('marketplace.product_detail', product_id=product.id) }}"
+         class="inline-flex items-center gap-1 text-[10px] font-bold text-brand-600 hover:text-brand-800 transition-colors mb-2">
+        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        {{ _('Plus d\'informations') }}
+      </a>
 
       <div class="mt-auto border-t border-slate-50 pt-3">
         <form method="POST" action="{{ url_for('marketplace.cart_add') }}" class="flex flex-col gap-2">
@@ -706,8 +747,12 @@ let   _searchTimer = null;
 
 function filterProducts() {
   clearTimeout(_searchTimer);
-  const q = document.getElementById('product-search').value;
+  const q        = document.getElementById('product-search').value;
+  const minPrice = document.getElementById('price-min')?.value || '';
+  const maxPrice = document.getElementById('price-max')?.value || '';
   document.getElementById('search-clear').classList.toggle('hidden', q.trim() === '');
+  const priceActive = minPrice !== '' || maxPrice !== '';
+  document.getElementById('price-clear')?.classList.toggle('hidden', !priceActive);
   _searchTimer = setTimeout(_doSearch, 280);
 }
 
@@ -716,21 +761,35 @@ function clearSearch() {
   filterProducts();
 }
 
-async function _doSearch() {
-  const q    = document.getElementById('product-search').value.trim();
-  const cat  = new URLSearchParams(window.location.search).get('cat') || '';
-  const grid  = document.getElementById('product-grid');
-  const empty = document.getElementById('search-empty');
+function clearPriceFilter() {
+  const mn = document.getElementById('price-min');
+  const mx = document.getElementById('price-max');
+  if (mn) mn.value = '';
+  if (mx) mx.value = '';
+  filterProducts();
+}
 
-  if (!q) {
+async function _doSearch() {
+  const q        = document.getElementById('product-search').value.trim();
+  const minPrice = document.getElementById('price-min')?.value || '';
+  const maxPrice = document.getElementById('price-max')?.value || '';
+  const cat      = new URLSearchParams(window.location.search).get('cat') || '';
+  const grid     = document.getElementById('product-grid');
+  const empty    = document.getElementById('search-empty');
+  const hasFilter = q || minPrice || maxPrice;
+
+  if (!hasFilter) {
     document.querySelectorAll('.product-card').forEach(c => c.style.display = '');
     empty.classList.add('hidden');
     return;
   }
 
   try {
-    const params = new URLSearchParams({ q });
-    if (cat) params.set('cat', cat);
+    const params = new URLSearchParams();
+    if (q)        params.set('q', q);
+    if (cat)      params.set('cat', cat);
+    if (minPrice) params.set('min_price', minPrice);
+    if (maxPrice) params.set('max_price', maxPrice);
     const res  = await fetch(`${_SEARCH_URL}?${params}`);
     const data = await res.json();
 
@@ -775,8 +834,18 @@ function _renderCard(p) {
     ? `<span class="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-700 border border-amber-200 shadow-sm">{{ _('Stock limité :') }} ${p.stock_quantity} ${_h(p.unit)}</span>`
     : '';
 
+  const hoverOverlay = `<div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center">
+    <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-200 px-4 py-2 rounded-xl text-xs font-bold text-white"
+          style="background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);">{{ _('Voir les détails') }} →</span>
+  </div>`;
+
   const desc = p.description
-    ? `<p class="text-xs text-slate-400 leading-relaxed mb-3 line-clamp-2 font-medium">${_h(p.description)}</p>` : '';
+    ? `<p class="text-xs text-slate-400 leading-relaxed mb-2 line-clamp-2 font-medium">${_h(p.description)}</p>` : '';
+
+  const detailLink = `<a href="${p.detail_url}" class="inline-flex items-center gap-1 text-[10px] font-bold text-brand-600 hover:text-brand-800 transition-colors mb-2">
+    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    {{ _("Plus d'informations") }}
+  </a>`;
 
   const priceHtml = `<div class="flex items-baseline gap-1">
     <span class="text-xl font-extrabold text-brand-700">${p.price_xaf.toLocaleString('fr-FR',{maximumFractionDigits:0})}</span>
@@ -805,10 +874,14 @@ function _renderCard(p) {
   return `<div class="product-card bg-white rounded-2xl shadow-card border border-slate-100 card-inset hover:-translate-y-1 transition-all duration-200 flex flex-col overflow-hidden group"
     style="border-top: 3px solid ${accentColor}; --card-glow: ${glowColor};"
     data-name="${p.name.toLowerCase()}" data-desc="${(p.description||'').toLowerCase()}">
-    <div class="h-60 relative overflow-hidden flex-shrink-0">${img}${catBadge}${stockBadge}</div>
+    <a href="${p.detail_url}" class="block h-60 relative overflow-hidden flex-shrink-0" tabindex="-1" aria-hidden="true">
+      ${img}${catBadge}${stockBadge}${hoverOverlay}
+    </a>
     <div class="p-4 flex-1 flex flex-col">
-      <h3 class="text-sm font-extrabold text-slate-800 leading-snug mb-1">${_h(p.name)}</h3>
-      ${desc}
+      <a href="${p.detail_url}" class="block mb-1 group/name">
+        <h3 class="text-sm font-extrabold text-slate-800 leading-snug group-hover/name:text-brand-700 transition-colors">${_h(p.name)}</h3>
+      </a>
+      ${desc}${detailLink}
       <div class="mt-auto border-t border-slate-50 pt-3">
         ${action}
       </div>

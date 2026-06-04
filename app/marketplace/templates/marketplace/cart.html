@@ -56,8 +56,8 @@
         <span class="text-xs text-slate-400 font-medium flex-shrink-0 hidden sm:block">{{ product.unit }}</span>
 
         {# Line total #}
-        <div class="text-right flex-shrink-0 w-24 hidden sm:block">
-          <p class="text-sm font-extrabold text-slate-800 line-total" data-price="{{ product.price_float }}">
+        <div class="text-right flex-shrink-0 min-w-[68px]">
+          <p class="text-sm font-extrabold text-brand-700 line-total" data-price="{{ product.price_float }}">
             {{ '{:,.0f}'.format(product.price_float * qty) }}
           </p>
           <p class="text-[10px] text-slate-400 font-medium">FCFA</p>

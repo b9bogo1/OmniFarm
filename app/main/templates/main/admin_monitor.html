@@ -1,0 +1,239 @@
+{% extends 'base.html' %}
+{% from 'macros.html' import breadcrumb %}
+{% block title %}{{ _('Monitoring système') }}{% endblock %}
+{% block page_title %}{{ _('Monitoring système') }}{% endblock %}
+
+{% block content %}
+{{ breadcrumb([('#', _('Monitoring système'))]) }}
+
+<div class="flex items-center justify-between mb-7">
+  <div class="flex items-center gap-4">
+    <div class="w-12 h-12 rounded-2xl icon-bg-indigo flex items-center justify-center text-2xl stat-icon-box">🖥️</div>
+    <div>
+      <h1 class="text-xl font-extrabold text-slate-900">{{ _('Monitoring système') }}</h1>
+      <p class="text-sm text-slate-500 mt-0.5 font-medium">{{ _('Santé MongoDB · Planificateur · Journal d\'erreurs') }}</p>
+    </div>
+  </div>
+  <button onclick="location.reload()"
+          class="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-sm font-bold transition-all">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+    </svg>
+    {{ _('Actualiser') }}
+  </button>
+</div>
+
+{# ── KPI strip ── #}
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-7">
+
+  <div class="bg-white rounded-2xl shadow-card border p-5 flex items-center gap-4
+              {{ 'border-emerald-200' if mongo_ok else 'border-red-200' }}">
+    <div class="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0
+                {{ 'bg-emerald-50' if mongo_ok else 'bg-red-50' }}">
+      {{ '🟢' if mongo_ok else '🔴' }}
+    </div>
+    <div>
+      <p class="text-sm font-extrabold {{ 'text-emerald-700' if mongo_ok else 'text-red-600' }}">
+        {{ _('MongoDB') }}
+      </p>
+      <p class="text-xs text-slate-400 font-medium mt-0.5">
+        {{ _('Connecté') if mongo_ok else _('Hors ligne') }}
+      </p>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-2xl shadow-card border p-5 flex items-center gap-4
+              {{ 'border-emerald-200' if scheduler_running else 'border-slate-200' }}">
+    <div class="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0
+                {{ 'bg-emerald-50' if scheduler_running else 'bg-slate-50' }}">📡</div>
+    <div>
+      <p class="text-sm font-extrabold {{ 'text-emerald-700' if scheduler_running else 'text-slate-500' }}">
+        {{ _('Planificateur') }}
+      </p>
+      <p class="text-xs text-slate-400 font-medium mt-0.5">
+        {{ jobs|length }} {{ _('tâche(s)') }}
+      </p>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-2xl shadow-card border p-5 flex items-center gap-4
+              {{ 'border-red-200' if error_count > 0 else 'border-slate-200' }}">
+    <div class="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0
+                {{ 'bg-red-50' if error_count > 0 else 'bg-slate-50' }}">⚠️</div>
+    <div>
+      <p class="text-sm font-extrabold {{ 'text-red-600' if error_count > 0 else 'text-slate-700' }}">
+        {{ error_count }} {{ _('erreur(s)') }}
+      </p>
+      <p class="text-xs text-slate-400 font-medium mt-0.5">{{ _('200 dernières lignes') }}</p>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-2xl shadow-card border border-slate-200 p-5 flex items-center gap-4">
+    <div class="w-10 h-10 rounded-xl bg-violet-50 flex items-center justify-center text-xl flex-shrink-0">👤</div>
+    <div>
+      <p class="text-sm font-extrabold text-slate-800">{{ db_stats.get('users', '—') }}</p>
+      <p class="text-xs text-slate-400 font-medium mt-0.5">{{ _('Utilisateurs') }}</p>
+    </div>
+  </div>
+
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-7">
+
+  {# ── MongoDB replica set ── #}
+  <div class="bg-white rounded-2xl shadow-card border border-slate-100 card-inset p-5">
+    <h2 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2">
+      <span class="w-7 h-7 rounded-lg bg-emerald-50 flex items-center justify-center text-sm">🗄️</span>
+      {{ _('Replica Set') }}
+    </h2>
+    {% if rs_members %}
+    <div class="space-y-2">
+      {% for m in rs_members %}
+      <div class="flex items-center justify-between py-2 border-b border-slate-50 last:border-0">
+        <div class="min-w-0">
+          <p class="text-xs font-bold text-slate-700 truncate">{{ m.name }}</p>
+        </div>
+        <span class="ml-2 px-2 py-0.5 rounded-full text-[10px] font-bold whitespace-nowrap
+          {% if m.state == 'PRIMARY' %}bg-emerald-100 text-emerald-700
+          {% elif m.state == 'SECONDARY' %}bg-blue-100 text-blue-700
+          {% else %}bg-red-100 text-red-600{% endif %}">
+          {{ m.state }}
+        </span>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-xs text-slate-400 font-medium">{{ _('Données RS non disponibles.') }}</p>
+    {% endif %}
+
+    {% if db_stats %}
+    <div class="mt-4 pt-4 border-t border-slate-100 grid grid-cols-2 gap-2">
+      {% for coll, cnt in db_stats.items() %}
+      <div class="flex justify-between text-xs py-1">
+        <span class="text-slate-500 font-medium capitalize">{{ coll }}</span>
+        <span class="font-extrabold text-slate-800">{{ cnt }}</span>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+
+  {# ── Scheduler jobs ── #}
+  <div class="bg-white rounded-2xl shadow-card border border-slate-100 card-inset p-5">
+    <h2 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2">
+      <span class="w-7 h-7 rounded-lg bg-indigo-50 flex items-center justify-center text-sm">⏱️</span>
+      {{ _('Tâches planifiées') }}
+      {% if scheduler_running %}
+      <span class="ml-auto px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-bold">
+        {{ _('Actif') }}
+      </span>
+      {% else %}
+      <span class="ml-auto px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 text-[10px] font-bold">
+        {{ _('Inactif') }}
+      </span>
+      {% endif %}
+    </h2>
+    {% if jobs %}
+    <div class="space-y-2">
+      {% for job in jobs %}
+      <div class="py-2 border-b border-slate-50 last:border-0">
+        <p class="text-xs font-bold text-slate-700 truncate">{{ job.name }}</p>
+        <p class="text-[10px] text-slate-400 font-mono mt-0.5">{{ job.trigger }}</p>
+        {% if job.next_run %}
+        <p class="text-[10px] text-brand-600 font-semibold mt-0.5">
+          → {{ job.next_run.strftime('%d/%m %H:%M:%S') }}
+        </p>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-xs text-slate-400 font-medium py-4 text-center">{{ _('Aucune tâche planifiée.') }}</p>
+    {% endif %}
+  </div>
+
+  {# ── Quick links ── #}
+  <div class="bg-white rounded-2xl shadow-card border border-slate-100 card-inset p-5">
+    <h2 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2">
+      <span class="w-7 h-7 rounded-lg bg-amber-50 flex items-center justify-center text-sm">🔗</span>
+      {{ _('Administration') }}
+    </h2>
+    <div class="space-y-2">
+      {% for icon, label, endpoint in [
+        ('👤', _('Utilisateurs'),    'auth.admin_users'),
+        ('📦', _('Commandes'),       'marketplace.admin_orders'),
+        ('🏷️', _('Produits'),        'marketplace.admin_products'),
+        ('💰', _('Finances'),        'finance.index'),
+        ('📡', _('IoT & Capteurs'),  'iot.dashboard'),
+        ('📊', _('Analytiques'),     'marketplace.admin_analytics'),
+        ('📋', _('Rapports'),        'reports.index'),
+      ] %}
+      <a href="{{ url_for(endpoint) }}"
+         class="flex items-center gap-3 px-3 py-2.5 rounded-xl border border-slate-100 hover:bg-slate-50 hover:border-slate-200 transition-all group">
+        <span class="text-base flex-shrink-0">{{ icon }}</span>
+        <span class="text-xs font-bold text-slate-700 group-hover:text-brand-700 transition-colors flex-1">{{ label }}</span>
+        <svg class="w-3.5 h-3.5 text-slate-300 group-hover:text-brand-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+        </svg>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+
+</div>
+
+{# ── Log viewer ── #}
+<div class="bg-white rounded-2xl shadow-card border border-slate-100 card-inset p-5">
+  <div class="flex items-center justify-between mb-4">
+    <h2 class="text-sm font-bold text-slate-700 flex items-center gap-2">
+      <span class="w-7 h-7 rounded-lg bg-slate-50 flex items-center justify-center text-sm">📄</span>
+      {{ _('Journal d\'application') }}
+      <span class="text-[10px] text-slate-400 font-normal font-mono">{{ _('(200 dernières lignes, plus récent en premier)') }}</span>
+    </h2>
+    <div class="flex items-center gap-2">
+      <input type="text" id="log-filter" placeholder="{{ _('Filtrer…') }}"
+             oninput="filterLog()"
+             class="px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-400 focus:border-brand-400 transition w-40" />
+      <label class="flex items-center gap-1.5 text-xs font-semibold text-slate-500 cursor-pointer select-none">
+        <input type="checkbox" id="log-errors-only" onchange="filterLog()" class="rounded border-slate-300">
+        {{ _('Erreurs seulement') }}
+      </label>
+    </div>
+  </div>
+
+  {% if log_lines %}
+  <div id="log-container"
+       class="overflow-auto rounded-xl font-mono text-[11px] leading-5 bg-slate-950 text-slate-200 p-4"
+       style="max-height:480px;">
+    {% for line in log_lines %}
+    <div class="log-line whitespace-pre-wrap break-all py-0.5
+      {% if ' ERROR ' in line or ' CRITICAL ' in line %}text-red-400 font-semibold
+      {% elif ' WARNING ' in line %}text-amber-300
+      {% elif ' INFO ' in line %}text-slate-300
+      {% else %}text-slate-500{% endif %}"
+      data-level="{% if ' ERROR ' in line or ' CRITICAL ' in line %}error{% elif ' WARNING ' in line %}warning{% else %}info{% endif %}">{{ line | e }}</div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="rounded-xl bg-slate-950 text-slate-500 font-mono text-xs p-6 text-center">
+    {{ _('Aucun fichier journal trouvé.') }}
+  </div>
+  {% endif %}
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+function filterLog() {
+  const q      = document.getElementById('log-filter').value.toLowerCase();
+  const errOnly = document.getElementById('log-errors-only').checked;
+  document.querySelectorAll('.log-line').forEach(el => {
+    const text  = el.textContent.toLowerCase();
+    const isErr = el.dataset.level === 'error';
+    const show  = (!errOnly || isErr) && (!q || text.includes(q));
+    el.style.display = show ? '' : 'none';
+  });
+}
+</script>
+{% endblock %}

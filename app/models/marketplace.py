@@ -116,7 +116,9 @@ class Product:
 
     @classmethod
     def paginate_available(cls, page: int, per_page: int = 20,
-                           category=None, q: str = '') -> Pagination:
+                           category=None, q: str = '',
+                           min_price: float | None = None,
+                           max_price: float | None = None) -> Pagination:
         filt: dict = {'is_available': True}
         if category:
             filt['category'] = category.value if hasattr(category, 'value') else category
@@ -125,6 +127,13 @@ class Product:
                 {'name': {'$regex': q, '$options': 'i'}},
                 {'description': {'$regex': q, '$options': 'i'}},
             ]
+        if min_price is not None or max_price is not None:
+            price_cond: dict = {}
+            if min_price is not None:
+                price_cond['$gte'] = float(min_price)
+            if max_price is not None:
+                price_cond['$lte'] = float(max_price)
+            filt['price_xaf'] = price_cond
         col = get_col('products')
         total = col.count_documents(filt)
         docs = list(col.find(filt).sort('created_at', -1)

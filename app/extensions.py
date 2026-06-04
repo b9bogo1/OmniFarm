@@ -20,3 +20,11 @@ mail          = Mail()
 limiter       = Limiter(key_func=get_remote_address)
 jwt           = JWTManager()
 mongo         = PyMongo()          # mongo.db → database   mongo.cx → MongoClient
+
+try:
+    from flask_assets import Environment as AssetsEnvironment
+    assets = AssetsEnvironment()
+    _assets_available = True
+except ImportError:
+    assets = None
+    _assets_available = False

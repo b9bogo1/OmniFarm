@@ -32,18 +32,31 @@ def _send(subject: str, recipients: list, html_body: str) -> None:
         logger.error('[EMAIL] Failed %r → %s : %s', subject, recipients, exc)
 
 
+def _get_customer(order):
+    """Resolve the customer User object from order.customer_id (may be None)."""
+    if not getattr(order, 'customer_id', None):
+        return None
+    try:
+        from app.models.user import User
+        return User.get_by_id(order.customer_id)
+    except Exception:
+        return None
+
+
 def _customer_locale(order) -> str:
     try:
-        if order.customer and order.customer.language:
-            return order.customer.language
+        customer = _get_customer(order)
+        if customer and getattr(customer, 'language', None):
+            return customer.language
     except Exception:
         pass
     return current_app.config.get('BABEL_DEFAULT_LOCALE', 'fr')
 
 
 def _recipient(order) -> list:
-    if order.customer and order.customer.email:
-        return [order.customer.email]
+    customer = _get_customer(order)
+    if customer and getattr(customer, 'email', None):
+        return [customer.email]
     return []
 
 

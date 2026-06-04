@@ -1,12 +1,17 @@
 <!DOCTYPE html>
-<html lang="{{ get_locale() }}" class="h-full {{ 'dark' if user_theme == 'dark' }}">
+<html lang="{{ get_locale() }}" class="h-full scroll-smooth {{ 'dark' if user_theme == 'dark' }}">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="csrf-token" content="{{ csrf_token() }}" />
   <title>{% block title %}{{ _('OmniFarm Hub') }}{% endblock %} — OmniFarm Hub</title>
 
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/fonts.css') }}" />
+  {% if use_assets_bundle %}
+    {% assets 'css_all' %}<link rel="stylesheet" href="{{ ASSET_URL }}" />{% endassets %}
+  {% else %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/fonts.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/premium.css') }}" />
+  {% endif %}
   <script src="{{ url_for('static', filename='js/tailwind.js') }}"></script>
   <script>
     tailwind.config = {
@@ -87,7 +92,6 @@
     .dark .text-brand-700 { color: #4ade80 !important; }
     /* Sidebar & topbar handled in premium.css */
   </style>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/premium.css') }}" />
 </head>
 <body class="h-full font-sans antialiased text-slate-800">
 
@@ -467,6 +471,11 @@
     document.getElementById('sidebar').classList.add('-translate-x-full');
     document.getElementById('sidebar-overlay').classList.add('hidden');
   }
+
+  // Close sidebar on any nav link click (mobile UX)
+  document.querySelectorAll('#sidebar nav a').forEach(function(a) {
+    a.addEventListener('click', closeSidebar);
+  });
 
   function toggleTheme() {
     const html  = document.documentElement;

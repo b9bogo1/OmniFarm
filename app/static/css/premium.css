@@ -530,6 +530,7 @@ textarea.border-red-400:focus {
 .swatch-slate  { background: linear-gradient(135deg,#f8fafc,#f1f5f9); }
 .swatch-indigo { background: linear-gradient(135deg,#eef2ff,#e0e7ff); }
 .swatch-violet { background: linear-gradient(135deg,#f5f3ff,#ede9fe); }
+.swatch-brand  { background: linear-gradient(135deg,#f0fdf4,#dcfce7); }
 
 .dark .swatch-cyan   { background: linear-gradient(135deg,rgba(8,145,178,0.16),rgba(6,182,212,0.08)) !important; }
 .dark .swatch-green  { background: linear-gradient(135deg,rgba(22,163,74,0.16),rgba(34,197,94,0.08)) !important; }
@@ -540,6 +541,7 @@ textarea.border-red-400:focus {
 .dark .swatch-slate  { background: linear-gradient(135deg,rgba(51,65,85,0.35),rgba(71,85,105,0.20)) !important; }
 .dark .swatch-indigo { background: linear-gradient(135deg,rgba(79,70,229,0.16),rgba(99,102,241,0.08)) !important; }
 .dark .swatch-violet { background: linear-gradient(135deg,rgba(124,58,237,0.16),rgba(139,92,246,0.08)) !important; }
+.dark .swatch-brand  { background: linear-gradient(135deg,rgba(22,163,74,0.16),rgba(34,197,94,0.08)) !important; }
 
 /* Stat card inner icon */
 .stat-icon-box {

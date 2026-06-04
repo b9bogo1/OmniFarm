@@ -24,6 +24,7 @@ from .gateways import (
     initiate_orange_money, initiate_mtn_mobile_money,
     verify_orange_webhook, check_mtn_payment_status,
 )
+from .txn import checkout_transact, InsufficientStockError
 
 logger = logging.getLogger(__name__)
 
@@ -76,7 +77,15 @@ def index():
 @marketplace_bp.route('/product/<product_id>')
 def product_detail(product_id):
     product = Product.get_by_id(product_id) or abort(404)
-    return render_template('marketplace/product_detail.html', product=product, title=product.name)
+    # Related: same category, up to 4, exclude current
+    related_pag = Product.paginate_available(page=1, per_page=5, category=product.category)
+    related = [p for p in related_pag.items if p.id != product.id][:4]
+    return render_template(
+        'marketplace/product_detail.html',
+        product=product,
+        related=related,
+        title=product.name,
+    )
 
 
 # ── Cart ─────────────────────────────────────────────────────────────────────
@@ -212,7 +221,17 @@ def checkout():
             order.status = OrderStatus.PROCESSING
 
         order.payment = payment
-        order.save()
+
+        try:
+            checkout_transact(order, items)
+        except InsufficientStockError as exc:
+            flash(
+                _('Stock insuffisant pour « %(name)s ». Veuillez ajuster votre panier.',
+                  name=exc.product_name),
+                'danger',
+            )
+            return redirect(url_for('marketplace.cart_view'))
+
         cart.clear()
         send_order_confirmation(order)
 
@@ -647,8 +666,10 @@ def webhook_mtn():
 
 @marketplace_bp.route('/search')
 def search():
-    q   = request.args.get('q', '').strip()
-    cat = request.args.get('cat', '').strip()
+    q         = request.args.get('q', '').strip()
+    cat       = request.args.get('cat', '').strip()
+    min_price = request.args.get('min_price', None, type=float)
+    max_price = request.args.get('max_price', None, type=float)
 
     cat_enum = None
     if cat:
@@ -657,7 +678,10 @@ def search():
         except ValueError:
             pass
 
-    pagination = Product.paginate_available(page=1, per_page=60, category=cat_enum, q=q)
+    pagination = Product.paginate_available(
+        page=1, per_page=60, category=cat_enum, q=q,
+        min_price=min_price, max_price=max_price,
+    )
 
     def _serialize(p):
         return {

@@ -21,6 +21,10 @@ def get_scheduler() -> BackgroundScheduler | None:
 def init_scheduler(app) -> None:
     global _scheduler
 
+    if app.testing:
+        _log.debug('IoT scheduler: skipping start (testing mode).')
+        return
+
     if app.debug and os.environ.get('WERKZEUG_RUN_MAIN') != 'true':
         _log.debug('IoT scheduler: skipping start (Werkzeug reloader child process).')
         return
